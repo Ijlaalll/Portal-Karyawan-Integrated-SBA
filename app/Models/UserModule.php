@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class UserModule extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'module',
+    ];
+
+    /**
+     * Relationship: UserModule belongs to a User.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}

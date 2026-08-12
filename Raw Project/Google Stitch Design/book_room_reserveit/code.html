@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Room Detail &amp; Booking - ReserveIt</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#004ac6",
+                        "secondary-fixed": "#d9e3f4",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "primary-container": "#2563eb",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-tertiary-container": "#ffede6",
+                        "tertiary-container": "#bc4800",
+                        "secondary": "#555f6d",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "primary-fixed": "#dbe1ff",
+                        "surface-tint": "#0053db",
+                        "error": "#ba1a1a",
+                        "surface": "#f8f9fa",
+                        "on-secondary-fixed-variant": "#3e4755",
+                        "on-background": "#191c1d",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary-fixed": "#121c28",
+                        "outline": "#737686",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "outline-variant": "#c3c6d7",
+                        "secondary-container": "#d6e0f1",
+                        "tertiary": "#943700",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-secondary-container": "#596372",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#b4c5ff",
+                        "background": "#f8f9fa",
+                        "secondary-fixed-dim": "#bdc7d8",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-dim": "#d9dadb",
+                        "on-primary-fixed": "#00174b",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container": "#edeeef",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-container": "#eeefff",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "inverse-on-surface": "#f0f1f2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "md": "16px",
+                        "container-margin": "32px",
+                        "sm": "8px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen">
+<!-- SideNavBar -->
+<nav class="w-[280px] h-screen flex flex-col fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant z-50">
+<div class="p-md border-b border-outline-variant flex items-center gap-md">
+<img alt="User Avatar" class="w-10 h-10 rounded-full object-cover" data-alt="A small, professional corporate avatar icon for an enterprise administrator in a clean light mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvtKxste2_qEBtYr2qhTKjeWYLckt6vpM48R0w47FHBjT2HhGa0J00oCuAzY1fiLer_s791lDgk0_fFmmXTIWX56-g0RVA_e1xsU7PKXmSPlA9XHEO4fL8xK66cyA5F_Wo2ALH75P1A5P0b9nr5mdb60UKw8lVxIxy0GYDvUdaH62hMwvXnRwKqbWhaOv7YrvZ0dQLw6HLMUE2haZUT14M3mJaTJ0YZO9tBt49y7kwZsF1ckI8a2c"/>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">ReserveIt</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Enterprise Admin</p>
+</div>
+</div>
+<div class="p-md">
+<button class="w-full bg-primary-container text-on-primary py-2 px-4 rounded font-label-md text-label-md flex justify-center items-center gap-2 hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+                New Reservation
+            </button>
+</div>
+<ul class="flex flex-col flex-grow py-sm">
+<li><a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#"><span class="material-symbols-outlined">dashboard</span> <span class="font-label-md text-label-md">Dashboard</span></a></li>
+<li><a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#"><span class="material-symbols-outlined">calendar_month</span> <span class="font-label-md text-label-md">Calendar</span></a></li>
+<li><a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#"><span class="material-symbols-outlined">search_check</span> <span class="font-label-md text-label-md">Find Room</span></a></li>
+<li><a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#"><span class="material-symbols-outlined">book_online</span> <span class="font-label-md text-label-md">My Bookings</span></a></li>
+<li><a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container border-l-4 border-primary transition-colors duration-200 opacity-90" href="#"><span class="material-symbols-outlined">meeting_room</span> <span class="font-label-md text-label-md">Rooms</span></a></li>
+<li><a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#"><span class="material-symbols-outlined">settings_input_component</span> <span class="font-label-md text-label-md">Facilities</span></a></li>
+<li><a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#"><span class="material-symbols-outlined">fact_check</span> <span class="font-label-md text-label-md">Approvals</span></a></li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-[280px] flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="h-16 w-full sticky top-0 z-40 bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center px-lg">
+<div class="flex items-center gap-4">
+<!-- Search on left as requested, but minimal since we are on a detail page -->
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="pl-9 pr-4 py-1.5 border border-outline-variant rounded bg-surface text-body-md font-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Search rooms..." type="text"/>
+</div>
+</div>
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface">
+                Meeting Room Reservation
+            </div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">help_outline</span></button>
+<img alt="Employee Profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="Profile picture of an employee in a corporate setting, professional lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW6_n6xt6TM0WKPQ8rJbHOXYViGy4aaz4ILQH9QT7MF3TmAOpTLja3CbRjyBUnq7a1LHzVYgGseWOotspjnjYXr7boSxfbvGV-2Q6suszIZyM_wL8yflCPTcAuyfevAB4Ec8AIK2AeP5v-vPPmlBsGjL0wLkLb2m6a5JolauKQrXQ1Yq0zolSzGu8R-oKDXVSDqav_LV55OZuOBB1580Vjph9gT3VqQSrDIW0ZcBMPiSTK2_5fKxE"/>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-container-margin overflow-y-auto">
+<div class="mb-lg">
+<a class="inline-flex items-center gap-1 text-on-surface-variant hover:text-primary font-label-sm text-label-sm mb-2" href="#">
+<span class="material-symbols-outlined text-sm">arrow_back</span> Back to Rooms
+                </a>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Apollo Boardroom</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Building A, Floor 14, North Wing</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Left Column: Room Details -->
+<div class="lg:col-span-2 flex flex-col gap-lg">
+<!-- Hero Image / Visual -->
+<div class="w-full h-64 rounded-xl border border-outline-variant overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A modern corporate boardroom featuring a large sleek wooden table, ergonomic black mesh chairs, and a large video conferencing screen at the far end. High key lighting, clean bright aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd6woMqlwAORNDOkcdYMN_ydDHmdDiFHnXZ77S_SQJU-3zmcHNx5loKQbQATFS7g26Bg8fE0YX-UOjGUk1XdKeEcRCJPsOjlKpqS_D-FHst4hVRetRjioqVotrvhz5ysIRnS51szAG0m6PjV_s_0c3CvBOgR0yQGSo-MmluymtJf5DNl95FionpOb4HChmgnZUJwrbaWinLqpSDyx05mhs0mvvDsThF-oPCmHSuvrze9OiM3DjKRU"/>
+<div class="absolute top-4 right-4 bg-surface-container-lowest px-3 py-1 rounded-full border border-outline-variant flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-sm text-primary">groups</span>
+<span class="font-label-sm text-label-sm">Capacity: 12</span>
+</div>
+</div>
+<!-- Description & Facilities -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm mb-md">About this Room</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md leading-relaxed">
+                            The Apollo Boardroom is designed for high-stakes executive meetings and presentations. It features acoustic dampening panels for privacy, floor-to-ceiling windows with automatic blinds, and state-of-the-art telepresence equipment. Ideal for board meetings, client pitches, and strategic planning sessions.
+                        </p>
+<h4 class="font-label-md text-label-md mb-sm text-on-surface">Facilities</h4>
+<div class="flex flex-wrap gap-2">
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-surface-container rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface">
+<span class="material-symbols-outlined text-sm">tv</span> 85" 4K Display
+                            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-surface-container rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface">
+<span class="material-symbols-outlined text-sm">videocam</span> VC System
+                            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-surface-container rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface">
+<span class="material-symbols-outlined text-sm">wifi</span> High-Speed WiFi
+                            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-surface-container rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface">
+<span class="material-symbols-outlined text-sm">coffee</span> Coffee Station
+                            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-surface-container rounded-full border border-outline-variant font-label-sm text-label-sm text-on-surface">
+<span class="material-symbols-outlined text-sm">border_color</span> Whiteboard
+                            </span>
+</div>
+</div>
+<!-- Schedule Preview -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-headline-sm text-headline-sm">Today's Schedule</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Oct 24, 2023</span>
+</div>
+<div class="relative border-l-2 border-outline-variant ml-4 py-2 space-y-4">
+<!-- Time Slot -->
+<div class="relative pl-6">
+<div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">09:00 - 10:30</div>
+<div class="font-body-md text-body-md text-on-surface">Q3 Review (Booked)</div>
+</div>
+<!-- Available Slot -->
+<div class="relative pl-6">
+<div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-primary ring-2 ring-surface-container-lowest"></div>
+<div class="font-label-sm text-label-sm text-primary font-bold">10:30 - 12:00</div>
+<div class="font-body-md text-body-md text-on-surface-variant italic">Available</div>
+</div>
+<!-- Time Slot -->
+<div class="relative pl-6">
+<div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">13:00 - 15:00</div>
+<div class="font-body-md text-body-md text-on-surface">Client Pitch (Booked)</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Booking Form -->
+<div class="lg:col-span-1">
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.1),0px_2px_4px_-2px_rgba(0,0,0,0.05)] sticky top-[88px]">
+<h3 class="font-headline-sm text-headline-sm mb-md border-b border-outline-variant pb-sm">Reserve Apollo</h3>
+<form class="space-y-md">
+<!-- Meeting Title -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs" for="meeting_title">Meeting Title</label>
+<input class="w-full border border-outline-variant rounded p-2 font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none" id="meeting_title" placeholder="e.g., Q4 Strategy Alignment" type="text"/>
+</div>
+<!-- Date (Pre-filled) -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs" for="meeting_date">Date</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">calendar_today</span>
+<input class="w-full border border-outline-variant rounded py-2 pl-9 pr-3 font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none bg-surface" id="meeting_date" type="date" value="2023-10-24"/>
+</div>
+</div>
+<!-- Time (Pre-filled) -->
+<div class="grid grid-cols-2 gap-sm">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs" for="start_time">Start Time</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">schedule</span>
+<input class="w-full border border-outline-variant rounded py-2 pl-9 pr-3 font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none bg-surface" id="start_time" type="time" value="10:30"/>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs" for="end_time">End Time</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">schedule</span>
+<input class="w-full border border-outline-variant rounded py-2 pl-9 pr-3 font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none bg-surface" id="end_time" type="time" value="11:30"/>
+</div>
+</div>
+</div>
+<!-- Purpose -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs" for="meeting_purpose">Purpose / Notes (Optional)</label>
+<textarea class="w-full border border-outline-variant rounded p-2 font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none" id="meeting_purpose" placeholder="Add any specific requirements or agenda notes..." rows="3"></textarea>
+</div>
+<!-- Submit Action -->
+<div class="pt-sm border-t border-outline-variant">
+<button class="w-full h-[44px] bg-primary-container text-on-primary rounded font-label-md text-label-md hover:bg-primary transition-colors flex justify-center items-center gap-2" type="button">
+                                    Book This Room
+                                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<p class="text-center font-label-sm text-label-sm text-on-surface-variant mt-2">Confirmation will be sent to your email.</p>
+</div>
+</form>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

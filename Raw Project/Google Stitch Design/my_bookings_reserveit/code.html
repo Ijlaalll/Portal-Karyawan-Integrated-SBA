@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Bookings - ReserveIt</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#004ac6",
+                        "secondary-fixed": "#d9e3f4",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "primary-container": "#2563eb",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-tertiary-container": "#ffede6",
+                        "tertiary-container": "#bc4800",
+                        "secondary": "#555f6d",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "primary-fixed": "#dbe1ff",
+                        "surface-tint": "#0053db",
+                        "error": "#ba1a1a",
+                        "surface": "#f8f9fa",
+                        "on-secondary-fixed-variant": "#3e4755",
+                        "on-background": "#191c1d",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary-fixed": "#121c28",
+                        "outline": "#737686",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "outline-variant": "#c3c6d7",
+                        "secondary-container": "#d6e0f1",
+                        "tertiary": "#943700",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-secondary-container": "#596372",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#b4c5ff",
+                        "background": "#f8f9fa",
+                        "secondary-fixed-dim": "#bdc7d8",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-dim": "#d9dadb",
+                        "on-primary-fixed": "#00174b",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container": "#edeeef",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-container": "#eeefff",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "inverse-on-surface": "#f0f1f2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "md": "16px",
+                        "container-margin": "32px",
+                        "sm": "8px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased flex">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-lowest dark:bg-surface-container-lowest text-primary dark:text-primary-container w-[280px] h-screen flex flex-col fixed left-0 top-0 border-r border-outline-variant dark:border-outline-variant hidden md:flex z-50">
+<div class="p-lg border-b border-outline-variant flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-headline-sm text-headline-sm font-bold">R</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-container">ReserveIt</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Enterprise Admin</p>
+</div>
+</div>
+<div class="p-md">
+<button class="w-full bg-primary-container text-on-primary font-label-md text-label-md py-2 px-4 rounded-lg flex items-center justify-center gap-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+                New Reservation
+            </button>
+</div>
+<div class="flex-1 overflow-y-auto py-sm">
+<ul class="space-y-xs">
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-label-md text-label-md">Calendar</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="search_check">search_check</span>
+<span class="font-label-md text-label-md">Find Room</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container border-l-4 border-primary opacity-90 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="book_online" style="font-variation-settings: 'FILL' 1;">book_online</span>
+<span class="font-label-md text-label-md">My Bookings</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="meeting_room">meeting_room</span>
+<span class="font-label-md text-label-md">Rooms</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span class="font-label-md text-label-md">Facilities</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-md text-label-md">Approvals</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-[280px] min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest dark:bg-surface-container-lowest h-16 w-full sticky top-0 z-40 border-b border-outline-variant dark:border-outline-variant flex justify-between items-center px-lg">
+<div class="flex items-center gap-lg w-full max-w-2xl">
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface hidden md:block">Meeting Room Reservation</h2>
+<!-- Search -->
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-10 pl-10 pr-4 rounded-full border border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md text-on-surface outline-none transition-shadow" placeholder="Search bookings..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant ml-sm">
+<img alt="Employee Profile" class="w-full h-full object-cover" data-alt="A professional corporate headshot of a business executive in a well-lit modern office setting. The lighting is soft and bright, emphasizing a clean, contemporary corporate aesthetic with a neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABl4Dnrt1YwNJni6P-6eHCjjmrQpbE9RV_hGs8dT5IZeRNVrQba_d35L4jDcyTXcT8w3WDMvrf1SQuU_DrL_Fhbryf2ansnuWNojcfXzT4qvHmDFrj4MyIVKl_fMMsYuSlWEOb4Gg8v-vw3CH3Z8wVmbHFtRghjM6xpFDqcjm1KH6Q_aVRppNp7BkHq4O5VkJYtWbQb6o9WUX7WDJuJskNMTuV5K-8wdt8zDPUwY-dPjaiJyA349Y"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-container-margin md:p-xl overflow-x-auto">
+<div class="mb-lg flex justify-between items-end">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">My Bookings</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Manage your upcoming and past room reservations.</p>
+</div>
+<!-- Filters/Actions -->
+<div class="flex gap-sm">
+<button class="px-4 py-2 bg-surface border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface-variant flex items-center gap-sm hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        Filter
+                    </button>
+</div>
+</div>
+<!-- Data Table Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="font-label-md text-label-md text-on-surface px-md py-3 font-semibold">Room Details</th>
+<th class="font-label-md text-label-md text-on-surface px-md py-3 font-semibold">Date &amp; Time</th>
+<th class="font-label-md text-label-md text-on-surface px-md py-3 font-semibold">Duration</th>
+<th class="font-label-md text-label-md text-on-surface px-md py-3 font-semibold">Status</th>
+<th class="font-label-md text-label-md text-on-surface px-md py-3 font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-on-surface">
+<!-- Row 1: Approved -->
+<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">meeting_room</span>
+</div>
+<div>
+<p class="font-label-md font-semibold text-on-surface">Boardroom A</p>
+<p class="text-on-surface-variant text-xs">Floor 3, Capacity: 20</p>
+</div>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<p class="font-medium">Oct 24, 2023</p>
+<p class="text-on-surface-variant">10:00 AM - 11:30 AM</p>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant">
+                                    1h 30m
+                                </td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded-full bg-[#E6F4EA] text-[#137333] font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                        Approved
+                                    </span>
+</td>
+<td class="px-md py-[12px] text-right">
+<button class="text-error font-label-md text-label-md hover:underline px-2 py-1">Cancel</button>
+</td>
+</tr>
+<!-- Row 2: Pending -->
+<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">video_camera_front</span>
+</div>
+<div>
+<p class="font-label-md font-semibold text-on-surface">Huddle Room 4</p>
+<p class="text-on-surface-variant text-xs">Floor 2, Capacity: 4</p>
+</div>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<p class="font-medium">Oct 25, 2023</p>
+<p class="text-on-surface-variant">2:00 PM - 3:00 PM</p>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant">
+                                    1h 00m
+                                </td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded-full bg-[#FEF7E0] text-[#B06000] font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                                        Pending
+                                    </span>
+</td>
+<td class="px-md py-[12px] text-right">
+<button class="text-error font-label-md text-label-md hover:underline px-2 py-1">Cancel</button>
+</td>
+</tr>
+<!-- Row 3: Rejected -->
+<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<div>
+<p class="font-label-md font-semibold text-on-surface">Training Center</p>
+<p class="text-on-surface-variant text-xs">Floor 1, Capacity: 50</p>
+</div>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<p class="font-medium">Oct 26, 2023</p>
+<p class="text-on-surface-variant">9:00 AM - 5:00 PM</p>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant">
+                                    8h 00m
+                                </td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">cancel</span>
+                                        Rejected
+                                    </span>
+</td>
+<td class="px-md py-[12px] text-right">
+<button class="text-on-surface-variant font-label-md text-label-md hover:underline px-2 py-1" disabled="">View Details</button>
+</td>
+</tr>
+<!-- Row 4: Cancelled -->
+<tr class="hover:bg-surface-container transition-colors opacity-70">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">meeting_room</span>
+</div>
+<div>
+<p class="font-label-md font-semibold text-on-surface line-through">Meeting Room C</p>
+<p class="text-on-surface-variant text-xs">Floor 3, Capacity: 8</p>
+</div>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<p class="font-medium line-through">Oct 22, 2023</p>
+<p class="text-on-surface-variant">1:00 PM - 2:00 PM</p>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant">
+                                    1h 00m
+                                </td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">not_interested</span>
+                                        Cancelled
+                                    </span>
+</td>
+<td class="px-md py-[12px] text-right">
+<button class="text-primary font-label-md text-label-md hover:underline px-2 py-1">Rebook</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="border-t border-outline-variant p-md flex items-center justify-between bg-surface-container-lowest">
+<p class="font-body-md text-body-md text-on-surface-variant">Showing 1 to 4 of 12 bookings</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center bg-primary-container text-on-primary font-label-sm">1</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container font-label-sm">2</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container font-label-sm">3</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

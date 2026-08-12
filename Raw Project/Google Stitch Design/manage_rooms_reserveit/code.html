@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Room Management (Admin)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary": "#ffffff",
+                      "on-surface-variant": "#434655",
+                      "surface-container-lowest": "#ffffff",
+                      "primary": "#004ac6",
+                      "secondary-fixed": "#d9e3f4",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#2e3132",
+                      "primary-container": "#2563eb",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "on-tertiary-container": "#ffede6",
+                      "tertiary-container": "#bc4800",
+                      "secondary": "#555f6d",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "primary-fixed": "#dbe1ff",
+                      "surface-tint": "#0053db",
+                      "error": "#ba1a1a",
+                      "surface": "#f8f9fa",
+                      "on-secondary-fixed-variant": "#3e4755",
+                      "on-background": "#191c1d",
+                      "surface-container-high": "#e7e8e9",
+                      "on-secondary-fixed": "#121c28",
+                      "outline": "#737686",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "outline-variant": "#c3c6d7",
+                      "secondary-container": "#d6e0f1",
+                      "tertiary": "#943700",
+                      "tertiary-fixed": "#ffdbcd",
+                      "on-secondary-container": "#596372",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#f8f9fa",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#b4c5ff",
+                      "background": "#f8f9fa",
+                      "secondary-fixed-dim": "#bdc7d8",
+                      "surface-container-low": "#f3f4f5",
+                      "surface-dim": "#d9dadb",
+                      "on-primary-fixed": "#00174b",
+                      "error-container": "#ffdad6",
+                      "surface-variant": "#e1e3e4",
+                      "surface-container": "#edeeef",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-primary-container": "#eeefff",
+                      "on-surface": "#191c1d",
+                      "surface-container-highest": "#e1e3e4",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "inverse-on-surface": "#f0f1f2"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "xl": "32px",
+                      "lg": "24px",
+                      "base": "8px",
+                      "md": "16px",
+                      "container-margin": "32px",
+                      "sm": "8px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "30px",
+                              {
+                                      "lineHeight": "38px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex">
+<!-- Side Navigation -->
+<nav class="w-[280px] h-screen flex flex-col fixed left-0 top-0 border-r border-outline-variant bg-surface-container-lowest z-50">
+<div class="p-lg border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="font-headline-sm text-headline-sm font-bold text-primary">ReserveIt</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-xs">Enterprise Admin</p>
+</div>
+<div class="flex-1 overflow-y-auto py-md h-full flex flex-col">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-label-md text-label-md">Calendar</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="search_check">search_check</span>
+<span class="font-label-md text-label-md">Find Room</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="book_online">book_online</span>
+<span class="font-label-md text-label-md">My Bookings</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container border-l-4 border-primary opacity-90 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="meeting_room" data-weight="fill" style="font-variation-settings: 'FILL' 1;">meeting_room</span>
+<span class="font-label-md text-label-md font-bold">Rooms</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span class="font-label-md text-label-md">Facilities</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-md text-label-md">Approvals</span>
+</a>
+</div>
+<div class="p-md border-t border-outline-variant">
+<button class="w-full flex items-center justify-center gap-sm bg-primary text-on-primary py-2 rounded font-label-md text-label-md hover:opacity-90 transition-opacity h-[36px]">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Reservation
+            </button>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 ml-[280px] flex flex-col min-h-screen">
+<!-- Top App Bar -->
+<header class="h-16 w-full sticky top-0 z-40 bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center px-lg">
+<div class="flex items-center gap-md flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant rounded focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md text-on-surface" placeholder="Search rooms..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant border border-outline-variant overflow-hidden">
+<img alt="Employee Profile" class="w-full h-full object-cover" data-alt="A small, professional headshot portrait of an enterprise employee in a modern corporate setting, facing forward with a neutral expression, crisp lighting, high quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk6fhDPqbONPEAZyNdVe5I5TDRLGQNxl-P6zh6TmFG7OCnMY8hGMi4dzvDzvfcGCsvRJY3fzcLh9dbKk7B6sOQ7sLp6NY2lXrGZ6c7200nyWTAun2v-syAy4ztAsx0vPDFoZHf06Mc8DSaXeb0J7go7WaM3J8U7LVEaWbM1Ik-kPauwAQLN0mNHxQCpRNrN0QHlqZBsCac1aqfFOWVxjTFM4iOQiAagIDYqANDoATLjsxaDnY1wh0"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-container-margin overflow-y-auto bg-background">
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Room Management</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Manage workspace locations, capacities, and availability statuses.</p>
+</div>
+<button class="flex items-center gap-sm bg-primary text-on-primary px-4 py-2 rounded font-label-md text-label-md hover:bg-primary-container transition-colors h-[36px]">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Add Room
+                </button>
+</div>
+<!-- Table Container -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface border-b border-outline-variant">
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Name</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Location</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Capacity</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors group">
+<td class="py-3 px-4 font-label-md text-label-md text-on-surface">Boardroom Alpha</td>
+<td class="py-3 px-4 text-on-surface-variant">Floor 3, East Wing</td>
+<td class="py-3 px-4 text-on-surface-variant">24 People</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-[#E6F4EA] text-[#137333] font-label-sm text-label-sm">Active</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary p-1 rounded hover:bg-surface-variant transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors group">
+<td class="py-3 px-4 font-label-md text-label-md text-on-surface">Huddle Space A</td>
+<td class="py-3 px-4 text-on-surface-variant">Floor 2, North Hub</td>
+<td class="py-3 px-4 text-on-surface-variant">4 People</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-[#E6F4EA] text-[#137333] font-label-sm text-label-sm">Active</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary p-1 rounded hover:bg-surface-variant transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors group">
+<td class="py-3 px-4 font-label-md text-label-md text-on-surface">Training Room 1</td>
+<td class="py-3 px-4 text-on-surface-variant">Floor 1, West Annex</td>
+<td class="py-3 px-4 text-on-surface-variant">50 People</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-[#FCE8E6] text-[#C5221F] font-label-sm text-label-sm">Inactive</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary p-1 rounded hover:bg-surface-variant transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors group">
+<td class="py-3 px-4 font-label-md text-label-md text-on-surface">Creative Lab</td>
+<td class="py-3 px-4 text-on-surface-variant">Floor 4, South Wing</td>
+<td class="py-3 px-4 text-on-surface-variant">12 People</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-[#E6F4EA] text-[#137333] font-label-sm text-label-sm">Active</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary p-1 rounded hover:bg-surface-variant transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-3 px-4 font-label-md text-label-md text-on-surface">Exec Suite C</td>
+<td class="py-3 px-4 text-on-surface-variant">Floor 5, Penthouse</td>
+<td class="py-3 px-4 text-on-surface-variant">8 People</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-[#E6F4EA] text-[#137333] font-label-sm text-label-sm">Active</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary p-1 rounded hover:bg-surface-variant transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex items-center justify-between mt-md text-on-surface-variant font-body-md text-body-md">
+<span>Showing 1 to 5 of 24 rooms</span>
+<div class="flex gap-2">
+<button class="px-3 py-1 border border-outline-variant rounded bg-surface hover:bg-surface-container-high disabled:opacity-50" disabled="">Previous</button>
+<button class="px-3 py-1 border border-outline-variant rounded bg-surface hover:bg-surface-container-high">Next</button>
+</div>
+</div>
+</main>
+</div>
+</body></html>
