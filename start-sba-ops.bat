@@ -9,7 +9,7 @@ echo       (Ruang Rapat, Kendaraan, SIK, Toilet, Global)
 echo ============================================================
 echo.
 
-:: 0. Deteksi otomatis lokasi PHP 8.2+ (Prioritas PHP 8.5 Server)
+REM 0. Deteksi otomatis lokasi PHP 8.2+ (Prioritas PHP 8.5 Server)
 set "PHP_EXE=C:\Users\Administrator\Downloads\php-8.5.10-nts-Win32-vs17-x64\php.exe"
 if not exist "%PHP_EXE%" (
     for /d %%D in ("C:\laragon\bin\php\php-8.*") do (
@@ -34,23 +34,23 @@ if exist "%PHP_EXE%" (
     exit /b 1
 )
 
-:: 1. Bersihkan instance lama HANYA untuk SBA Operations (port 8080 / sba ops)
+REM 1. Bersihkan instance lama HANYA untuk SBA Operations (port 8080 / sba ops)
 echo [1/4] Membersihkan instance lama SBA Operations jika ada...
 powershell -NoProfile -Command "Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*') } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
 echo       [OK] Pembersihan proses lama selesai.
 
-:: 2. Cek apakah MySQL berjalan & nyalakan otomatis jika belum aktif
+REM 2. Cek apakah MySQL berjalan
 echo [2/4] Memeriksa status MySQL Database...
 tasklist /FI "IMAGENAME eq mysqld.exe" 2>NUL | find /I /N "mysqld.exe">NUL
 if "%ERRORLEVEL%"=="0" (
     echo       [OK] MySQL Database terdeteksi aktif.
 ) else (
-    echo       [INFO] MySQL belum berjalan. Menyalakan MySQL otomatis...
+    echo       [PERHATIAN] MySQL belum berjalan! Menyalakan MySQL...
     set "MYSQL_STARTED=0"
     if exist "C:\laragon\bin\mysql" (
         for /d %%M in ("C:\laragon\bin\mysql\mysql-*") do (
             if exist "%%M\bin\mysqld.exe" (
-                echo       Menjalankan MySQL dari Laragon (%%~nxM)...
+                echo       Menjalankan MySQL dari Laragon...
                 start "" /b "%%M\bin\mysqld.exe"
                 set "MYSQL_STARTED=1"
                 ping 127.0.0.1 -n 3 >nul
@@ -65,13 +65,12 @@ if "%ERRORLEVEL%"=="0" (
     )
     if "!MYSQL_STARTED!"=="0" (
         echo       [PERHATIAN] MySQL tidak ditemukan di Laragon/XAMPP default.
-        echo       Pastikan Laragon atau XAMPP sudah terpasang.
     ) else (
-        echo       [OK] MySQL berhasil dinyalakan otomatis di background!
+        echo       [OK] MySQL berhasil dinyalakan otomatis!
     )
 )
 
-:: 3. Verifikasi aset frontend
+REM 3. Verifikasi aset frontend
 echo [3/4] Memeriksa aset frontend terkompilasi...
 if not exist "%~dp0public\build\manifest.json" (
     echo       [INFO] Aset frontend belum dibangun. Menjalankan npm run build...
@@ -80,15 +79,15 @@ if not exist "%~dp0public\build\manifest.json" (
     echo       [OK] Aset frontend produksi siap.
 )
 
-:: 4. Jalankan Laravel di Port 8080 di background
+REM 4. Jalankan Laravel di Port 8080 di background
 echo [4/4] Menjalankan Backend SBA Operations di port 8080...
 if not exist "%~dp0storage\logs" mkdir "%~dp0storage\logs"
 start "" /b cmd /c "cd /d "%~dp0" && "%PHP_EXE%" artisan serve --host=0.0.0.0 --port=8080 > "%~dp0storage\logs\serve.log" 2>&1"
 
-:: Beri jeda sejenak agar server siap
+REM Beri jeda sejenak agar server siap
 ping 127.0.0.1 -n 3 >nul
 
-:: Buka browser otomatis
+REM Buka browser otomatis
 start http://localhost:8080
 
 :MENU_LOOP
@@ -98,7 +97,7 @@ echo      SBA OPERATIONS SYSTEM - MASTER CONSOLE (PORT 8080)
 echo ============================================================
 echo  [OK] MySQL Database   : AKTIF (Port 3306)
 echo  [OK] SBA Web App      : AKTIF (http://localhost:8080)
-echo  [OK] Akses Jaringan   : http://<IP_SERVER>:8080
+echo  [OK] Akses Jaringan   : http://10.227.170.77:8080
 echo ============================================================
 echo  Aplikasi SBA Operations berjalan aman bersamaan dengan
 echo  SBA Weighbridge System (Port 3000 / 8000).
