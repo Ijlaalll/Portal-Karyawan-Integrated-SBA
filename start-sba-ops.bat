@@ -34,57 +34,26 @@ if exist "%PHP_EXE%" (
     exit /b 1
 )
 
-REM 1. Bersihkan instance lama HANYA untuk SBA Operations (port 8080 / sba ops)
+REM 1. Bersihkan instance lama HANYA untuk SBA Operations (port 8080)
 echo [1/4] Membersihkan instance lama SBA Operations jika ada...
 powershell -NoProfile -Command "Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*') } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
 echo       [OK] Pembersihan proses lama selesai.
 
-REM 2. Cek apakah MySQL berjalan & nyalakan otomatis jika Laragon mati
+REM 2. Cek apakah MySQL berjalan & nyalakan Laragon otomatis jika mati
 echo [2/4] Memeriksa status MySQL Database...
 tasklist /FI "IMAGENAME eq mysqld.exe" 2>NUL | find /I /N "mysqld.exe">NUL
 if "%ERRORLEVEL%"=="0" (
     echo       [OK] MySQL Database terdeteksi aktif.
 ) else (
-    echo       [INFO] MySQL belum aktif. Menyalakan MySQL otomatis...
-    set "MYSQL_STARTED=0"
-
-    REM Coba nyalakan service MySQL jika ada
-    net start mysql >nul 2>&1
-    tasklist /FI "IMAGENAME eq mysqld.exe" 2>NUL | find /I /N "mysqld.exe">NUL
-    if "%ERRORLEVEL%"=="0" set "MYSQL_STARTED=1"
-
-    REM Jika belum aktif, jalankan engine MySQL dari Laragon dengan config my.ini
-    if "!MYSQL_STARTED!"=="0" if exist "C:\laragon\bin\mysql" (
-        for /d %%M in ("C:\laragon\bin\mysql\mysql-*") do (
-            if exist "%%M\bin\mysqld.exe" (
-                echo       Menyalakan MySQL Engine dari Laragon...
-                start "" /b "%%M\bin\mysqld.exe" --defaults-file="%%M\my.ini" --standalone
-                set "MYSQL_STARTED=1"
-            )
-        )
-    )
-
-    REM Jalankan aplikasi Laragon di background jika ada
+    echo       [INFO] MySQL belum aktif. Menyalakan otomatis via Laragon...
     if exist "C:\laragon\laragon.exe" (
-        tasklist /FI "IMAGENAME eq laragon.exe" 2>NUL | find /I /N "laragon.exe">NUL
-        if "%ERRORLEVEL%" NEQ "0" (
-            echo       Membuka aplikasi Laragon...
-            start "" "C:\laragon\laragon.exe"
-        )
+        start "" "C:\laragon\laragon.exe"
+    ) else (
+        net start mysql >nul 2>&1
     )
-
-    REM Tunggu hingga MySQL siap
-    echo       Menunggu database siap menerima koneksi...
-    for /L %%i in (1,1,10) do (
-        tasklist /FI "IMAGENAME eq mysqld.exe" 2>NUL | find /I /N "mysqld.exe">NUL
-        if "%ERRORLEVEL%"=="0" (
-            ping 127.0.0.1 -n 2 >nul
-            goto MYSQL_IS_READY
-        )
-        ping 127.0.0.1 -n 2 >nul
-    )
-:MYSQL_IS_READY
-    echo       [OK] MySQL Database berhasil diaktifkan!
+    REM Beri jeda 4 detik agar Laragon menyalakan MySQL
+    ping 127.0.0.1 -n 5 >nul
+    echo       [OK] Laragon & MySQL berhasil dinyalakan!
 )
 
 REM 3. Verifikasi aset frontend
@@ -101,18 +70,8 @@ echo [4/4] Menjalankan Backend SBA Operations di port 8080...
 if not exist "%~dp0storage\logs" mkdir "%~dp0storage\logs"
 start "" /b cmd /c "cd /d "%~dp0" && "%PHP_EXE%" artisan serve --host=0.0.0.0 --port=8080 > "%~dp0storage\logs\serve.log" 2>&1"
 
-REM Tunggu hingga server web port 8080 benar-benar siap merespons
-echo       Menunggu server web port 8080 online...
-for /L %%w in (1,1,10) do (
-    netstat -ano | findstr "LISTENING" | findstr ":8080" >nul
-    if "%ERRORLEVEL%"=="0" (
-        ping 127.0.0.1 -n 2 >nul
-        goto WEB_IS_READY
-    )
-    ping 127.0.0.1 -n 2 >nul
-)
-:WEB_IS_READY
-echo       [OK] Server Web Port 8080 sudah online!
+REM Beri jeda 3 detik agar server siap
+ping 127.0.0.1 -n 4 >nul
 
 REM Buka browser otomatis
 start http://localhost:8080
