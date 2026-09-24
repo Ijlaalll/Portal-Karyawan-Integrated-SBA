@@ -39,21 +39,26 @@ echo [1/4] Membersihkan instance lama SBA Operations jika ada...
 powershell -NoProfile -Command "Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*') } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
 echo       [OK] Pembersihan proses lama selesai.
 
-REM 2. Cek apakah MySQL berjalan & nyalakan Laragon otomatis jika mati
+REM 2. Cek apakah MySQL berjalan & nyalakan diam-diam di background jika belum aktif
 echo [2/4] Memeriksa status MySQL Database...
 tasklist /FI "IMAGENAME eq mysqld.exe" 2>NUL | find /I /N "mysqld.exe">NUL
 if "%ERRORLEVEL%"=="0" (
     echo       [OK] MySQL Database terdeteksi aktif.
 ) else (
-    echo       [INFO] MySQL belum aktif. Menyalakan otomatis via Laragon...
-    if exist "C:\laragon\laragon.exe" (
-        start "" "C:\laragon\laragon.exe"
-    ) else (
-        net start mysql >nul 2>&1
+    echo       [INFO] MySQL belum aktif. Menyalakan di background...
+    net start mysql >nul 2>&1
+    if exist "C:\laragon\bin\mysql" (
+        for /d %%M in ("C:\laragon\bin\mysql\mysql-*") do (
+            if exist "%%M\bin\mysqld.exe" (
+                start "" /b "%%M\bin\mysqld.exe" >nul 2>&1
+            )
+        )
     )
-    REM Beri jeda 4 detik agar Laragon menyalakan MySQL
-    ping 127.0.0.1 -n 5 >nul
-    echo       [OK] Laragon & MySQL berhasil dinyalakan!
+    if exist "C:\xampp\mysql\bin\mysqld.exe" (
+        start "" /b "C:\xampp\mysql\bin\mysqld.exe" >nul 2>&1
+    )
+    ping 127.0.0.1 -n 3 >nul
+    echo       [OK] MySQL Database berhasil diaktifkan.
 )
 
 REM 3. Verifikasi aset frontend
@@ -93,13 +98,12 @@ echo.
 echo  PILIHAN MENU:
 echo   [1] Buka / Refresh Web Browser (http://localhost:8080)
 echo   [2] Cek Port Aktif (8080 ^& 3306)
-echo   [3] Buka Laragon Control Panel
-echo   [4] Lihat Log Server (storage\logs\serve.log)
+echo   [3] Lihat Log Server (storage\logs\serve.log)
 echo   [Q] Matikan Server SBA Operations ^& Keluar
 echo ============================================================
 echo.
 set "opt="
-set /p opt="Pilih menu [1 / 2 / 3 / 4 / Q] lalu tekan Enter: "
+set /p opt="Pilih menu [1 / 2 / 3 / Q] lalu tekan Enter: "
 
 if /i "%opt%"=="1" (
     start http://localhost:8080
@@ -116,11 +120,6 @@ if /i "%opt%"=="2" (
 )
 
 if /i "%opt%"=="3" (
-    if exist "C:\laragon\laragon.exe" start "" "C:\laragon\laragon.exe"
-    goto MENU_LOOP
-)
-
-if /i "%opt%"=="4" (
     echo.
     if exist "%~dp0storage\logs\serve.log" (
         echo --- 20 Baris Terakhir Log Server ---
