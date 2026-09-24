@@ -23,9 +23,31 @@
         })();
     </script>
     <style>
-        /* Smooth Icon WebFont Loading & FOUT Prevention */
-        .material-symbols-outlined {
+        /* Self-hosted Material Symbols Font (Intranet / Offline Guaranteed) */
+        @font-face {
+            font-family: 'Material Symbols Outlined';
+            font-style: normal;
+            font-weight: 100 700;
             font-display: block;
+            src: url('/fonts/material-symbols-outlined.woff2') format('woff2');
+        }
+
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined' !important;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            -moz-osx-font-smoothing: grayscale;
+            font-feature-settings: 'liga';
         }
 
         /* Custom scrollbar for sidebar */
