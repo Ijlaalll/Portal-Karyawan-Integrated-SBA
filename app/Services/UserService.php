@@ -20,6 +20,11 @@ class UserService
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'role' => $data['role'],
+                'department' => $data['department'] ?? null,
+                'position' => $data['position'] ?? null,
+                'employee_id' => $data['employee_id'] ?? null,
+                'joined_at' => $data['joined_at'] ?? null,
+                'cost_center_id' => $data['cost_center_id'] ?? null,
             ]);
 
             // Assign modules if user is not admin
@@ -30,6 +35,10 @@ class UserService
                     ]);
                 }
             }
+
+            // Send Account Created Email Notification
+            $emailService = app(\App\Services\EmailService::class);
+            $emailService->sendAccountCreated($user, $data['password']);
 
             return $user;
         });
@@ -45,6 +54,11 @@ class UserService
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'role' => $data['role'],
+                'department' => $data['department'] ?? null,
+                'position' => $data['position'] ?? null,
+                'employee_id' => $data['employee_id'] ?? null,
+                'joined_at' => $data['joined_at'] ?? null,
+                'cost_center_id' => $data['cost_center_id'] ?? null,
             ]);
 
             if (!empty($data['password'])) {

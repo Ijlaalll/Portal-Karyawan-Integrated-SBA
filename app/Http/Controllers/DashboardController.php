@@ -13,6 +13,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        Booking::syncCompletedBookings();
         $userId = auth()->id();
 
         $stats = [

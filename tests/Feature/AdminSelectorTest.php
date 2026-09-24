@@ -35,9 +35,9 @@ class AdminSelectorTest extends TestCase
     }
 
     /**
-     * Test Admin login redirects to the Selection page.
+     * Test Admin login redirects to the Global Dashboard page.
      */
-    public function test_admin_login_redirects_to_selector(): void
+    public function test_admin_login_redirects_to_global_dashboard(): void
     {
         $response = $this->post('/login', [
             'email' => 'admin@example.com',
@@ -48,26 +48,30 @@ class AdminSelectorTest extends TestCase
     }
 
     /**
-     * Test Admin selector access and route rendering.
+     * Test Admin global dashboard access and route rendering.
      */
-    public function test_admin_can_access_selector_page(): void
+    public function test_admin_can_access_global_dashboard_page(): void
     {
         $response = $this->actingAs($this->admin)->get(route('admin.home'));
         $response->assertStatus(200);
-        $response->assertSee('Welcome back, System Admin');
-        $response->assertSee('Meeting Room Management');
-        $response->assertSee('Toilet Inspection Management');
-        $response->assertSee('Open Management');
         
-        // Assert selector layout is management-neutral
-        $response->assertSee('Management Selection');
-        $response->assertDontSee('Meeting Room Reservation');
-        $response->assertDontSee('New Room');
-        $response->assertSee('Select a management area to begin.');
+        // Assert Global Dashboard specific UI elements are visible
+        $response->assertSee('Dashboard Admin Global');
+        $response->assertSee('Ringkasan Ruang Meeting');
+        $response->assertSee('Ringkasan Inspeksi Toilet');
+        $response->assertSee('Ringkasan Alat Tulis Kantor');
+        $response->assertSee('Ringkasan Surat Izin Keluar (SIK)');
+        $response->assertSee('Ringkasan Kendaraan');
+        $response->assertSee('Buka Dashboard Ruang Meeting');
+        $response->assertSee('Buka Dashboard Inspeksi Toilet');
+        
+        // Assert deleted elements are not present
+        $response->assertDontSee('System Overview');
+        $response->assertDontSee('Total Users');
     }
 
     /**
-     * Test Non-Admins are denied access to the Admin selector.
+     * Test Non-Admins are denied access to the Admin home.
      */
     public function test_non_admin_cannot_access_selector_page(): void
     {
@@ -98,7 +102,7 @@ class AdminSelectorTest extends TestCase
         $response->assertRedirect(route('admin.dashboard'));
         $response->assertSessionHas('active_admin_module', 'meeting_room');
 
-        // Access dashboard should now work when session enforcement is on
+        // Access dashboard should now work
         $response2 = $this->actingAs($this->admin)->withSession([
             'active_admin_module' => 'meeting_room',
             'enforce_active_module' => true,
@@ -107,8 +111,7 @@ class AdminSelectorTest extends TestCase
         $response2->assertStatus(200);
         
         // Assert Meeting Room specific UI elements are visible
-        $response2->assertSee('Meeting Room Reservation');
-        $response2->assertSee('New Room');
+        $response2->assertSee('Reservasi Ruang Meeting');
     }
 
     /**
@@ -123,7 +126,7 @@ class AdminSelectorTest extends TestCase
         $response->assertRedirect(route('admin.toilet_inspection.dashboard'));
         $response->assertSessionHas('active_admin_module', 'toilet_inspection');
 
-        // Access toilet inspection dashboard should work when session enforcement is on
+        // Access toilet inspection dashboard should work
         $response2 = $this->actingAs($this->admin)->withSession([
             'active_admin_module' => 'toilet_inspection',
             'enforce_active_module' => true,
@@ -131,30 +134,27 @@ class AdminSelectorTest extends TestCase
 
         $response2->assertStatus(200);
         
-        // Assert Toilet Inspection UI elements are neutral/correct
-        $response2->assertSee('Toilet Inspection Management');
-        $response2->assertDontSee('New Room');
-        $response2->assertDontSee('Meeting Room Reservation');
+        // Assert Toilet Inspection UI elements are correct
+        $response2->assertSee('Manajemen Inspeksi Toilet');
     }
 
     /**
-     * Test Admin is blocked from module routes without active session module.
+     * Test Admin accessing module routes without active session module automatically sets it.
      */
-    public function test_admin_redirected_to_selector_without_active_session(): void
+    public function test_admin_access_module_without_active_session_sets_session(): void
     {
-        // Accessing dashboard without session set, but with enforcement on
         $response = $this->actingAs($this->admin)->withSession([
             'enforce_active_module' => true,
         ])->get(route('admin.dashboard'));
         
-        $response->assertRedirect(route('admin.home'));
-        $response->assertSessionHas('error', 'Please select a management module first.');
+        $response->assertStatus(200);
+        $this->assertEquals('meeting_room', session('active_admin_module'));
     }
 
     /**
-     * Test Admin visiting selection page clears active session module.
+     * Test Admin visiting global dashboard clears active session module.
      */
-    public function test_selector_clears_active_module(): void
+    public function test_global_dashboard_clears_active_module(): void
     {
         $response = $this->actingAs($this->admin)->withSession([
             'active_admin_module' => 'meeting_room',

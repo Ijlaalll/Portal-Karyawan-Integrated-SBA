@@ -42,7 +42,7 @@ class RoomController extends Controller
 
         return redirect()
             ->route('admin.rooms.index')
-            ->with('success', 'Room created successfully.');
+            ->with('success', 'Ruangan berhasil dibuat.');
     }
 
     /**
@@ -73,6 +73,6 @@ class RoomController extends Controller
 
         return redirect()
             ->route('admin.rooms.index')
-            ->with('success', 'Room updated successfully.');
+            ->with('success', 'Ruangan berhasil diperbarui.');
     }
 }

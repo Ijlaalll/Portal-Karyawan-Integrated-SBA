@@ -18,6 +18,7 @@ class CalendarController extends Controller
      */
     public function index(Request $request)
     {
+        Booking::syncCompletedBookings();
         $date = $request->query('date', date('Y-m-d'));
         $roomId = $request->query('room_id');
         $status = $request->query('status');

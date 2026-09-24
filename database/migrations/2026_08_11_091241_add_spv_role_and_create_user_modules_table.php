@@ -14,7 +14,7 @@ return new class extends Migration
     {
         // 1. Alter users role enum to support 'spv'
         if (DB::getDriverName() !== 'sqlite') {
-            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'user', 'spv') NOT NULL DEFAULT 'user'");
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'user', 'spv', 'ga', 'it') NOT NULL DEFAULT 'user'");
         }
 
         // 2. Create user_modules table

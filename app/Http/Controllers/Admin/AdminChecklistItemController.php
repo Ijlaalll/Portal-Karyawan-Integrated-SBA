@@ -40,7 +40,7 @@ class AdminChecklistItemController extends Controller
         ChecklistItem::create($request->all());
 
         return redirect()->route('admin.toilet_inspection.checklist-items.index')
-            ->with('success', 'Checklist item created successfully.');
+            ->with('success', 'Checklist berhasil dibuat.');
     }
 
     /**
@@ -65,7 +65,7 @@ class AdminChecklistItemController extends Controller
         $checklist_item->update($request->all());
 
         return redirect()->route('admin.toilet_inspection.checklist-items.index')
-            ->with('success', 'Checklist item updated successfully.');
+            ->with('success', 'Checklist berhasil diperbarui.');
     }
 
     /**
@@ -76,6 +76,6 @@ class AdminChecklistItemController extends Controller
         $checklist_item->delete();
 
         return redirect()->route('admin.toilet_inspection.checklist-items.index')
-            ->with('success', 'Checklist item deleted successfully.');
+            ->with('success', 'Checklist berhasil dihapus.');
     }
 }

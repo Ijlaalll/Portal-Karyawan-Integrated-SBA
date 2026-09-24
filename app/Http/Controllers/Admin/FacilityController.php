@@ -40,7 +40,7 @@ class FacilityController extends Controller
 
         return redirect()
             ->route('admin.facilities.index')
-            ->with('success', 'Facility created successfully.');
+            ->with('success', 'Fasilitas berhasil dibuat.');
     }
 
     /**
@@ -60,7 +60,7 @@ class FacilityController extends Controller
 
         return redirect()
             ->route('admin.facilities.index')
-            ->with('success', 'Facility updated successfully.');
+            ->with('success', 'Fasilitas berhasil diperbarui.');
     }
 
     /**
@@ -72,6 +72,6 @@ class FacilityController extends Controller
 
         return redirect()
             ->route('admin.facilities.index')
-            ->with('success', 'Facility deleted successfully.');
+            ->with('success', 'Fasilitas berhasil dihapus.');
     }
 }

@@ -42,19 +42,19 @@ class UserManagementTest extends TestCase
         // View index
         $response = $this->actingAs($this->admin)->get(route('admin.users.index'));
         $response->assertStatus(200);
-        $response->assertSee('Users Management');
-        $response->assertSee('+ Add User');
+        $response->assertSee('Manajemen Pengguna');
+        $response->assertSee('+ Tambah Pengguna');
 
         // View create form
         $response = $this->actingAs($this->admin)->get(route('admin.users.create'));
         $response->assertStatus(200);
-        $response->assertSee('Create User');
-        $response->assertSee('Name');
+        $response->assertSee('Tambah Pengguna');
+        $response->assertSee('Nama');
         $response->assertSee('Email');
-        $response->assertSee('Password');
-        $response->assertSee('Confirm Password');
-        $response->assertSee('Role');
-        $response->assertSee('Management Access');
+        $response->assertSee('Kata Sandi');
+        $response->assertSee('Konfirmasi Kata Sandi');
+        $response->assertSee('Peran');
+        $response->assertSee('Akses Manajemen');
     }
 
     /**
@@ -72,7 +72,7 @@ class UserManagementTest extends TestCase
         ]);
 
         $response->assertRedirect(route('admin.users.index'));
-        $response->assertSessionHas('success', 'User created successfully.');
+        $response->assertSessionHas('success', 'Pengguna berhasil dibuat.');
 
         // Verify in database
         $this->assertDatabaseHas('users', [
@@ -108,7 +108,7 @@ class UserManagementTest extends TestCase
         ]);
 
         $response->assertRedirect(route('admin.users.index'));
-        $response->assertSessionHas('success', 'User created successfully.');
+        $response->assertSessionHas('success', 'Pengguna berhasil dibuat.');
 
         $this->assertDatabaseHas('users', [
             'name' => 'Spv Inspection',
@@ -159,7 +159,7 @@ class UserManagementTest extends TestCase
             'modules' => ['meeting_room'],
         ]);
         $response->assertSessionHasErrors('email');
-        $response->assertSessionHasErrors(['email' => 'This email is already registered.']);
+        $response->assertSessionHasErrors(['email' => 'Email ini sudah terdaftar.']);
 
         // 4. Password mismatch
         $response = $this->actingAs($this->admin)->post(route('admin.users.store'), [
@@ -410,7 +410,7 @@ class UserManagementTest extends TestCase
         // View edit page
         $response = $this->actingAs($this->admin)->get(route('admin.users.edit', $this->user));
         $response->assertStatus(200);
-        $response->assertSee('Edit User');
+        $response->assertSee('Edit Pengguna');
         $response->assertSee($this->user->name);
 
         // Update name, role and module access
@@ -441,7 +441,7 @@ class UserManagementTest extends TestCase
         $response = $this->actingAs($this->admin)->delete(route('admin.users.destroy', $this->admin));
         
         $response->assertRedirect(route('admin.users.index'));
-        $response->assertSessionHas('error', 'Cannot delete user: You are currently logged in as this user.');
+        $response->assertSessionHas('error', 'Tidak dapat menghapus pengguna: Anda sedang masuk menggunakan akun pengguna ini.');
         
         // Assert still exists in database
         $this->assertDatabaseHas('users', ['id' => $this->admin->id]);
@@ -472,7 +472,7 @@ class UserManagementTest extends TestCase
 
         $response = $this->actingAs($this->admin)->delete(route('admin.users.destroy', $this->user));
         $response->assertRedirect(route('admin.users.index'));
-        $response->assertSessionHas('error', 'Cannot delete user: This user has active or historical meeting room booking records.');
+        $response->assertSessionHas('error', 'Tidak dapat menghapus pengguna: Pengguna ini memiliki riwayat pemesanan ruang meeting.');
 
         $this->assertDatabaseHas('users', ['id' => $this->user->id]);
     }
@@ -507,7 +507,7 @@ class UserManagementTest extends TestCase
 
         $response = $this->actingAs($this->admin)->delete(route('admin.users.destroy', $inspector));
         $response->assertRedirect(route('admin.users.index'));
-        $response->assertSessionHas('error', 'Cannot delete user: This user has submitted toilet inspection records.');
+        $response->assertSessionHas('error', 'Tidak dapat menghapus pengguna: Pengguna ini memiliki riwayat inspeksi toilet yang telah dikirim.');
 
         $this->assertDatabaseHas('users', ['id' => $inspector->id]);
     }
@@ -527,7 +527,7 @@ class UserManagementTest extends TestCase
 
         $response = $this->actingAs($this->admin)->delete(route('admin.users.destroy', $safeUser));
         $response->assertRedirect(route('admin.users.index'));
-        $response->assertSessionHas('success', 'User deleted successfully.');
+        $response->assertSessionHas('success', 'Pengguna berhasil dihapus.');
 
         $this->assertDatabaseMissing('users', ['id' => $safeUser->id]);
         $this->assertDatabaseMissing('user_modules', ['user_id' => $safeUser->id]);
@@ -568,7 +568,7 @@ class UserManagementTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('email');
-        $this->assertStringContainsString('Your account has been deactivated', session('errors')->first('email'));
+        $this->assertStringContainsString('Akun Anda telah dinonaktifkan', session('errors')->first('email'));
     }
 
     /**
@@ -596,7 +596,7 @@ class UserManagementTest extends TestCase
         $response = $this->get(route('dashboard'));
         $response->assertRedirect(route('login'));
         $response->assertSessionHasErrors('email');
-        $this->assertStringContainsString('Your account has been deactivated', session('errors')->first('email'));
+        $this->assertStringContainsString('Akun Anda telah dinonaktifkan', session('errors')->first('email'));
     }
 
     /**
@@ -633,7 +633,7 @@ class UserManagementTest extends TestCase
     {
         $response = $this->actingAs($this->admin)->post(route('admin.users.deactivate', $this->admin));
         $response->assertRedirect(route('admin.users.index'));
-        $response->assertSessionHas('error', 'Cannot deactivate user: You are currently logged in as this user.');
+        $response->assertSessionHas('error', 'Tidak dapat menonaktifkan pengguna: Anda sedang masuk menggunakan akun pengguna ini.');
         $this->assertEquals('active', $this->admin->fresh()->status);
     }
 
@@ -662,10 +662,10 @@ class UserManagementTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get(route('admin.users.show', $this->user));
         $response->assertStatus(200);
-        $response->assertSee('User Profile Details');
+        $response->assertSee('Detail Profil Pengguna');
         $response->assertSee($this->user->name);
         $response->assertSee($this->user->email);
-        $response->assertSee('Meeting Room Activity Summary');
+        $response->assertSee('Ringkasan Aktivitas Ruang Meeting');
         $response->assertSee('Room Detail Test');
         $response->assertSee('History Booking');
     }
@@ -677,12 +677,217 @@ class UserManagementTest extends TestCase
     {
         $response = $this->actingAs($this->admin)->get(route('admin.users.show', $this->admin));
         $response->assertStatus(200);
-        $response->assertSee('User Profile Details');
+        $response->assertSee('Detail Profil Pengguna');
         $response->assertSee($this->admin->name);
         $response->assertSee($this->admin->email);
-        $response->assertSee('Meeting Room Approval Summary');
-        $response->assertSee('Toilet Inspection Monitoring');
-        $response->assertDontSee('Meeting Room Activity Summary');
-        $response->assertDontSee('Toilet Inspection Activity Summary');
+        $response->assertSee('Ringkasan Persetujuan Ruang Meeting');
+        $response->assertSee('Pemantauan Inspeksi Toilet');
+        $response->assertDontSee('Ringkasan Aktivitas Ruang Meeting');
+        $response->assertDontSee('Ringkasan Aktivitas Inspeksi Toilet');
+    }
+
+    /**
+     * Test user detail dynamically adapts when granted additional modules (e.g. Toilet inspector given SIK).
+     */
+    public function test_user_detail_adapts_to_granted_modules_and_employee_identity(): void
+    {
+        $inspector = User::create([
+            'name' => 'Petugas Toilet Joko',
+            'email' => 'joko.toilet@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'user',
+            'status' => 'active',
+            'employee_id' => 'SBA-PLT-009',
+            'department' => 'General Affairs',
+            'position' => 'Petugas Inspeksi Toilet',
+        ]);
+        \App\Models\UserModule::create(['user_id' => $inspector->id, 'module' => 'toilet_inspection']);
+
+        // 1. Initial State: Only Toilet Inspection
+        $resBefore = $this->actingAs($this->admin)->get(route('admin.users.show', $inspector));
+        $resBefore->assertStatus(200);
+        $resBefore->assertSee('Petugas Toilet Joko');
+        $resBefore->assertSee('SBA-PLT-009');
+        $resBefore->assertSee('General Affairs');
+        $resBefore->assertSee('Petugas Inspeksi Toilet');
+        $resBefore->assertSee('Ringkasan Aktivitas Inspeksi Toilet');
+        $resBefore->assertDontSee('Ringkasan Surat Izin Keluar (SIK)');
+
+        // 2. Grant SIK Module Access to the user
+        \App\Models\UserModule::create(['user_id' => $inspector->id, 'module' => 'sik']);
+
+        $permit = \App\Models\ExitPermit::create([
+            'sik_number' => 'SIK-2026-TEST-001',
+            'user_id' => $inspector->id,
+            'approver_id' => $this->admin->id,
+            'department' => 'General Affairs',
+            'purpose_type' => 'dinas',
+            'purpose' => 'Membeli perlengkapan kebersihan',
+            'permit_date' => now()->toDateString(),
+            'expected_departure_time' => '10:00',
+            'expected_return_time' => '12:00',
+            'status' => \App\Models\ExitPermit::STATUS_APPROVED,
+            'applicant_name_snapshot' => $inspector->name,
+            'applicant_department_snapshot' => $inspector->department,
+            'applicant_position_snapshot' => $inspector->position,
+            'applicant_employee_id_snapshot' => $inspector->employee_id,
+        ]);
+
+        // 3. View detail after SIK access is granted: Detail adapts and shows SIK stats & records
+        $resAfter = $this->actingAs($this->admin)->get(route('admin.users.show', $inspector));
+        $resAfter->assertStatus(200);
+        $resAfter->assertSee('Surat Izin Keluar (SIK)');
+        $resAfter->assertSee('Ringkasan Aktivitas Inspeksi Toilet');
+        $resAfter->assertSee('Ringkasan Surat Izin Keluar (SIK)');
+        $resAfter->assertSee('SIK-2026-TEST-001');
+        $resAfter->assertSee('Membeli perlengkapan kebersihan');
+        $resAfter->assertSee('id="tab-sik"', false);
+        $resAfter->assertSee('id="section-sik"', false);
+
+        // 4. Security User detail check
+        $securityUser = User::create([
+            'name' => 'Danpos Satpam',
+            'email' => 'satpam@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'security',
+            'status' => 'active',
+            'employee_id' => 'SBA-SEC-001',
+            'department' => 'Security & Safety',
+            'position' => 'Danpos Security',
+        ]);
+
+        $resSec = $this->actingAs($this->admin)->get(route('admin.users.show', $securityUser));
+        $resSec->assertStatus(200);
+        $resSec->assertSee('Security');
+        $resSec->assertSee('Pos Security (SIK Scanner)');
+        $resSec->assertSee('Ringkasan Validasi Gerbang Security');
+        $resSec->assertSee('Log Scan Gerbang Security');
+        $resSec->assertSee('local_police');
+
+        // Check index view as well
+        $resIndex = $this->actingAs($this->admin)->get(route('admin.users.index'));
+        $resIndex->assertStatus(200);
+        $resIndex->assertSee('local_police');
+        $resIndex->assertSee('Pos Security (SIK Scanner)');
+    }
+
+    /**
+     * Test admin user cannot be deleted at all.
+     */
+    public function test_cannot_delete_any_admin_user(): void
+    {
+        $anotherAdmin = User::create([
+            'name' => 'Second Admin',
+            'email' => 'second_admin@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'status' => 'active',
+        ]);
+
+        $response = $this->actingAs($this->admin)->delete(route('admin.users.destroy', $anotherAdmin));
+        
+        $response->assertRedirect(route('admin.users.index'));
+        $response->assertSessionHas('error', 'Tidak dapat menghapus pengguna dengan peran Admin.');
+        $this->assertDatabaseHas('users', ['id' => $anotherAdmin->id]);
+    }
+
+    /**
+     * Test last active admin cannot be deactivated.
+     */
+    public function test_cannot_deactivate_last_active_admin(): void
+    {
+        $inactiveAdmin = User::create([
+            'name' => 'Inactive Admin',
+            'email' => 'inactive_admin@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'status' => 'inactive',
+        ]);
+
+        $adminHelper = User::create([
+            'name' => 'Admin Helper',
+            'email' => 'admin_helper@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'status' => 'active',
+        ]);
+
+        // Active: $this->admin (active), $adminHelper (active).
+        // Deactivate $adminHelper using $this->admin. Should succeed since $this->admin is still active.
+        $response = $this->actingAs($this->admin)->post(route('admin.users.deactivate', $adminHelper));
+        $response->assertSessionHas('success');
+        $this->assertEquals('inactive', $adminHelper->fresh()->status);
+
+        // Update database states directly without changing in-memory attributes.
+        // We set $this->admin to inactive, and $adminHelper to active in DB.
+        // Now, only $adminHelper is the active admin in DB.
+        User::where('id', $this->admin->id)->update(['status' => 'inactive']);
+        User::where('id', $adminHelper->id)->update(['status' => 'active']);
+
+        // Try to deactivate $adminHelper using $this->admin (actingAs in-memory active admin).
+        // Should fail because $adminHelper is the last active admin in the DB.
+        $response = $this->actingAs($this->admin)->post(route('admin.users.deactivate', $adminHelper));
+        $response->assertSessionHas('error', 'Tidak dapat menonaktifkan pengguna: Ini adalah satu-satunya akun Admin aktif yang tersisa di sistem.');
+        $this->assertEquals('active', $adminHelper->fresh()->status);
+    }
+
+    /**
+     * Test last active admin cannot have their role modified to a non-admin role.
+     */
+    public function test_cannot_change_role_of_last_active_admin(): void
+    {
+        // Try to update $this->admin's role to 'user'
+        $response = $this->actingAs($this->admin)->put(route('admin.users.update', $this->admin), [
+            'name' => $this->admin->name,
+            'email' => $this->admin->email,
+            'role' => 'user',
+            'modules' => ['meeting_room'],
+        ]);
+
+        $response->assertSessionHas('error', 'Tidak dapat mengubah peran pengguna: Ini adalah satu-satunya akun Admin aktif yang tersisa di sistem.');
+        $this->assertEquals('admin', $this->admin->fresh()->role);
+    }
+
+    /**
+     * Test admin can assign vehicle module to user and it renders in UI.
+     */
+    public function test_admin_can_assign_vehicle_module_to_user_and_it_renders_in_ui(): void
+    {
+        // 1. Verify checkbox is present in create view
+        $resCreate = $this->actingAs($this->admin)->get(route('admin.users.create'));
+        $resCreate->assertOk();
+        $resCreate->assertSee('Kendaraan (Manajemen Kendaraan)');
+
+        // 2. Create user with vehicle module
+        $resStore = $this->actingAs($this->admin)->post(route('admin.users.store'), [
+            'name' => 'Driver User',
+            'email' => 'driver.user@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+            'role' => 'user',
+            'modules' => ['vehicle'],
+        ]);
+        $resStore->assertRedirect(route('admin.users.index'));
+
+        $newUser = User::where('email', 'driver.user@example.com')->first();
+        $this->assertNotNull($newUser);
+        $this->assertTrue($newUser->hasModuleAccess('vehicle'));
+
+        // 3. Verify checkbox is present and checked in edit view
+        $resEdit = $this->actingAs($this->admin)->get(route('admin.users.edit', $newUser));
+        $resEdit->assertOk();
+        $resEdit->assertSee('Kendaraan (Manajemen Kendaraan)');
+        $resEdit->assertSee('value="vehicle"', false);
+
+        // 4. Verify badge is present in show view
+        $resShow = $this->actingAs($this->admin)->get(route('admin.users.show', $newUser));
+        $resShow->assertOk();
+        $resShow->assertSee('Kendaraan (Manajemen Kendaraan)');
+
+        // 5. Verify index view displays Kendaraan badge and filter
+        $resIndex = $this->actingAs($this->admin)->get(route('admin.users.index'));
+        $resIndex->assertOk();
+        $resIndex->assertSee('Kendaraan');
     }
 }
+

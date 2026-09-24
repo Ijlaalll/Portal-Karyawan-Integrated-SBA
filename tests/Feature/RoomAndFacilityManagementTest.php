@@ -196,4 +196,89 @@ class RoomAndFacilityManagementTest extends TestCase
         $this->assertTrue($roomFacilities->contains($fac3), 'Facility 3 should be added.');
         $this->assertEquals(2, $roomFacilities->count());
     }
+
+    /**
+     * Test GA is allowed to perform Room and Facility actions when having meeting room access.
+     */
+    public function test_ga_room_and_facility_actions_are_allowed(): void
+    {
+        $gaUser = User::create([
+            'name' => 'GA User',
+            'email' => 'ga@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'ga',
+        ]);
+        $gaUser->modules()->create(['module' => 'meeting_room']);
+
+        // 1. GA accessing list of rooms
+        $response = $this->actingAs($gaUser)->get(route('admin.rooms.index'));
+        $response->assertStatus(200);
+
+        // 2. GA creating facility
+        $response = $this->actingAs($gaUser)->post(route('admin.facilities.store'), [
+            'name' => 'Projector GA',
+            'description' => 'GA HD Projector',
+        ]);
+        $response->assertRedirect(route('admin.facilities.index'));
+        $this->assertDatabaseHas('facilities', ['name' => 'Projector GA']);
+        
+        $facility = Facility::where('name', 'Projector GA')->first();
+
+        // 3. GA creating room with facility
+        $response = $this->actingAs($gaUser)->post(route('admin.rooms.store'), [
+            'name' => 'Boardroom GA',
+            'location' => 'Level 3',
+            'capacity' => 10,
+            'description' => 'GA Meeting Room',
+            'status' => 'active',
+            'facilities' => [$facility->id],
+        ]);
+        $response->assertRedirect(route('admin.rooms.index'));
+        $this->assertDatabaseHas('rooms', ['name' => 'Boardroom GA']);
+        
+        $room = Room::where('name', 'Boardroom GA')->first();
+        $this->assertTrue($room->facilities->contains($facility));
+
+        // 4. GA editing room
+        $response = $this->actingAs($gaUser)->put(route('admin.rooms.update', $room), [
+            'name' => 'Executive Boardroom GA',
+            'location' => 'Level 3',
+            'capacity' => 12,
+            'description' => 'GA Meeting Room Edited',
+            'status' => 'inactive',
+            'facilities' => [], // Unassign all
+        ]);
+        $response->assertRedirect(route('admin.rooms.index'));
+        $this->assertDatabaseHas('rooms', ['name' => 'Executive Boardroom GA', 'status' => 'inactive']);
+        
+        $room->refresh();
+        $this->assertEquals(0, $room->facilities->count());
+    }
+
+    /**
+     * Test GA without meeting_room module access is denied from Room and Facility actions.
+     */
+    public function test_ga_without_meeting_room_module_access_is_denied(): void
+    {
+        $gaUserNoMR = User::create([
+            'name' => 'GA User No MR',
+            'email' => 'ga_no_mr@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'ga',
+        ]);
+        $gaUserNoMR->modules()->create(['module' => 'atk']);
+
+        // GA tries to view admin room list
+        $response = $this->actingAs($gaUserNoMR)->get(route('admin.rooms.index'));
+        $response->assertStatus(403);
+
+        // GA tries to create room
+        $response = $this->actingAs($gaUserNoMR)->post(route('admin.rooms.store'), [
+            'name' => 'Room Hack GA',
+            'location' => 'Lantai 1',
+            'capacity' => 10,
+            'status' => 'active',
+        ]);
+        $response->assertStatus(403);
+    }
 }

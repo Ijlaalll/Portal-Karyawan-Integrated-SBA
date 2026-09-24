@@ -74,7 +74,7 @@ class BookingAndAvailabilityTest extends TestCase
 
         $this->assertDatabaseHas('bookings', [
             'id' => $booking->id,
-            'status' => 'pending',
+            'status' => 'approved',
         ]);
     }
 
@@ -98,7 +98,7 @@ class BookingAndAvailabilityTest extends TestCase
 
         // Attempt overlapping booking (11:00 - 13:00)
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Room is no longer available for the selected time slot.');
+        $this->expectExceptionMessage('Ruangan tidak lagi tersedia untuk slot waktu yang dipilih.');
 
         $this->bookingService->createBooking($this->user, [
             'room_id' => $this->activeRoom->id,
@@ -258,7 +258,7 @@ class BookingAndAvailabilityTest extends TestCase
         $date = now()->addDay()->format('Y-m-d');
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Start time must be before end time.');
+        $this->expectExceptionMessage('Waktu mulai harus sebelum waktu selesai.');
 
         $this->bookingService->createBooking($this->user, [
             'room_id' => $this->activeRoom->id,
@@ -277,7 +277,7 @@ class BookingAndAvailabilityTest extends TestCase
         $date = now()->addDay()->format('Y-m-d');
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Start time must be before end time.');
+        $this->expectExceptionMessage('Waktu mulai harus sebelum waktu selesai.');
 
         $this->bookingService->createBooking($this->user, [
             'room_id' => $this->activeRoom->id,
@@ -296,7 +296,7 @@ class BookingAndAvailabilityTest extends TestCase
         $date = now()->addDay()->format('Y-m-d');
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Selected room is inactive and cannot be booked.');
+        $this->expectExceptionMessage('Ruangan yang dipilih tidak aktif dan tidak dapat dipesan.');
 
         $this->bookingService->createBooking($this->user, [
             'room_id' => $this->inactiveRoom->id,
@@ -392,7 +392,7 @@ class BookingAndAvailabilityTest extends TestCase
             ]);
             $this->fail('Booking before 08:00 should fail.');
         } catch (Exception $e) {
-            $this->assertEquals('Booking must be within operating hours (08:00–17:00).', $e->getMessage());
+            $this->assertEquals('Pemesanan harus dalam jam operasional (08:00–17:00).', $e->getMessage());
         }
 
         // Attempt booking after operating hours (16:30 - 17:30)
@@ -406,26 +406,26 @@ class BookingAndAvailabilityTest extends TestCase
             ]);
             $this->fail('Booking after 17:00 should fail.');
         } catch (Exception $e) {
-            $this->assertEquals('Booking must be within operating hours (08:00–17:00).', $e->getMessage());
+            $this->assertEquals('Pemesanan harus dalam jam operasional (08:00–17:00).', $e->getMessage());
         }
     }
 
     /**
-     * Duration < 1 hour -> FAIL
+     * Duration < 30 minutes -> FAIL
      */
-    public function test_booking_duration_less_than_one_hour_fails(): void
+    public function test_booking_duration_less_than_thirty_minutes_fails(): void
     {
         $date = now()->addDay()->format('Y-m-d');
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Minimum booking duration is 1 hour.');
+        $this->expectExceptionMessage('Durasi pemesanan minimal adalah 30 menit.');
 
         $this->bookingService->createBooking($this->user, [
             'room_id' => $this->activeRoom->id,
             'title' => 'Short Sync',
             'booking_date' => $date,
             'start_time' => '10:00',
-            'end_time' => '10:45',
+            'end_time' => '10:20', // 20 minutes (fails)
         ]);
     }
 

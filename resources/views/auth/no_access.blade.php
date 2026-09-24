@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'No Access - SBA')
+@section('title', 'Tidak Ada Akses - SBA')
 
 @section('content')
 <div class="max-w-md mx-auto py-16 px-4 sm:px-6 lg:px-8">
@@ -10,9 +10,9 @@
         </div>
         
         <div class="space-y-2">
-            <h1 class="text-2xl font-bold text-[#0F172A]">No Management Access</h1>
+            <h1 class="text-2xl font-bold text-[#0F172A]">Tidak Ada Akses Manajemen</h1>
             <p class="text-sm text-[#475569] leading-relaxed">
-                Your account is authenticated, but you do not currently have access to any management modules. Please contact an administrator to request access.
+                Akun Anda terautentikasi, tetapi saat ini Anda tidak memiliki akses ke modul manajemen apa pun. Silakan hubungi administrator untuk meminta akses.
             </p>
         </div>
 
@@ -20,7 +20,7 @@
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="w-full text-center rounded border border-[#D1D5DB] bg-white px-4 py-2.5 text-sm font-semibold text-[#374151] hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:ring-offset-2">
-                    Logout and Return to Login
+                    Keluar dan Kembali ke Halaman Masuk
                 </button>
             </form>
         </div>

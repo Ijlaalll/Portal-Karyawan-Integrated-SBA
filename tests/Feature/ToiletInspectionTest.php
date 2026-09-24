@@ -541,20 +541,23 @@ class ToiletInspectionTest extends TestCase
      */
     public function test_dashboard_period_filtering_affects_statistics(): void
     {
-        // Inspection today
+        // Clear any previous test inspections
+        Inspection::query()->delete();
+
+        // 1. Inspection today (current month)
         $insToday = Inspection::create([
             'location_id' => $this->location->id,
             'inspector_id' => $this->inspector->id,
             'status' => 'approved',
         ]);
 
-        // Inspection 2 weeks ago (change to 2 days ago to keep in same month)
+        // 2. Inspection from last month
         $insOld = Inspection::create([
             'location_id' => $this->location->id,
             'inspector_id' => $this->inspector->id,
             'status' => 'approved',
         ]);
-        $insOld->created_at = now()->subDays(2);
+        $insOld->created_at = now()->subMonth();
         $insOld->save();
 
         // Acting as SPV with 'today' filter
@@ -562,10 +565,15 @@ class ToiletInspectionTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewHas('totalInspections', 1);
 
-        // Acting as SPV with 'this_month' filter (includes both)
+        // Acting as SPV with 'this_month' filter
         $response2 = $this->actingAs($this->spv)->get(route('toilet_inspection.dashboard', ['date_filter' => 'this_month']));
         $response2->assertStatus(200);
-        $response2->assertViewHas('totalInspections', 2);
+        $response2->assertViewHas('totalInspections', 1);
+
+        // Acting as SPV with 'all' filter
+        $response3 = $this->actingAs($this->spv)->get(route('toilet_inspection.dashboard', ['date_filter' => 'all']));
+        $response3->assertStatus(200);
+        $response3->assertViewHas('totalInspections', 2);
     }
 
     /**
@@ -593,5 +601,217 @@ class ToiletInspectionTest extends TestCase
             ->get(route('toilet_inspection.report'));
         $responseAdmin->assertStatus(200);
         $responseAdmin->assertViewHas('totalInspections');
+    }
+
+    /**
+     * Test admin toilet inspections advanced filters.
+     */
+    public function test_admin_toilet_inspections_advanced_filters(): void
+    {
+        $inspector2 = User::create([
+            'name' => 'Inspector Two',
+            'email' => 'inspector2@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+        ]);
+        \App\Models\UserModule::create([
+            'user_id' => $inspector2->id,
+            'module' => 'toilet_inspection',
+        ]);
+
+        $locB = \App\Models\ToiletLocation::create([
+            'building' => 'Building B',
+            'floor' => 'Lantai 2',
+            'toilet_name' => 'Toilet B',
+            'gender' => 'wanita',
+            'area' => 'Main lobby area',
+        ]);
+
+        // Inspection A
+        $insA = Inspection::create([
+            'location_id' => $this->location->id,
+            'inspector_id' => $this->inspector->id,
+            'status' => 'approved',
+            'notes' => 'Tidy room',
+            'inspected_at' => now(),
+        ]);
+
+        // Inspection B
+        $insB = Inspection::create([
+            'location_id' => $locB->id,
+            'inspector_id' => $inspector2->id,
+            'status' => 'rejected',
+            'notes' => 'Broken mirror',
+            'inspected_at' => now(),
+        ]);
+
+        // Test combined: location, floor, gender, inspector, search
+        $response = $this->actingAs($this->admin)
+            ->withSession(['active_admin_module' => 'toilet_inspection', 'enforce_active_module' => true])
+            ->get(route('admin.toilet_inspection.inspections.index', [
+                'location_id' => $locB->id,
+                'floor' => 'Lantai 2',
+                'gender' => 'wanita',
+                'inspector_id' => $inspector2->id,
+                'search' => 'Broken',
+            ]));
+
+        $response->assertStatus(200);
+        $this->assertTrue($response->viewData('inspections')->contains($insB));
+        $this->assertFalse($response->viewData('inspections')->contains($insA));
+    }
+
+    /**
+     * Test admin approvals filtering for pending, approved, and rejected records.
+     */
+    public function test_admin_approvals_history_filtering(): void
+    {
+        $locB = \App\Models\ToiletLocation::create([
+            'building' => 'Building B',
+            'floor' => 'Lantai 2',
+            'toilet_name' => 'Toilet B',
+            'gender' => 'wanita',
+            'area' => 'Main lobby area',
+        ]);
+
+        // Pending inspection (submitted status)
+        $insPending = Inspection::create([
+            'location_id' => $this->location->id,
+            'inspector_id' => $this->inspector->id,
+            'status' => 'submitted',
+            'inspected_at' => now(),
+        ]);
+
+        // Approved inspection with approval details
+        $insApproved = Inspection::create([
+            'location_id' => $locB->id,
+            'inspector_id' => $this->inspector->id,
+            'status' => 'approved',
+            'inspected_at' => now(),
+        ]);
+        $approval = $insApproved->approval()->create([
+            'approver_id' => $this->spv->id,
+            'action' => 'approve',
+            'notes' => 'Great job',
+            'actioned_at' => now(),
+        ]);
+
+        // Test Pending filter
+        $responsePending = $this->actingAs($this->admin)
+            ->withSession(['active_admin_module' => 'toilet_inspection', 'enforce_active_module' => true])
+            ->get(route('admin.toilet_inspection.approvals.index', ['status' => 'pending']));
+        $responsePending->assertStatus(200);
+        $this->assertTrue($responsePending->viewData('inspections')->contains($insPending));
+        $this->assertFalse($responsePending->viewData('inspections')->contains($insApproved));
+
+        // Test Approved filter
+        $responseApproved = $this->actingAs($this->admin)
+            ->withSession(['active_admin_module' => 'toilet_inspection', 'enforce_active_module' => true])
+            ->get(route('admin.toilet_inspection.approvals.index', ['status' => 'approved']));
+        $responseApproved->assertStatus(200);
+        $this->assertTrue($responseApproved->viewData('inspections')->contains($insApproved));
+        $this->assertFalse($responseApproved->viewData('inspections')->contains($insPending));
+    }
+
+    /**
+     * Test that the inspector filter option lists only include inspector/petugas users
+     * and exclude admins, supervisors, and users from other modules.
+     */
+    public function test_admin_toilet_inspection_inspector_filter_restrictions(): void
+    {
+        // Inspector (role: user, module: toilet_inspection) -> should appear
+        $petugas = User::create([
+            'name' => 'Petugas Budi',
+            'email' => 'petugasbudi@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+        ]);
+        $petugas->modules()->create(['module' => 'toilet_inspection']);
+
+        // Supervisor (role: spv, module: toilet_inspection) -> should NOT appear
+        $supervisor = User::create([
+            'name' => 'SPV Siti',
+            'email' => 'spvsiti@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'spv',
+        ]);
+        $supervisor->modules()->create(['module' => 'toilet_inspection']);
+
+        // User without module toilet_inspection (role: user, module: meeting_room) -> should NOT appear
+        $mrUser = User::create([
+            'name' => 'User Meeting Room',
+            'email' => 'mruser@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+        ]);
+        $mrUser->modules()->create(['module' => 'meeting_room']);
+
+        // 1. Check Inspections log filter page
+        $responseIns = $this->actingAs($this->admin)
+            ->withSession(['active_admin_module' => 'toilet_inspection', 'enforce_active_module' => true])
+            ->get(route('admin.toilet_inspection.inspections.index'));
+        
+        $responseIns->assertStatus(200);
+        $responseIns->assertViewHas('inspectors');
+        $inspectorsIns = $responseIns->viewData('inspectors');
+        
+        $this->assertTrue($inspectorsIns->contains($petugas));
+        $this->assertFalse($inspectorsIns->contains($supervisor));
+        $this->assertFalse($inspectorsIns->contains($mrUser));
+        $this->assertFalse($inspectorsIns->contains($this->admin));
+        
+        // Assert no gender select input is present on the page HTML
+        $responseIns->assertDontSee('name="gender"', false);
+
+        // 2. Check Approvals log filter page
+        $responseApp = $this->actingAs($this->admin)
+            ->withSession(['active_admin_module' => 'toilet_inspection', 'enforce_active_module' => true])
+            ->get(route('admin.toilet_inspection.approvals.index'));
+        
+        $responseApp->assertStatus(200);
+        $responseApp->assertViewHas('inspectors');
+        $inspectorsApp = $responseApp->viewData('inspectors');
+        
+        $this->assertTrue($inspectorsApp->contains($petugas));
+        $this->assertFalse($inspectorsApp->contains($supervisor));
+        $this->assertFalse($inspectorsApp->contains($mrUser));
+        $this->assertFalse($inspectorsApp->contains($this->admin));
+    }
+
+    /**
+     * Test GA user has management access to toilet inspection routes and regular user is blocked.
+     */
+    public function test_ga_has_management_access_to_toilet_inspection(): void
+    {
+        $gaUser = User::create([
+            'name' => 'GA Manager',
+            'email' => 'gamanager@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'ga',
+        ]);
+        $gaUser->modules()->create(['module' => 'toilet_inspection']);
+
+        // 1. GA accesses management routes successfully
+        $response = $this->actingAs($gaUser)->get(route('admin.toilet_inspection.dashboard'));
+        $response->assertStatus(200);
+        $response->assertViewIs('toilet_inspection.dashboard');
+        // GA should see management-specific view data
+        $response->assertViewHas('approvalRate');
+
+        $responseLoc = $this->actingAs($gaUser)->get(route('admin.toilet_inspection.locations.index'));
+        $responseLoc->assertStatus(200);
+
+        $responseCheck = $this->actingAs($gaUser)->get(route('admin.toilet_inspection.checklist-items.index'));
+        $responseCheck->assertStatus(200);
+
+        $responseInsp = $this->actingAs($gaUser)->get(route('admin.toilet_inspection.inspections.index'));
+        $responseInsp->assertStatus(200);
+
+        $responseAppr = $this->actingAs($gaUser)->get(route('admin.toilet_inspection.approvals.index'));
+        $responseAppr->assertStatus(200);
+
+        // 2. Regular inspector (petugas) is blocked from accessing management routes
+        $responseBlocked = $this->actingAs($this->inspector)->get(route('admin.toilet_inspection.dashboard'));
+        $responseBlocked->assertStatus(403);
     }
 }

@@ -16,7 +16,7 @@ class InspectionApprovalController extends Controller
     {
         $user = auth()->user();
         if (!$user->isSpv() && !$user->isAdmin()) {
-            abort(403, 'Unauthorized.');
+            abort(403, 'Akses tidak sah.');
         }
 
         $pendingInspections = \App\Models\Inspection::with(['location', 'inspector'])
@@ -34,12 +34,12 @@ class InspectionApprovalController extends Controller
     {
         // Enforce SPV role access
         if (!auth()->user()->isSpv()) {
-            abort(403, 'Unauthorized access.');
+            abort(403, 'Akses tidak sah.');
         }
 
         if ($inspection->status !== 'submitted') {
             return redirect()->route('toilet_inspection.dashboard')
-                ->with('error', 'This inspection has already been processed.');
+                ->with('error', 'Inspeksi ini sudah diproses.');
         }
 
         $inspection->load(['location', 'inspector', 'results.checklistItem']);
@@ -53,12 +53,12 @@ class InspectionApprovalController extends Controller
     public function approve(Request $request, Inspection $inspection)
     {
         if (!auth()->user()->isSpv()) {
-            abort(403, 'Unauthorized access.');
+            abort(403, 'Akses tidak sah.');
         }
 
         if ($inspection->status !== 'submitted') {
             return redirect()->route('toilet_inspection.dashboard')
-                ->with('error', 'This inspection is not in a submittable state.');
+                ->with('error', 'Inspeksi ini tidak dalam status dapat dikirim.');
         }
 
         DB::transaction(function () use ($inspection, $request) {
@@ -72,7 +72,7 @@ class InspectionApprovalController extends Controller
         });
 
         return redirect()->route('toilet_inspection.dashboard')
-            ->with('success', 'Inspection approved successfully.');
+            ->with('success', 'Inspeksi berhasil disetujui.');
     }
 
     /**
@@ -81,19 +81,19 @@ class InspectionApprovalController extends Controller
     public function reject(Request $request, Inspection $inspection)
     {
         if (!auth()->user()->isSpv()) {
-            abort(403, 'Unauthorized access.');
+            abort(403, 'Akses tidak sah.');
         }
 
         if ($inspection->status !== 'submitted') {
             return redirect()->route('toilet_inspection.dashboard')
-                ->with('error', 'This inspection is not in a submittable state.');
+                ->with('error', 'Inspeksi ini tidak dalam status dapat dikirim.');
         }
 
         $request->validate([
             'notes' => ['required', 'string', 'min:5'],
         ], [
-            'notes.required' => 'Rejection reason is required.',
-            'notes.min' => 'Rejection reason must be at least 5 characters.',
+            'notes.required' => 'Alasan penolakan wajib diisi.',
+            'notes.min' => 'Alasan penolakan harus minimal 5 karakter.',
         ]);
 
         DB::transaction(function () use ($inspection, $request) {
@@ -107,6 +107,6 @@ class InspectionApprovalController extends Controller
         });
 
         return redirect()->route('toilet_inspection.dashboard')
-            ->with('success', 'Inspection rejected successfully.');
+            ->with('success', 'Inspeksi berhasil ditolak.');
     }
 }

@@ -42,6 +42,6 @@ class CheckModuleAccess
             return $next($request);
         }
 
-        abort(403, 'Unauthorized access. You do not have permission for the ' . str_replace('_', ' ', $module) . ' module.');
+        abort(403, 'Akses tidak sah. Anda tidak memiliki izin untuk modul ' . str_replace('_', ' ', $module) . '.');
     }
 }

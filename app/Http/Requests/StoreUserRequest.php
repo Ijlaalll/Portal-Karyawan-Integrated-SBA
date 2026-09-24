@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserRequest extends FormRequest
 {
@@ -25,9 +26,19 @@ class StoreUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', 'in:user,admin,spv'],
-            'modules' => ['required_unless:role,admin', 'array'],
-            'modules.*' => ['string', 'in:meeting_room,toilet_inspection'],
+            'role' => ['required', 'string', 'in:user,admin,spv,ga,it,security'],
+            'modules' => ['required_unless:role,admin,security', 'array'],
+            'modules.*' => ['string', 'in:meeting_room,toilet_inspection,atk,sik,vehicle'],
+            'department' => ['nullable', 'string', 'max:255'],
+            'position' => ['nullable', 'string', 'max:255'],
+            'employee_id' => ['nullable', 'string', 'max:255'],
+            'joined_at' => ['nullable', 'date'],
+            'cost_center_id' => [
+                'nullable',
+                Rule::exists('cost_centers', 'id')->where(function ($query) {
+                    $query->where('status', 'active');
+                }),
+            ],
         ];
     }
 
@@ -37,7 +48,8 @@ class StoreUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.unique' => 'This email is already registered.',
+            'email.unique' => 'Email ini sudah terdaftar.',
+            'cost_center_id.exists' => 'Cost Center yang dipilih tidak valid atau tidak aktif.',
         ];
     }
 }

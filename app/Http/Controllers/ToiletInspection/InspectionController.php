@@ -27,7 +27,7 @@ class InspectionController extends Controller
         $query = Inspection::with(['location', 'inspector', 'approval.approver'])
             ->orderBy('created_at', 'desc');
 
-        if (!$user->isAdmin() && !$user->isSpv()) {
+        if (!$user->isAdmin() && !$user->isSpv() && !$user->isGa()) {
             // Regular inspector can only see their own inspections
             $query->where('inspector_id', $user->id);
         }
@@ -81,21 +81,21 @@ class InspectionController extends Controller
             $dateFilter = $request->input('date_filter');
             
             if ($dateFilter === 'today') {
-                $start = \Carbon\Carbon::now('Asia/Jakarta')->startOfDay()->setTimezone('UTC');
-                $end = \Carbon\Carbon::now('Asia/Jakarta')->endOfDay()->setTimezone('UTC');
+                $start = \Carbon\Carbon::now('Asia/Jakarta')->startOfDay();
+                $end = \Carbon\Carbon::now('Asia/Jakarta')->endOfDay();
                 $query->whereBetween('created_at', [$start, $end]);
             } elseif ($dateFilter === 'this_week') {
-                $start = \Carbon\Carbon::now('Asia/Jakarta')->startOfWeek()->setTimezone('UTC');
-                $end = \Carbon\Carbon::now('Asia/Jakarta')->endOfWeek()->setTimezone('UTC');
+                $start = \Carbon\Carbon::now('Asia/Jakarta')->startOfWeek();
+                $end = \Carbon\Carbon::now('Asia/Jakarta')->endOfWeek();
                 $query->whereBetween('created_at', [$start, $end]);
             } elseif ($dateFilter === 'this_month') {
-                $start = \Carbon\Carbon::now('Asia/Jakarta')->startOfMonth()->setTimezone('UTC');
-                $end = \Carbon\Carbon::now('Asia/Jakarta')->endOfMonth()->setTimezone('UTC');
+                $start = \Carbon\Carbon::now('Asia/Jakarta')->startOfMonth();
+                $end = \Carbon\Carbon::now('Asia/Jakarta')->endOfMonth();
                 $query->whereBetween('created_at', [$start, $end]);
             } elseif ($dateFilter === 'custom') {
                 if ($request->filled('start_date') && $request->filled('end_date')) {
-                    $start = \Carbon\Carbon::parse($request->input('start_date'), 'Asia/Jakarta')->startOfDay()->setTimezone('UTC');
-                    $end = \Carbon\Carbon::parse($request->input('end_date'), 'Asia/Jakarta')->endOfDay()->setTimezone('UTC');
+                    $start = \Carbon\Carbon::parse($request->input('start_date'), 'Asia/Jakarta')->startOfDay();
+                    $end = \Carbon\Carbon::parse($request->input('end_date'), 'Asia/Jakarta')->endOfDay();
                     $query->whereBetween('created_at', [$start, $end]);
                 }
             }
@@ -129,7 +129,7 @@ class InspectionController extends Controller
     public function create()
     {
         if (!auth()->user()->isUser()) {
-            abort(403, 'Only inspectors can perform toilet inspections.');
+            abort(403, 'Hanya petugas inspeksi yang dapat melakukan inspeksi toilet.');
         }
 
         $locations = ToiletLocation::where('is_active', true)
@@ -144,7 +144,7 @@ class InspectionController extends Controller
 
         if ($checklistItems->isEmpty()) {
             return redirect()->route('toilet_inspection.dashboard')
-                ->with('error', 'No active checklist items configured. Please contact administrator.');
+                ->with('error', 'Tidak ada checklist aktif yang dikonfigurasi. Silakan hubungi administrator.');
         }
 
         return view('toilet_inspection.inspections.create', compact('locations', 'checklistItems'));
@@ -156,7 +156,7 @@ class InspectionController extends Controller
     public function store(Request $request)
     {
         if (!auth()->user()->isUser()) {
-            abort(403, 'Only inspectors can perform toilet inspections.');
+            abort(403, 'Hanya petugas inspeksi yang dapat melakukan inspeksi toilet.');
         }
 
         $request->validate([
@@ -173,7 +173,7 @@ class InspectionController extends Controller
 
         foreach ($activeChecklistItems as $itemId) {
             if (!in_array($itemId, $resultsKeys) || !isset($request->input('results')[$itemId]['is_ok'])) {
-                return back()->withInput()->withErrors(['results' => 'All active checklist items must be completed.']);
+                return back()->withInput()->withErrors(['results' => 'Semua checklist aktif harus dilengkapi.']);
             }
         }
 
@@ -183,7 +183,7 @@ class InspectionController extends Controller
         $this->inspectionService->createInspection($data, $request->file('photo'));
 
         return redirect()->route('toilet_inspection.dashboard')
-            ->with('success', 'Inspection submitted successfully for review.');
+            ->with('success', 'Inspeksi berhasil dikirim untuk ditinjau.');
     }
 
     /**
@@ -192,8 +192,8 @@ class InspectionController extends Controller
     public function report(Request $request)
     {
         $user = auth()->user();
-        if (!$user->isAdmin() && !$user->isSpv()) {
-            abort(403, 'Only administrators and supervisors can access reporting.');
+        if (!$user->isAdmin() && !$user->isSpv() && !$user->isGa()) {
+            abort(403, 'Hanya administrator dan supervisor yang dapat mengakses laporan.');
         }
 
         $query = Inspection::with(['location', 'inspector', 'approval.approver'])
@@ -304,8 +304,8 @@ class InspectionController extends Controller
     {
         // Check if user is authorized to view this inspection
         $user = auth()->user();
-        if (!$user->isAdmin() && !$user->isSpv() && $inspection->inspector_id !== $user->id) {
-            abort(403, 'Unauthorized access.');
+        if (!$user->isAdmin() && !$user->isSpv() && !$user->isGa() && $inspection->inspector_id !== $user->id) {
+            abort(403, 'Akses tidak sah.');
         }
 
         $inspection->load(['location', 'inspector', 'results.checklistItem', 'approval.approver']);

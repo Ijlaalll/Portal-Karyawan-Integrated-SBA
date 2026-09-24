@@ -41,7 +41,7 @@ class AuthAndAuthorizationTest extends TestCase
         // Access user area
         $response = $this->actingAs($user)->get('/dashboard');
         $response->assertStatus(200);
-        $response->assertSee('Welcome back, John Doe');
+        $response->assertSee('Selamat datang kembali, John Doe');
 
         // Access admin area
         $response = $this->actingAs($user)->get('/admin/dashboard');
@@ -63,7 +63,7 @@ class AuthAndAuthorizationTest extends TestCase
         // Access admin area
         $response = $this->actingAs($admin)->get('/admin/dashboard');
         $response->assertStatus(200);
-        $response->assertSee('Welcome back, Jane Admin');
+        $response->assertSee('Selamat datang kembali, Jane Admin');
     }
 
     /**
@@ -211,7 +211,7 @@ class AuthAndAuthorizationTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect(route('select-module'));
+        $response->assertRedirect(route('dashboard'));
 
         // Choose meeting room
         $responseMR = $this->actingAs($user)->post(route('select-module.post'), ['module' => 'meeting_room']);

@@ -8,7 +8,8 @@ class StoreRoomRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->isAdmin();
+        $user = auth()->user();
+        return auth()->check() && ($user->isAdmin() || $user->isGa());
     }
 
     public function rules(): array

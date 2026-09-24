@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
         $user1->modules()->create(['module' => 'meeting_room']);
+        $user1->modules()->create(['module' => 'vehicle']);
 
         $user2 = User::create([
             'name' => 'Siti Rahma',
@@ -65,6 +66,24 @@ class DatabaseSeeder extends Seeder
         ]);
         $spv->modules()->create(['module' => 'toilet_inspection']);
 
+        // GA and IT Role Users
+        $gaUser = User::create([
+            'name' => 'General Affairs (GA)',
+            'email' => 'ga@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'ga',
+        ]);
+        $gaUser->modules()->create(['module' => 'meeting_room']);
+        $gaUser->modules()->create(['module' => 'vehicle']);
+
+        $itUser = User::create([
+            'name' => 'IT Support (IT)',
+            'email' => 'it@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'it',
+        ]);
+        $itUser->modules()->create(['module' => 'meeting_room']);
+
         // 2. Create Facilities
         $ac = Facility::create(['name' => 'Air Conditioner', 'description' => 'AC pendingin ruangan']);
         $projector = Facility::create(['name' => 'Projector', 'description' => 'Proyektor HD dengan kabel HDMI']);
@@ -81,6 +100,7 @@ class DatabaseSeeder extends Seeder
             'capacity' => 10,
             'description' => 'Ruang meeting skala kecil cocok untuk diskusi tim.',
             'status' => 'active',
+            'image' => 'rooms/room_a.jpg',
         ]);
         $roomA->facilities()->attach([$ac->id, $projector->id, $whiteboard->id, $wifi->id]);
 
@@ -90,6 +110,7 @@ class DatabaseSeeder extends Seeder
             'capacity' => 15,
             'description' => 'Ruang meeting eksekutif dengan fasilitas lengkap.',
             'status' => 'active',
+            'image' => 'rooms/room_b.jpg',
         ]);
         $roomB->facilities()->attach([$ac->id, $tv->id, $vicon->id, $wifi->id]);
 
@@ -99,6 +120,7 @@ class DatabaseSeeder extends Seeder
             'capacity' => 25,
             'description' => 'Ruang presentasi besar untuk seminar internal.',
             'status' => 'active',
+            'image' => 'rooms/room_c.jpg',
         ]);
         $roomC->facilities()->attach([$ac->id, $projector->id, $sound->id, $wifi->id, $whiteboard->id]);
 
@@ -234,5 +256,65 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
             ]);
         }
+
+        // 6. Vehicle Management Seeding
+        $avanza = \App\Models\Vehicle::firstOrCreate(['plate_number' => 'BL 1234 AA'], [
+            'name' => 'Toyota Avanza 1.5 G',
+            'fuel_type' => 'Bensin',
+            'status' => 'available',
+            'notes' => 'Kendaraan operasional pabrik / perkantoran',
+        ]);
+
+        $triton = \App\Models\Vehicle::firstOrCreate(['plate_number' => 'BL 8055 AB'], [
+            'name' => 'Mitsubishi Triton 4x4 Double Cabin',
+            'fuel_type' => 'Solar',
+            'status' => 'available',
+            'notes' => 'Kendaraan lapangan dan tambang',
+        ]);
+
+        $innova = \App\Models\Vehicle::firstOrCreate(['plate_number' => 'BL 1022 ZA'], [
+            'name' => 'Toyota Innova Venturer',
+            'fuel_type' => 'Diesel',
+            'status' => 'available',
+            'notes' => 'Kendaraan tamu dan manajemen',
+        ]);
+
+        $granMax = \App\Models\Vehicle::firstOrCreate(['plate_number' => 'BL 9011 BB'], [
+            'name' => 'Daihatsu Gran Max Minibus',
+            'fuel_type' => 'Bensin',
+            'status' => 'maintenance',
+            'notes' => 'Sedang dalam jadwal servis berkala di bengkel resmi',
+        ]);
+
+        $driver1 = \App\Models\Driver::firstOrCreate(['name' => 'Rahmat Hidayat'], [
+            'phone_number' => '081234567890',
+            'status' => 'available',
+            'notes' => 'Supir pool kantor pusat',
+        ]);
+
+        $driver2 = \App\Models\Driver::firstOrCreate(['name' => 'Bambang Kurniawan'], [
+            'phone_number' => '085298765432',
+            'status' => 'available',
+            'notes' => 'Supir operasional lapangan',
+        ]);
+
+        $driver3 = \App\Models\Driver::firstOrCreate(['name' => 'Teuku Iskandar'], [
+            'phone_number' => '082165432109',
+            'status' => 'inactive',
+            'notes' => 'Cuti panjang',
+        ]);
+
+        // Sample Vehicle Request (Pending)
+        \App\Models\VehicleRequest::firstOrCreate(['request_number' => 'REQ-VHC-' . date('Ym') . '-00001'], [
+            'user_id' => $user1->id,
+            'purpose' => 'Kunjungan Lapangan Pabrik Lhoknga',
+            'destination' => 'Pabrik Lhoknga, Aceh Besar',
+            'start_datetime' => date('Y-m-d 08:30:00', strtotime('+2 days')),
+            'end_datetime' => date('Y-m-d 17:00:00', strtotime('+2 days')),
+            'vehicle_id' => $triton->id,
+            'driver_id' => null,
+            'status' => 'pending_approval',
+            'notes' => 'Membawa tim inspeksi lingkungan',
+        ]);
     }
 }

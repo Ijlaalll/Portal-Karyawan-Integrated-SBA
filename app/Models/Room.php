@@ -16,20 +16,34 @@ class Room extends Model
         'location',
         'capacity',
         'description',
+        'price_per_hour',
+        'is_pricing_active',
         'status',
         'image',
+    ];
+
+    protected $attributes = [
+        'price_per_hour' => 0.00,
+        'is_pricing_active' => true,
     ];
 
     protected function casts(): array
     {
         return [
             'capacity' => 'integer',
+            'price_per_hour' => 'decimal:2',
+            'is_pricing_active' => 'boolean',
         ];
     }
 
     public function isActive(): bool
     {
         return $this->status === 'active';
+    }
+
+    public function isPricingActive(): bool
+    {
+        return (bool) $this->is_pricing_active;
     }
 
     public function bookings(): HasMany

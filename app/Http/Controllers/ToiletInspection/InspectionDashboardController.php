@@ -15,25 +15,29 @@ class InspectionDashboardController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->isAdmin() || $user->isSpv()) {
-            // Support period filtering for Admin/SPV
+        if ($user->isAdmin() || $user->isSpv() || $user->isGa()) {
+            // Support period filtering for Admin/SPV/GA
+            $dateFilter = $request->input('date_filter', 'this_month');
             $start = null;
             $end = null;
-            $dateFilter = $request->input('date_filter', 'this_month');
+            $now = \Carbon\Carbon::now('Asia/Jakarta');
 
-            if ($dateFilter === 'today') {
-                $start = \Carbon\Carbon::now('Asia/Jakarta')->startOfDay()->setTimezone('UTC');
-                $end = \Carbon\Carbon::now('Asia/Jakarta')->endOfDay()->setTimezone('UTC');
-            } elseif ($dateFilter === 'this_week') {
-                $start = \Carbon\Carbon::now('Asia/Jakarta')->startOfWeek()->setTimezone('UTC');
-                $end = \Carbon\Carbon::now('Asia/Jakarta')->endOfWeek()->setTimezone('UTC');
-            } elseif ($dateFilter === 'this_month') {
-                $start = \Carbon\Carbon::now('Asia/Jakarta')->startOfMonth()->setTimezone('UTC');
-                $end = \Carbon\Carbon::now('Asia/Jakarta')->endOfMonth()->setTimezone('UTC');
+            if ($dateFilter === 'today' || $dateFilter === 'daily') {
+                $start = $now->copy()->startOfDay();
+                $end = $now->copy()->endOfDay();
+            } elseif ($dateFilter === 'this_week' || $dateFilter === 'weekly') {
+                $start = $now->copy()->startOfWeek();
+                $end = $now->copy()->endOfWeek();
+            } elseif ($dateFilter === 'this_month' || $dateFilter === 'monthly') {
+                $start = $now->copy()->startOfMonth();
+                $end = $now->copy()->endOfMonth();
+            } elseif ($dateFilter === 'this_year' || $dateFilter === 'yearly') {
+                $start = $now->copy()->startOfYear();
+                $end = $now->copy()->endOfYear();
             } elseif ($dateFilter === 'custom') {
                 if ($request->filled('start_date') && $request->filled('end_date')) {
-                    $start = \Carbon\Carbon::parse($request->input('start_date'), 'Asia/Jakarta')->startOfDay()->setTimezone('UTC');
-                    $end = \Carbon\Carbon::parse($request->input('end_date'), 'Asia/Jakarta')->endOfDay()->setTimezone('UTC');
+                    $start = \Carbon\Carbon::parse($request->input('start_date'), 'Asia/Jakarta')->startOfDay();
+                    $end = \Carbon\Carbon::parse($request->input('end_date'), 'Asia/Jakarta')->endOfDay();
                 }
             }
 
@@ -64,20 +68,98 @@ class InspectionDashboardController extends Controller
                 ->orderBy('toilet_locations.floor')
                 ->get();
 
-            // Trend Data
-            $inspectionsForTrend = (clone $baseQuery)
-                ->select('created_at')
-                ->orderBy('created_at', 'asc')
-                ->get();
+            // Trend Data based on granularity
+            $trendLabels = [];
+            $trendValues = [];
 
-            $trendData = [];
-            foreach ($inspectionsForTrend as $ins) {
-                $dateStr = $ins->created_at->setTimezone('Asia/Jakarta')->format('Y-m-d');
-                if (!isset($trendData[$dateStr])) {
-                    $trendData[$dateStr] = 0;
+            if ($dateFilter === 'today' || $dateFilter === 'daily') {
+                $inspectionsForTrend = Inspection::whereBetween('created_at', [
+                    $now->copy()->startOfDay(),
+                    $now->copy()->endOfDay()
+                ])->get();
+                
+                for ($h = 7; $h <= 20; $h++) {
+                    $lbl = sprintf('%02d:00', $h);
+                    $trendLabels[] = $lbl;
+                    $trendValues[] = 0;
                 }
-                $trendData[$dateStr]++;
+                foreach ($inspectionsForTrend as $ins) {
+                    $hour = (int) $ins->created_at->setTimezone('Asia/Jakarta')->format('G');
+                    if ($hour >= 7 && $hour <= 20) {
+                        $idx = $hour - 7;
+                        $trendValues[$idx]++;
+                    }
+                }
+            } elseif ($dateFilter === 'this_week' || $dateFilter === 'weekly') {
+                $inspectionsForTrend = Inspection::whereBetween('created_at', [
+                    $now->copy()->startOfWeek(),
+                    $now->copy()->endOfWeek()
+                ])->get();
+
+                $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                $dayCounts = array_fill_keys($days, 0);
+                foreach ($inspectionsForTrend as $ins) {
+                    $dayName = $ins->created_at->setTimezone('Asia/Jakarta')->format('l');
+                    if (isset($dayCounts[$dayName])) {
+                        $dayCounts[$dayName]++;
+                    }
+                }
+                $trendLabels = $days;
+                $trendValues = array_values($dayCounts);
+            } elseif ($dateFilter === 'this_year' || $dateFilter === 'yearly') {
+                $currentYearNum = (int)$now->format('Y');
+                $years = [$currentYearNum - 2, $currentYearNum - 1, $currentYearNum];
+                $yearCounts = array_fill_keys($years, 0);
+
+                $inspectionsForTrend = Inspection::whereYear('created_at', '>=', $currentYearNum - 2)->get();
+                foreach ($inspectionsForTrend as $ins) {
+                    $yr = (int)$ins->created_at->setTimezone('Asia/Jakarta')->format('Y');
+                    if (isset($yearCounts[$yr])) {
+                        $yearCounts[$yr]++;
+                    }
+                }
+                foreach ($years as $yr) {
+                    $trendLabels[] = (string)$yr;
+                    $trendValues[] = $yearCounts[$yr];
+                }
+            } elseif ($dateFilter === 'custom') {
+                $inspectionsForTrend = [];
+                if ($start && $end) {
+                    $inspectionsForTrend = Inspection::whereBetween('created_at', [$start, $end])
+                        ->orderBy('created_at', 'asc')
+                        ->get();
+                }
+                $dateCounts = [];
+                foreach ($inspectionsForTrend as $ins) {
+                    $dateStr = $ins->created_at->setTimezone('Asia/Jakarta')->format('Y-m-d');
+                    if (!isset($dateCounts[$dateStr])) {
+                        $dateCounts[$dateStr] = 0;
+                    }
+                    $dateCounts[$dateStr]++;
+                }
+                $trendLabels = array_keys($dateCounts);
+                $trendValues = array_values($dateCounts);
+            } else {
+                // Default to Monthly (this_month / monthly) - display months of current year
+                $inspectionsForTrend = Inspection::whereBetween('created_at', [
+                    $now->copy()->startOfYear()->setTimezone('UTC'),
+                    $now->copy()->endOfYear()->setTimezone('UTC')
+                ])->get();
+
+                $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                $monthCounts = array_fill_keys(range(1, 12), 0);
+                foreach ($inspectionsForTrend as $ins) {
+                    $mNum = (int) $ins->created_at->setTimezone('Asia/Jakarta')->format('n');
+                    if (isset($monthCounts[$mNum])) {
+                        $monthCounts[$mNum]++;
+                    }
+                }
+                $trendLabels = $months;
+                $trendValues = array_values($monthCounts);
             }
+
+            // Combine labels and values back to trendData for chart compatibility
+            $trendData = array_combine($trendLabels, $trendValues);
 
             // Pending inspections list for SPV review
             $pendingInspections = [];
@@ -88,9 +170,9 @@ class InspectionDashboardController extends Controller
                     ->get();
             }
 
-            // Recent inspections for Admin
+            // Recent inspections for Admin/GA
             $recentInspections = [];
-            if ($user->isAdmin()) {
+            if ($user->isAdmin() || $user->isGa()) {
                 $recentInspections = Inspection::with(['location', 'inspector'])
                     ->orderBy('created_at', 'desc')
                     ->limit(10)
@@ -106,7 +188,8 @@ class InspectionDashboardController extends Controller
                 'locationSummary',
                 'trendData',
                 'pendingInspections',
-                'recentInspections'
+                'recentInspections',
+                'dateFilter'
             ));
         }
 
@@ -137,18 +220,85 @@ class InspectionDashboardController extends Controller
     {
         $query = Inspection::with(['location', 'inspector'])->orderBy('inspected_at', 'desc');
 
+        // 1. Status filter
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
 
+        // 2. Location filter
         if ($request->filled('location_id')) {
             $query->where('location_id', $request->input('location_id'));
         }
 
+        // 3. Floor filter
+        if ($request->filled('floor')) {
+            $query->whereHas('location', function($q) use ($request) {
+                $q->where('floor', $request->input('floor'));
+            });
+        }
+
+
+
+        // 5. Inspector filter
+        if ($request->filled('inspector_id')) {
+            $query->where('inspector_id', $request->input('inspector_id'));
+        }
+
+        // 6. Search filter
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('notes', 'like', "%{$search}%")
+                  ->orWhereHas('inspector', function($qi) use ($search) {
+                      $qi->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('location', function($ql) use ($search) {
+                      $ql->where('building', 'like', "%{$search}%")
+                         ->orWhere('toilet_name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // 7. Period/Date range filter
+        $dateFilter = $request->input('date_filter');
+        $start = null;
+        $end = null;
+        $now = \Carbon\Carbon::now('Asia/Jakarta');
+
+        if ($dateFilter) {
+            if ($dateFilter === 'today' || $dateFilter === 'daily') {
+                $start = $now->copy()->startOfDay()->setTimezone('UTC');
+                $end = $now->copy()->endOfDay()->setTimezone('UTC');
+            } elseif ($dateFilter === 'this_week' || $dateFilter === 'weekly') {
+                $start = $now->copy()->startOfWeek()->setTimezone('UTC');
+                $end = $now->copy()->endOfWeek()->setTimezone('UTC');
+            } elseif ($dateFilter === 'this_month' || $dateFilter === 'monthly') {
+                $start = $now->copy()->startOfMonth()->setTimezone('UTC');
+                $end = $now->copy()->endOfMonth()->setTimezone('UTC');
+            } elseif ($dateFilter === 'this_year' || $dateFilter === 'yearly') {
+                $start = $now->copy()->startOfYear()->setTimezone('UTC');
+                $end = $now->copy()->endOfYear()->setTimezone('UTC');
+            } elseif ($dateFilter === 'custom') {
+                if ($request->filled('start_date') && $request->filled('end_date')) {
+                    $start = \Carbon\Carbon::parse($request->input('start_date'), 'Asia/Jakarta')->startOfDay()->setTimezone('UTC');
+                    $end = \Carbon\Carbon::parse($request->input('end_date'), 'Asia/Jakarta')->endOfDay()->setTimezone('UTC');
+                }
+            }
+            if ($start && $end) {
+                $query->whereBetween('inspections.inspected_at', [$start, $end]);
+            }
+        }
+
         $inspections = $query->paginate(10)->withQueryString();
         $locations = \App\Models\ToiletLocation::orderBy('building')->get();
+        $inspectors = \App\Models\User::where('role', 'user')
+            ->whereHas('modules', function($q) {
+                $q->where('module', 'toilet_inspection');
+            })
+            ->orderBy('name')
+            ->get();
 
-        return view('admin.toilet_inspection.inspections.index', compact('inspections', 'locations'));
+        return view('admin.toilet_inspection.inspections.index', compact('inspections', 'locations', 'inspectors', 'dateFilter'));
     }
 
     /**
@@ -156,11 +306,101 @@ class InspectionDashboardController extends Controller
      */
     public function approvals(Request $request)
     {
-        $query = \App\Models\InspectionApproval::with(['inspection.location', 'inspection.inspector', 'approver'])
-            ->orderBy('actioned_at', 'desc');
+        $query = Inspection::with(['location', 'inspector', 'approval.approver'])
+            ->where('status', '!=', 'draft');
 
-        $approvals = $query->paginate(10)->withQueryString();
+        // 1. Approval Status filter
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            if ($status === 'pending') {
+                $query->where('status', 'submitted');
+            } else {
+                $query->where('status', $status);
+            }
+        }
 
-        return view('admin.toilet_inspection.approvals.index', compact('approvals'));
+        // 2. Location filter
+        if ($request->filled('location_id')) {
+            $query->where('location_id', $request->input('location_id'));
+        }
+
+        // 3. Floor filter
+        if ($request->filled('floor')) {
+            $query->whereHas('location', function($q) use ($request) {
+                $q->where('floor', $request->input('floor'));
+            });
+        }
+
+        // 4. Inspector filter
+        if ($request->filled('inspector_id')) {
+            $query->where('inspector_id', $request->input('inspector_id'));
+        }
+
+        // 5. Search filter
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('notes', 'like', "%{$search}%")
+                  ->orWhereHas('inspector', function($qi) use ($search) {
+                      $qi->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('location', function($ql) use ($search) {
+                      $ql->where('building', 'like', "%{$search}%")
+                         ->orWhere('toilet_name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('approval.approver', function($qa) use ($search) {
+                      $qa->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // 6. Period/Date range filter
+        $dateFilter = $request->input('date_filter');
+        $start = null;
+        $end = null;
+        $now = \Carbon\Carbon::now('Asia/Jakarta');
+
+        if ($dateFilter) {
+            if ($dateFilter === 'today' || $dateFilter === 'daily') {
+                $start = $now->copy()->startOfDay()->setTimezone('UTC');
+                $end = $now->copy()->endOfDay()->setTimezone('UTC');
+            } elseif ($dateFilter === 'this_week' || $dateFilter === 'weekly') {
+                $start = $now->copy()->startOfWeek()->setTimezone('UTC');
+                $end = $now->copy()->endOfWeek()->setTimezone('UTC');
+            } elseif ($dateFilter === 'this_month' || $dateFilter === 'monthly') {
+                $start = $now->copy()->startOfMonth()->setTimezone('UTC');
+                $end = $now->copy()->endOfMonth()->setTimezone('UTC');
+            } elseif ($dateFilter === 'this_year' || $dateFilter === 'yearly') {
+                $start = $now->copy()->startOfYear()->setTimezone('UTC');
+                $end = $now->copy()->endOfYear()->setTimezone('UTC');
+            } elseif ($dateFilter === 'custom') {
+                if ($request->filled('start_date') && $request->filled('end_date')) {
+                    $start = \Carbon\Carbon::parse($request->input('start_date'), 'Asia/Jakarta')->startOfDay()->setTimezone('UTC');
+                    $end = \Carbon\Carbon::parse($request->input('end_date'), 'Asia/Jakarta')->endOfDay()->setTimezone('UTC');
+                }
+            }
+            if ($start && $end) {
+                $query->where(function($q) use ($start, $end) {
+                    $q->whereBetween('inspections.inspected_at', [$start, $end])
+                      ->orWhereHas('approval', function($qa) use ($start, $end) {
+                          $qa->whereBetween('actioned_at', [$start, $end]);
+                      });
+                });
+            }
+        }
+
+        $inspections = $query->orderBy('inspected_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        $locations = \App\Models\ToiletLocation::orderBy('building')->get();
+        $inspectors = \App\Models\User::where('role', 'user')
+            ->whereHas('modules', function($q) {
+                $q->where('module', 'toilet_inspection');
+            })
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.toilet_inspection.approvals.index', compact('inspections', 'locations', 'inspectors', 'dateFilter'));
     }
 }

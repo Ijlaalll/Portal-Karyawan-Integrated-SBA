@@ -16,35 +16,19 @@ class UserController extends Controller
         protected UserService $userService
     ) {}
 
-    /**
-     * Check if active admin module is set in session.
-     */
-    protected function checkActiveModule()
-    {
-        $activeModule = session('active_admin_module');
-        if (app()->environment('testing') && !session('enforce_active_module')) {
-            $activeModule = $activeModule ?: 'meeting_room';
-        }
 
-        return $activeModule;
-    }
 
     /**
      * Display a listing of registered users.
      */
     public function index(Request $request)
     {
-        if (!$this->checkActiveModule()) {
-            return redirect()->route('admin.home')
-                ->with('error', 'Please select a management module first.');
-        }
-
         // Default management context if not specified in the request
         if (!$request->has('management')) {
-            $request->merge(['management' => session('active_admin_module') ?: 'all']);
+            $request->merge(['management' => 'all']);
         }
 
-        $query = User::with('modules')->orderBy('name', 'asc');
+        $query = User::with(['modules', 'costCenter'])->orderBy('name', 'asc');
 
         // Search by name or email
         if ($request->filled('search')) {
@@ -81,12 +65,18 @@ class UserController extends Controller
         $totalUsers = User::count();
         $meetingRoomCount = UserModule::where('module', 'meeting_room')->count();
         $toiletInspectionCount = UserModule::where('module', 'toilet_inspection')->count();
+        $atkCount = UserModule::where('module', 'atk')->count();
+        $sikCount = UserModule::where('module', 'sik')->count();
+        $vehicleCount = UserModule::where('module', 'vehicle')->count();
 
-        return view('admin.users.index', compact(
+        return view('admin.settings.users.index', compact(
             'users', 
             'totalUsers', 
             'meetingRoomCount', 
-            'toiletInspectionCount'
+            'toiletInspectionCount',
+            'atkCount',
+            'sikCount',
+            'vehicleCount'
         ));
     }
 
@@ -95,12 +85,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        if (!$this->checkActiveModule()) {
-            return redirect()->route('admin.home')
-                ->with('error', 'Please select a management module first.');
-        }
-
-        return view('admin.users.create');
+        $costCenters = \App\Models\CostCenter::where('status', 'active')->orderBy('name', 'asc')->get();
+        return view('admin.settings.users.create', compact('costCenters'));
     }
 
     /**
@@ -108,15 +94,10 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        if (!$this->checkActiveModule()) {
-            return redirect()->route('admin.home')
-                ->with('error', 'Please select a management module first.');
-        }
-
         $this->userService->createUser($request->validated());
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'User created successfully.');
+            ->with('success', 'Pengguna berhasil dibuat.');
     }
 
     /**
@@ -124,14 +105,13 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        if (!$this->checkActiveModule()) {
-            return redirect()->route('admin.home')
-                ->with('error', 'Please select a management module first.');
-        }
+        $user->load(['modules', 'costCenter']);
+        $costCenters = \App\Models\CostCenter::where('status', 'active')
+            ->orWhere('id', $user->cost_center_id)
+            ->orderBy('name', 'asc')
+            ->get();
 
-        $user->load('modules');
-
-        return view('admin.users.edit', compact('user'));
+        return view('admin.settings.users.edit', compact('user', 'costCenters'));
     }
 
     /**
@@ -139,26 +119,43 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        if (!$this->checkActiveModule()) {
-            return redirect()->route('admin.home')
-                ->with('error', 'Please select a management module first.');
-        }
-
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', 'in:user,admin,spv'],
-            'modules' => ['required_unless:role,admin', 'array'],
-            'modules.*' => ['string', 'in:meeting_room,toilet_inspection'],
+            'role' => ['required', 'string', 'in:user,admin,spv,ga,it,security'],
+            'modules' => ['required_unless:role,admin,security', 'array'],
+            'modules.*' => ['string', 'in:meeting_room,toilet_inspection,atk,sik,vehicle'],
+            'department' => ['nullable', 'string', 'max:255'],
+            'position' => ['nullable', 'string', 'max:255'],
+            'employee_id' => ['nullable', 'string', 'max:255'],
+            'joined_at' => ['nullable', 'date'],
+            'cost_center_id' => [
+                'nullable',
+                \Illuminate\Validation\Rule::exists('cost_centers', 'id')->where(function ($query) use ($user) {
+                    $query->where('status', 'active')->orWhere('id', $user->cost_center_id);
+                }),
+            ],
+        ], [
+            'cost_center_id.exists' => 'Cost Center yang dipilih tidak valid atau tidak aktif.',
         ]);
 
-        $data = $request->only(['name', 'email', 'password', 'role', 'modules']);
+        // Prevent modifying the role of the last active Admin to a non-admin role
+        if ($user->role === 'admin' && $user->status === 'active' && $request->input('role') !== 'admin') {
+            $activeAdminCount = User::where('role', 'admin')->where('status', 'active')->count();
+            if ($activeAdminCount <= 1) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Tidak dapat mengubah peran pengguna: Ini adalah satu-satunya akun Admin aktif yang tersisa di sistem.');
+            }
+        }
+
+        $data = $request->only(['name', 'email', 'password', 'role', 'modules', 'department', 'position', 'employee_id', 'joined_at', 'cost_center_id']);
 
         $this->userService->updateUser($user, $data);
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'User updated successfully.');
+            ->with('success', 'Pengguna berhasil diperbarui.');
     }
 
     /**
@@ -166,48 +163,48 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if (!$this->checkActiveModule()) {
-            return redirect()->route('admin.home')
-                ->with('error', 'Please select a management module first.');
-        }
-
         // 1. Current user
         if (auth()->id() === $user->id) {
             return redirect()->route('admin.users.index')
-                ->with('error', 'Cannot delete user: You are currently logged in as this user.');
+                ->with('error', 'Tidak dapat menghapus pengguna: Anda sedang masuk menggunakan akun pengguna ini.');
         }
 
-        // 2. Only admin
+        // 2. Only admin (Do not allow deleting any admin account)
         if ($user->role === 'admin') {
-            $adminCount = User::where('role', 'admin')->count();
-            if ($adminCount <= 1) {
-                return redirect()->route('admin.users.index')
-                    ->with('error', 'Cannot delete user: This is the only remaining Administrator account in the system.');
-            }
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Tidak dapat menghapus pengguna dengan peran Admin.');
         }
 
         // 3. Meeting Room Bookings
         if ($user->bookings()->exists()) {
             return redirect()->route('admin.users.index')
-                ->with('error', 'Cannot delete user: This user has active or historical meeting room booking records.');
+                ->with('error', 'Tidak dapat menghapus pengguna: Pengguna ini memiliki riwayat pemesanan ruang meeting.');
         }
 
         // 4. Approved Bookings (as Admin approver)
         if ($user->approvedBookings()->exists()) {
             return redirect()->route('admin.users.index')
-                ->with('error', 'Cannot delete user: This user has approved historical meeting room bookings.');
+                ->with('error', 'Tidak dapat menghapus pengguna: Pengguna ini memiliki riwayat persetujuan pemesanan ruang meeting.');
         }
 
         // 5. Toilet Inspections (as Inspector)
         if ($user->inspections()->exists()) {
             return redirect()->route('admin.users.index')
-                ->with('error', 'Cannot delete user: This user has submitted toilet inspection records.');
+                ->with('error', 'Tidak dapat menghapus pengguna: Pengguna ini memiliki riwayat inspeksi toilet yang telah dikirim.');
         }
 
         // 6. Inspection Approvals (as SPV reviewer)
         if ($user->approvals()->exists()) {
             return redirect()->route('admin.users.index')
-                ->with('error', 'Cannot delete user: This user has historical toilet inspection approval reviews.');
+                ->with('error', 'Tidak dapat menghapus pengguna: Pengguna ini memiliki riwayat ulasan persetujuan inspeksi toilet.');
+        }
+
+        // 7. GA/IT task history
+        if ($user->isGa() || $user->isIt()) {
+            if ($user->hasHistory()) {
+                return redirect()->route('admin.users.index')
+                    ->with('error', 'Akun GA/IT tidak dapat dihapus karena memiliki riwayat tugas persiapan.');
+            }
         }
 
         // Safe to delete: Delete modules first to prevent FK constraint failures
@@ -217,7 +214,7 @@ class UserController extends Controller
         });
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'User deleted successfully.');
+            ->with('success', 'Pengguna berhasil dihapus.');
     }
 
     /**
@@ -225,12 +222,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        if (!$this->checkActiveModule()) {
-            return redirect()->route('admin.home')
-                ->with('error', 'Please select a management module first.');
-        }
-
-        $user->load(['modules']);
+        $user->load(['modules', 'costCenter']);
 
         // 1. Meeting Room Activity Stats & History
         if ($user->isAdmin()) {
@@ -244,12 +236,126 @@ class UserController extends Controller
             // System-wide booking history for monitoring
             $bookings = \App\Models\Booking::with(['room', 'user'])->orderBy('booking_date', 'desc')->orderBy('start_time', 'desc')->get();
             $approvedBookings = collect();
+        } elseif ($user->isGa() || $user->isIt()) {
+            $role = $user->role;
+            if ($role === 'ga') {
+                $pending = \App\Models\Booking::whereIn('meeting_type', ['offline', 'hybrid'])->where('status', 'approved')
+                    ->where(function($q) {
+                        $q->where('ga_status', 'pending')
+                          ->orWhere(function($sub) {
+                              $sub->whereNull('ga_status')->where('preparation_status', 'Menunggu Persiapan');
+                          });
+                    })->count();
+                $inProgress = \App\Models\Booking::whereIn('meeting_type', ['offline', 'hybrid'])->where('status', 'approved')
+                    ->where(function($q) {
+                        $q->where('ga_status', 'in_progress')
+                          ->orWhere(function($sub) {
+                              $sub->whereNull('ga_status')->where('preparation_status', 'Sedang Dipersiapkan');
+                          });
+                    })->count();
+                $ready = \App\Models\Booking::whereIn('meeting_type', ['offline', 'hybrid'])->where('status', 'approved')
+                    ->where(function($q) {
+                        $q->where('ga_status', 'ready')
+                          ->orWhere(function($sub) {
+                              $sub->whereNull('ga_status')->where('preparation_status', 'Siap');
+                          });
+                    })->count();
+                $notReady = \App\Models\Booking::whereIn('meeting_type', ['offline', 'hybrid'])
+                    ->where(function($q) {
+                        $q->where('ga_status', 'not_ready')
+                          ->orWhere(function($sub) {
+                              $sub->whereNull('ga_status')->where('preparation_status', 'Tidak Siap');
+                          });
+                    })->count();
+                $completed = \App\Models\Booking::whereIn('meeting_type', ['offline', 'hybrid'])->where('status', 'completed')->count();
+                $total = $pending + $inProgress + $ready + $notReady + $completed;
+                
+                // Tasks list where GA has worked or could work
+                $bookings = \App\Models\Booking::whereIn('meeting_type', ['offline', 'hybrid'])
+                    ->where(function ($q) use ($user) {
+                        $q->where('prepared_by_ga', $user->id)
+                          ->orWhereNull('prepared_by_ga');
+                    })
+                    ->whereIn('status', ['approved', 'completed', 'cancelled'])
+                    ->with(['user', 'room'])
+                    ->orderBy('booking_date', 'desc')
+                    ->orderBy('start_time', 'desc')
+                    ->get();
+            } else {
+                // IT is hybrid only, but we support legacy online meetings for statistics!
+                $pending = \App\Models\Booking::where('status', 'approved')
+                    ->where(function($q) {
+                        $q->where('meeting_type', 'hybrid')->where('it_status', 'pending')
+                          ->orWhere(function($sub) {
+                              $sub->where('meeting_type', 'online')->whereNull('it_status')->where('preparation_status', 'Menunggu Persiapan');
+                          });
+                    })->count();
+                
+                $inProgress = \App\Models\Booking::where('status', 'approved')
+                    ->where(function($q) {
+                        $q->where('meeting_type', 'hybrid')->where('it_status', 'in_progress')
+                          ->orWhere(function($sub) {
+                              $sub->where('meeting_type', 'online')->whereNull('it_status')->where('preparation_status', 'Sedang Dipersiapkan');
+                          });
+                    })->count();
+                
+                $ready = \App\Models\Booking::where('status', 'approved')
+                    ->where(function($q) {
+                        $q->where('meeting_type', 'hybrid')->where('it_status', 'ready')
+                          ->orWhere(function($sub) {
+                              $sub->where('meeting_type', 'online')->whereNull('it_status')->where('preparation_status', 'Siap');
+                          });
+                    })->count();
+                
+                $notReady = \App\Models\Booking::where(function($q) {
+                    $q->where('meeting_type', 'hybrid')->where('it_status', 'not_ready')
+                      ->orWhere(function($sub) {
+                          $sub->where('meeting_type', 'online')->whereNull('it_status')->where('preparation_status', 'Tidak Siap');
+                      });
+                })->count();
+                
+                $completed = \App\Models\Booking::where(function($q) {
+                    $q->where('meeting_type', 'hybrid')
+                      ->orWhere(function($sub) {
+                          $sub->where('meeting_type', 'online')->whereNull('it_status');
+                      });
+                })->where('status', 'completed')->count();
+                $total = $pending + $inProgress + $ready + $notReady + $completed;
+
+                $bookings = \App\Models\Booking::where(function($q) use ($user) {
+                    $q->where('meeting_type', 'hybrid')
+                      ->orWhere(function($sub) {
+                          $sub->where('meeting_type', 'online')->whereNull('it_status');
+                      });
+                })
+                ->where(function ($q) use ($user) {
+                    $q->where('prepared_by_it', $user->id)
+                      ->orWhereNull('prepared_by_it');
+                })
+                ->whereIn('status', ['approved', 'completed', 'cancelled'])
+                ->with(['user', 'room'])
+                ->orderBy('booking_date', 'desc')
+                ->orderBy('start_time', 'desc')
+                ->get();
+            }
+
+            $meetingRoomStats = [
+                'total' => $total,
+                'pending' => $pending,
+                'in_progress' => $inProgress,
+                'ready' => $ready,
+                'not_ready' => $notReady,
+                'completed' => $completed,
+            ];
+            $approvedBookings = collect();
         } else {
             $meetingRoomStats = [
                 'total' => $user->bookings()->count(),
                 'approved' => $user->bookings()->where('status', 'approved')->count(),
                 'rejected' => $user->bookings()->where('status', 'rejected')->count(),
                 'pending' => $user->bookings()->where('status', 'pending')->count(),
+                'cancelled' => $user->bookings()->where('status', 'cancelled')->count(),
+                'completed' => $user->bookings()->where('status', 'completed')->count(),
             ];
             // Fetch bookings created by user
             $bookings = $user->bookings()->with('room')->orderBy('booking_date', 'desc')->orderBy('start_time', 'desc')->get();
@@ -299,14 +405,145 @@ class UserController extends Controller
             $inspections = $user->inspections()->with(['location', 'approval.approver'])->orderBy('inspected_at', 'desc')->get();
         }
 
-        return view('admin.users.show', compact(
+        // 3. ATK Activity Stats & History
+        $atkStats = [
+            'total' => 0,
+            'diajukan' => 0,
+            'disetujui' => 0,
+            'diproses' => 0,
+            'selesai' => 0,
+            'ditolak' => 0,
+            'dibatalkan' => 0,
+        ];
+        $atkRequests = collect();
+
+        if ($user->isAdmin()) {
+            $atkStats = [
+                'total' => \App\Models\AtkRequest::count(),
+                'diajukan' => \App\Models\AtkRequest::where('status', 'diajukan')->count(),
+                'disetujui' => \App\Models\AtkRequest::where('status', 'disetujui')->count(),
+                'diproses' => \App\Models\AtkRequest::where('status', 'diproses')->count(),
+                'selesai' => \App\Models\AtkRequest::where('status', 'selesai')->count(),
+                'ditolak' => \App\Models\AtkRequest::where('status', 'ditolak')->count(),
+                'dibatalkan' => \App\Models\AtkRequest::where('status', 'dibatalkan')->count(),
+            ];
+            $atkRequests = \App\Models\AtkRequest::with(['user', 'items.variant.item'])->orderBy('created_at', 'desc')->get();
+        } elseif ($user->isGa()) {
+            $atkStats = [
+                'total' => \App\Models\AtkRequest::where(function($q) use ($user) {
+                    $q->where('approved_by', $user->id)
+                      ->orWhere('processed_by', $user->id)
+                      ->orWhere('completed_by', $user->id)
+                      ->orWhere('rejected_by', $user->id);
+                })->count(),
+                'diajukan' => 0,
+                'disetujui' => \App\Models\AtkRequest::where('approved_by', $user->id)->count(),
+                'diproses' => \App\Models\AtkRequest::where('processed_by', $user->id)->count(),
+                'selesai' => \App\Models\AtkRequest::where('completed_by', $user->id)->count(),
+                'ditolak' => \App\Models\AtkRequest::where('rejected_by', $user->id)->count(),
+                'dibatalkan' => 0,
+            ];
+            $atkRequests = \App\Models\AtkRequest::where(function($q) use ($user) {
+                    $q->where('approved_by', $user->id)
+                      ->orWhere('processed_by', $user->id)
+                      ->orWhere('completed_by', $user->id)
+                      ->orWhere('rejected_by', $user->id);
+                })
+                ->with(['user', 'items.variant.item'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            $atkStats = [
+                'total' => \App\Models\AtkRequest::where('user_id', $user->id)->count(),
+                'diajukan' => \App\Models\AtkRequest::where('user_id', $user->id)->where('status', 'diajukan')->count(),
+                'disetujui' => \App\Models\AtkRequest::where('user_id', $user->id)->where('status', 'disetujui')->count(),
+                'diproses' => \App\Models\AtkRequest::where('user_id', $user->id)->where('status', 'diproses')->count(),
+                'selesai' => \App\Models\AtkRequest::where('user_id', $user->id)->where('status', 'selesai')->count(),
+                'ditolak' => \App\Models\AtkRequest::where('user_id', $user->id)->where('status', 'ditolak')->count(),
+                'dibatalkan' => \App\Models\AtkRequest::where('user_id', $user->id)->where('status', 'dibatalkan')->count(),
+            ];
+            $atkRequests = \App\Models\AtkRequest::where('user_id', $user->id)
+                ->with(['items.variant.item'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+
+        // 4. SIK Activity Stats & History
+        $sikStats = [
+            'total' => 0,
+            'approved' => 0,
+            'pending' => 0,
+            'outside' => 0,
+            'returned' => 0,
+            'rejected' => 0,
+        ];
+        $sikPermits = collect();
+        $sikScans = collect();
+
+        if ($user->isAdmin()) {
+            $sikStats = [
+                'total' => \App\Models\ExitPermit::count(),
+                'approved' => \App\Models\ExitPermit::where('status', \App\Models\ExitPermit::STATUS_APPROVED)->count(),
+                'pending' => \App\Models\ExitPermit::where('status', \App\Models\ExitPermit::STATUS_PENDING_APPROVAL)->count(),
+                'outside' => \App\Models\ExitPermit::where('status', \App\Models\ExitPermit::STATUS_OUTSIDE)->count(),
+                'returned' => \App\Models\ExitPermit::where('status', \App\Models\ExitPermit::STATUS_RETURNED)->count(),
+                'rejected' => \App\Models\ExitPermit::where('status', \App\Models\ExitPermit::STATUS_REJECTED)->count(),
+            ];
+            $sikPermits = \App\Models\ExitPermit::with(['user', 'approver'])->orderBy('created_at', 'desc')->get();
+        } elseif ($user->isSecurity()) {
+            $totalScans = \App\Models\SikScanLog::where('scanned_by', $user->id)->count();
+            $exitScans = \App\Models\SikScanLog::where('scanned_by', $user->id)->where('scan_type', 'EXIT')->count();
+            $returnScans = \App\Models\SikScanLog::where('scanned_by', $user->id)->where('scan_type', 'RETURN')->count();
+            $sikStats = [
+                'total' => $totalScans,
+                'exit' => $exitScans,
+                'return' => $returnScans,
+            ];
+            $sikScans = \App\Models\SikScanLog::where('scanned_by', $user->id)->with(['exitPermit.user'])->orderBy('scanned_at', 'desc')->get();
+        } elseif ($user->isSikApprover()) {
+            $totalEvaluated = \App\Models\ExitPermit::where('approver_id', $user->id)->count();
+            $approved = \App\Models\ExitPermit::where('approver_id', $user->id)->whereIn('status', [\App\Models\ExitPermit::STATUS_APPROVED, \App\Models\ExitPermit::STATUS_OUTSIDE, \App\Models\ExitPermit::STATUS_RETURNED])->count();
+            $rejected = \App\Models\ExitPermit::where('approver_id', $user->id)->where('status', \App\Models\ExitPermit::STATUS_REJECTED)->count();
+            $pending = \App\Models\ExitPermit::where('approver_id', $user->id)->where('status', \App\Models\ExitPermit::STATUS_PENDING_APPROVAL)->count();
+            $sikStats = [
+                'total' => $totalEvaluated,
+                'approved' => $approved,
+                'pending' => $pending,
+                'rejected' => $rejected,
+            ];
+            $sikPermits = \App\Models\ExitPermit::where('approver_id', $user->id)->with(['user'])->orderBy('created_at', 'desc')->get();
+        } else {
+            // Regular employee / applicant (e.g. Petugas toilet yang diberi akses SIK)
+            $totalUserPermits = \App\Models\ExitPermit::where('user_id', $user->id)->count();
+            $approved = \App\Models\ExitPermit::where('user_id', $user->id)->whereIn('status', [\App\Models\ExitPermit::STATUS_APPROVED, \App\Models\ExitPermit::STATUS_OUTSIDE, \App\Models\ExitPermit::STATUS_RETURNED])->count();
+            $pending = \App\Models\ExitPermit::where('user_id', $user->id)->where('status', \App\Models\ExitPermit::STATUS_PENDING_APPROVAL)->count();
+            $outside = \App\Models\ExitPermit::where('user_id', $user->id)->where('status', \App\Models\ExitPermit::STATUS_OUTSIDE)->count();
+            $returned = \App\Models\ExitPermit::where('user_id', $user->id)->where('status', \App\Models\ExitPermit::STATUS_RETURNED)->count();
+            $rejected = \App\Models\ExitPermit::where('user_id', $user->id)->where('status', \App\Models\ExitPermit::STATUS_REJECTED)->count();
+            $sikStats = [
+                'total' => $totalUserPermits,
+                'approved' => $approved,
+                'pending' => $pending,
+                'outside' => $outside,
+                'returned' => $returned,
+                'rejected' => $rejected,
+            ];
+            $sikPermits = \App\Models\ExitPermit::where('user_id', $user->id)->with(['approver'])->orderBy('created_at', 'desc')->get();
+        }
+
+        return view('admin.settings.users.show', compact(
             'user',
             'meetingRoomStats',
             'bookings',
             'approvedBookings',
             'toiletStats',
             'inspections',
-            'approvals'
+            'approvals',
+            'atkStats',
+            'atkRequests',
+            'sikStats',
+            'sikPermits',
+            'sikScans'
         ));
     }
 
@@ -315,16 +552,11 @@ class UserController extends Controller
      */
     public function activate(User $user)
     {
-        if (!$this->checkActiveModule()) {
-            return redirect()->route('admin.home')
-                ->with('error', 'Please select a management module first.');
-        }
-
         $user->status = 'active';
         $user->save();
 
         return redirect()->route('admin.users.index')
-            ->with('success', "User {$user->name} has been activated successfully.");
+            ->with('success', "Pengguna {$user->name} berhasil diaktifkan.");
     }
 
     /**
@@ -332,21 +564,25 @@ class UserController extends Controller
      */
     public function deactivate(User $user)
     {
-        if (!$this->checkActiveModule()) {
-            return redirect()->route('admin.home')
-                ->with('error', 'Please select a management module first.');
-        }
-
         // Prevent self-deactivation
         if (auth()->id() === $user->id) {
             return redirect()->route('admin.users.index')
-                ->with('error', 'Cannot deactivate user: You are currently logged in as this user.');
+                ->with('error', 'Tidak dapat menonaktifkan pengguna: Anda sedang masuk menggunakan akun pengguna ini.');
+        }
+
+        // Prevent deactivating the last active Admin
+        if ($user->role === 'admin' && $user->status === 'active') {
+            $activeAdminCount = User::where('role', 'admin')->where('status', 'active')->count();
+            if ($activeAdminCount <= 1) {
+                return redirect()->route('admin.users.index')
+                    ->with('error', 'Tidak dapat menonaktifkan pengguna: Ini adalah satu-satunya akun Admin aktif yang tersisa di sistem.');
+            }
         }
 
         $user->status = 'inactive';
         $user->save();
 
         return redirect()->route('admin.users.index')
-            ->with('success', "User {$user->name} has been deactivated successfully.");
+            ->with('success', "Pengguna {$user->name} berhasil dinonaktifkan.");
     }
 }

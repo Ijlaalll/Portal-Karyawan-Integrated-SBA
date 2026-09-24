@@ -45,7 +45,7 @@ class AdminToiletLocationController extends Controller
         ToiletLocation::create($request->all());
 
         return redirect()->route('admin.toilet_inspection.locations.index')
-            ->with('success', 'Toilet location created successfully.');
+            ->with('success', 'Lokasi toilet berhasil dibuat.');
     }
 
     /**
@@ -73,7 +73,7 @@ class AdminToiletLocationController extends Controller
         $location->update($request->all());
 
         return redirect()->route('admin.toilet_inspection.locations.index')
-            ->with('success', 'Toilet location updated successfully.');
+            ->with('success', 'Lokasi toilet berhasil diperbarui.');
     }
 
     /**
@@ -84,6 +84,6 @@ class AdminToiletLocationController extends Controller
         $location->delete();
 
         return redirect()->route('admin.toilet_inspection.locations.index')
-            ->with('success', 'Toilet location deleted successfully.');
+            ->with('success', 'Lokasi toilet berhasil dihapus.');
     }
 }

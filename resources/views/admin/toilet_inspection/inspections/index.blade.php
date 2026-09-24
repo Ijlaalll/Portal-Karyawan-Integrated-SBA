@@ -1,57 +1,133 @@
 @extends('layouts.app')
 
-@section('title', 'Toilet Inspections Log - SBA Admin')
+@section('title', 'Log Inspeksi Toilet - Admin SBA')
 
 @section('content')
 <div class="min-h-full">
     <header class="mb-8 flex justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold leading-tight tracking-tight text-[#0F172A]">
-                Toilet Inspections
+                Inspeksi Toilet
             </h1>
             <p class="text-sm text-[#475569] mt-1">
-                View all submitted, approved, and rejected toilet inspections.
+                Lihat semua inspeksi toilet yang dikirimkan, disetujui, dan ditolak.
             </p>
         </div>
     </header>
 
-    <!-- Filters -->
-    <form action="{{ route('admin.toilet_inspection.inspections.index') }}" method="GET" class="flex flex-wrap gap-4 mb-6">
-        <select name="status" onchange="this.form.submit()"
-            class="rounded-md border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]">
-            <option value="">All Statuses</option>
-            <option value="submitted" {{ request('status') === 'submitted' ? 'selected' : '' }}>Submitted (Pending)</option>
-            <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
-            <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
-        </select>
+    <!-- Filters Panel -->
+    <section class="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm mb-6">
+        <form action="{{ route('admin.toilet_inspection.inspections.index') }}" method="GET" id="inspectionsFilterForm" class="space-y-6" onsubmit="sessionStorage.setItem('inspections_page_scroll', document.querySelector('main')?.scrollTop || 0);">
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Search -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Cari</label>
+                    <div class="relative">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Catatan, petugas..." class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#2563EB]">
+                        <span class="material-symbols-outlined text-slate-400 text-[18px] absolute left-3 top-2.5">search</span>
+                    </div>
+                </div>
 
-        <select name="location_id" onchange="this.form.submit()"
-            class="rounded-md border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]">
-            <option value="">All Locations</option>
-            @foreach($locations as $loc)
-                <option value="{{ $loc->id }}" {{ request('location_id') == $loc->id ? 'selected' : '' }}>
-                    {{ $loc->building }}, {{ $loc->floor }} ({{ $loc->toilet_name }})
-                </option>
-            @endforeach
-        </select>
+                <!-- Location Filter -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Lokasi</label>
+                    <select name="location_id" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#2563EB] bg-white">
+                        <option value="">Semua Lokasi</option>
+                        @foreach($locations as $loc)
+                            <option value="{{ $loc->id }}" {{ request('location_id') == $loc->id ? 'selected' : '' }}>
+                                {{ $loc->building }} ({{ $loc->toilet_name }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-        @if(request()->filled('status') || request()->filled('location_id'))
-            <a href="{{ route('admin.toilet_inspection.inspections.index') }}" class="text-sm text-[#475569] hover:text-[#0F172A] font-medium underline flex items-center">
-                Reset Filters
-            </a>
-        @endif
-    </form>
+                <!-- Floor Filter -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Lantai</label>
+                    <select name="floor" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#2563EB] bg-white">
+                        <option value="">Semua Lantai</option>
+                        @foreach($locations->pluck('floor')->unique()->sort() as $floor)
+                            <option value="{{ $floor }}" {{ request('floor') === $floor ? 'selected' : '' }}>
+                                {{ $floor }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Status</label>
+                    <select name="status" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#2563EB] bg-white">
+                        <option value="">Semua Status</option>
+                        <option value="submitted" {{ request('status') === 'submitted' ? 'selected' : '' }}>Menunggu Ulasan</option>
+                        <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Disetujui</option>
+                        <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 pt-2 border-t border-slate-100 items-end">
+                <!-- Inspector Filter -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Petugas Inspeksi</label>
+                    <select name="inspector_id" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#2563EB] bg-white">
+                        <option value="">Semua Petugas Inspeksi</option>
+                        @foreach($inspectors as $inspector)
+                            <option value="{{ $inspector->id }}" {{ request('inspector_id') == $inspector->id ? 'selected' : '' }}>
+                                {{ $inspector->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Period/Date Range Toggles -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tipe Periode</label>
+                    <div class="inline-flex rounded-lg border border-gray-200 bg-white p-0.5 shadow-sm text-xs font-semibold w-full justify-between">
+                        <button type="button" onclick="setInspectionsPeriod('daily')" class="flex-1 py-1.5 rounded-md text-center transition-all {{ $dateFilter === 'daily' ? 'bg-[#2563EB] text-white' : 'text-[#475569] hover:text-[#0F172A]' }}">Harian</button>
+                        <button type="button" onclick="setInspectionsPeriod('weekly')" class="flex-1 py-1.5 rounded-md text-center transition-all {{ $dateFilter === 'weekly' ? 'bg-[#2563EB] text-white' : 'text-[#475569] hover:text-[#0F172A]' }}">Mingguan</button>
+                        <button type="button" onclick="setInspectionsPeriod('monthly')" class="flex-1 py-1.5 rounded-md text-center transition-all {{ $dateFilter === 'monthly' ? 'bg-[#2563EB] text-white' : 'text-[#475569] hover:text-[#0F172A]' }}">Bulanan</button>
+                        <button type="button" onclick="setInspectionsPeriod('yearly')" class="flex-1 py-1.5 rounded-md text-center transition-all {{ $dateFilter === 'yearly' ? 'bg-[#2563EB] text-white' : 'text-[#475569] hover:text-[#0F172A]' }}">Tahunan</button>
+                    </div>
+                    <input type="hidden" name="date_filter" id="inspections_period_input" value="{{ $dateFilter }}">
+                </div>
+
+                <!-- Custom Range Datepicker (start_date) -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tanggal Mulai Kustom</label>
+                    <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" onchange="clearInspectionsPeriod()" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#2563EB] bg-white">
+                </div>
+
+                <!-- Custom Range Datepicker (end_date) -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tanggal Selesai Kustom</label>
+                    <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" onchange="clearInspectionsPeriod()" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#2563EB] bg-white">
+                </div>
+
+                <!-- Action buttons -->
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 bg-[#2563EB] text-white text-xs font-bold py-2 rounded-lg hover:bg-[#1D4ED8] transition-colors shadow-sm">
+                        Terapkan
+                    </button>
+                    <a href="{{ route('admin.toilet_inspection.inspections.index') }}" onclick="sessionStorage.removeItem('inspections_page_scroll');" class="px-4 py-2 border border-gray-200 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-50 transition-colors shadow-sm text-center">
+                        Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </section>
 
     <!-- Table -->
     <div class="bg-white border border-[#E5E7EB] sm:rounded-lg overflow-x-auto shadow-sm">
         <table class="min-w-full divide-y divide-[#E5E7EB]">
             <thead class="bg-[#F9FAFB]">
                 <tr>
-                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#475569] uppercase tracking-wider">Location</th>
-                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#475569] uppercase tracking-wider">Inspector</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#475569] uppercase tracking-wider">Lokasi</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#475569] uppercase tracking-wider">Petugas Inspeksi</th>
                     <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#475569] uppercase tracking-wider">Status</th>
-                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#475569] uppercase tracking-wider">Date</th>
-                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#475569] uppercase tracking-wider">Actions</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#475569] uppercase tracking-wider">Tanggal</th>
+                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#475569] uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-[#E5E7EB] text-sm text-[#0F172A]">
@@ -72,19 +148,19 @@
                                 $badgeClass = $badges[$ins->status] ?? $badges['draft'];
                             @endphp
                             <span class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium {{ $badgeClass }} ring-1 ring-inset">
-                                {{ $ins->status === 'submitted' ? 'Pending Review' : ucfirst($ins->status) }}
+                                {{ $ins->status === 'submitted' ? 'Menunggu Ulasan' : ($ins->status === 'approved' ? 'Disetujui' : ($ins->status === 'rejected' ? 'Ditolak' : 'Draft')) }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-[#475569]">{{ $ins->inspected_at->format('d M Y, H:i') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
                             <a href="{{ route('inspections.show', $ins) }}" class="text-[#2563EB] hover:text-[#1D4ED8]">
-                                View Details
+                                Lihat Detail
                             </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-[#64748B]">No inspections found.</td>
+                        <td colspan="5" class="px-6 py-12 text-center text-[#64748B]">Tidak ada inspeksi yang ditemukan.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -96,4 +172,39 @@
         @endif
     </div>
 </div>
+
+<script>
+    function setInspectionsPeriod(val) {
+        sessionStorage.setItem('inspections_page_scroll', document.querySelector('main')?.scrollTop || 0);
+        document.getElementById('inspections_period_input').value = val;
+        document.getElementById('start_date').value = '';
+        document.getElementById('end_date').value = '';
+        submitFormWithTurbo(document.getElementById('inspectionsFilterForm'));
+    }
+
+    function clearInspectionsPeriod() {
+        document.getElementById('inspections_period_input').value = 'custom';
+    }
+
+    function initInspectionsScroll() {
+        const scrollPos = sessionStorage.getItem('inspections_page_scroll');
+        if (scrollPos) {
+            const mainEl = document.querySelector('main');
+            if (mainEl) {
+                mainEl.scrollTop = parseInt(scrollPos);
+                setTimeout(() => {
+                    mainEl.scrollTop = parseInt(scrollPos);
+                }, 50);
+                setTimeout(() => {
+                    mainEl.scrollTop = parseInt(scrollPos);
+                }, 150);
+                setTimeout(() => {
+                    mainEl.scrollTop = parseInt(scrollPos);
+                    sessionStorage.removeItem('inspections_page_scroll');
+                }, 300);
+            }
+        }
+    }
+    if (window.onPageLoad) { window.onPageLoad(initInspectionsScroll); } else { document.addEventListener('DOMContentLoaded', initInspectionsScroll); }
+</script>
 @endsection

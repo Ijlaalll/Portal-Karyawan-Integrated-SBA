@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('bookings', function (Blueprint $table) {
+            $table->string('cancellation_reason')->nullable()->after('rejection_reason');
+            // Default is true to prevent historical cancelled bookings from triggering popups.
+            // New cancellations will explicitly set this to false.
+            $table->boolean('cancellation_popup_acknowledged')->default(true)->after('it_ready_popup_acknowledged');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('bookings', function (Blueprint $table) {
+            $table->dropColumn(['cancellation_reason', 'cancellation_popup_acknowledged']);
+        });
+    }
+};
