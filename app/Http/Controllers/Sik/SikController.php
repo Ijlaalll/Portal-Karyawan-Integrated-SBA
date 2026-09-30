@@ -152,10 +152,11 @@ class SikController extends Controller
         $permit = $this->sikService->createPermit($user, $validated, $submitImmediately);
 
         AuditLogService::log(
+            'sik',
             'create',
             "Pengguna {$user->name} membuat pengajuan SIK #{$permit->sik_number} untuk keperluan {$permit->purpose} (" . ($submitImmediately ? 'diajukan' : 'draft') . ")",
-            'sik',
-            ['sik_id' => $permit->id, 'sik_number' => $permit->sik_number, 'purpose' => $permit->purpose]
+            ['sik_id' => $permit->id, 'sik_number' => $permit->sik_number, 'purpose' => $permit->purpose],
+            $user
         );
 
         $msg = $submitImmediately
@@ -225,10 +226,11 @@ class SikController extends Controller
         $this->sikService->updateDraft($sik, $request->user(), $validated, $submitImmediately);
 
         AuditLogService::log(
+            'sik',
             'update',
             "Pengguna {$request->user()->name} memperbarui SIK #{$sik->sik_number}",
-            'sik',
-            ['sik_id' => $sik->id, 'sik_number' => $sik->sik_number]
+            ['sik_id' => $sik->id, 'sik_number' => $sik->sik_number],
+            $request->user()
         );
 
         $msg = $submitImmediately
@@ -248,10 +250,11 @@ class SikController extends Controller
         $this->sikService->submitDraft($sik, $request->user());
 
         AuditLogService::log(
-            'update',
-            "Pengguna {$request->user()->name} mengirimkan draf SIK #{$sik->sik_number} untuk persetujuan",
             'sik',
-            ['sik_id' => $sik->id, 'sik_number' => $sik->sik_number]
+            'submit',
+            "Pengguna {$request->user()->name} mengirimkan draf SIK #{$sik->sik_number} untuk persetujuan",
+            ['sik_id' => $sik->id, 'sik_number' => $sik->sik_number],
+            $request->user()
         );
 
         return redirect()->route('sik.show', $sik)
@@ -268,10 +271,11 @@ class SikController extends Controller
         $this->sikService->cancel($sik, $request->user());
 
         AuditLogService::log(
+            'sik',
             'delete',
             "Pengguna {$request->user()->name} membatalkan pengajuan SIK #{$sik->sik_number}",
-            'sik',
-            ['sik_id' => $sik->id, 'sik_number' => $sik->sik_number]
+            ['sik_id' => $sik->id, 'sik_number' => $sik->sik_number],
+            $request->user()
         );
 
         return redirect()->route('sik.index')

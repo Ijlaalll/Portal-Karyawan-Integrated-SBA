@@ -44,6 +44,43 @@ class AuditLogTest extends TestCase
         $response->assertStatus(403);
     }
 
+    public function test_login_and_logout_create_audit_logs(): void
+    {
+        // 1. Successful login
+        $resLogin = $this->post('/login', [
+            'email' => 'employee@sig.id',
+            'password' => 'password123',
+        ]);
+        $resLogin->assertRedirect();
+
+        $this->assertDatabaseHas('audit_logs', [
+            'user_email' => 'employee@sig.id',
+            'module' => 'auth',
+            'action' => 'login',
+        ]);
+
+        // 2. Logout
+        $resLogout = $this->actingAs($this->regularUser)->post('/logout');
+        $resLogout->assertRedirect(route('login'));
+
+        $this->assertDatabaseHas('audit_logs', [
+            'user_email' => 'employee@sig.id',
+            'module' => 'auth',
+            'action' => 'logout',
+        ]);
+
+        // 3. Failed login
+        $resFailed = $this->post('/login', [
+            'email' => 'unknown@sig.id',
+            'password' => 'wrongpassword',
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'module' => 'auth',
+            'action' => 'login_failed',
+        ]);
+    }
+
     public function test_admin_can_access_audit_logs_index_page(): void
     {
         AuditLogService::log(
