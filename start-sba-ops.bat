@@ -97,6 +97,7 @@ if not exist "%~dp0public\build\manifest.json" (
 REM 4. Jalankan Laravel di Port 8080 di background
 echo [4/5] Menjalankan Backend SBA Operations di port 8080...
 if not exist "%~dp0storage\logs" mkdir "%~dp0storage\logs"
+"%PHP_EXE%" artisan optimize:clear >nul 2>&1
 start "" /b cmd /c "cd /d "%~dp0" && "%PHP_EXE%" artisan serve --host=0.0.0.0 --port=8080 > "%~dp0storage\logs\serve.log" 2>&1"
 
 REM 5. Jalankan Caddy HTTPS Reverse Proxy di Port 8443 (Untuk Scanner Kamera QR SIK)
