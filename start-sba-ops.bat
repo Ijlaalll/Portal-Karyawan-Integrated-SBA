@@ -48,9 +48,9 @@ if defined PHP_EXE (
     echo [INFO] Menggunakan PHP: %PHP_EXE%
     "%PHP_EXE%" -m | findstr /i "ldap" >nul 2>&1
     if not errorlevel 1 (
-        echo [INFO] PHP LDAP Module: AKTIF (Active Directory Ready)
+        echo [INFO] PHP LDAP Module: AKTIF - Active Directory Ready
     ) else (
-        echo [INFO] PHP LDAP Module: Belum aktif di php.ini (Aktifkan 'extension=ldap' jika ingin SSO AD)
+        echo [INFO] PHP LDAP Module: Belum aktif di php.ini
     )
 ) else (
     echo [ERROR] PHP 8.2+ tidak ditemukan! Pastikan PHP 8.2 atau lebih baru terinstall.
