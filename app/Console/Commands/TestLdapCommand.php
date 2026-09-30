@@ -124,7 +124,13 @@ class TestLdapCommand extends Command
 
         $this->error('   [GAGAL] Autentikasi Active Directory Gagal.');
         $this->line("   Pesan Kesalahan: <error>{$authResult['error']}</error>");
-        $this->line("   Driver: " . ($authResult['driver'] ?? 'unknown'));
+        if (!empty($authResult['diagnostic'])) {
+            $this->line("   AD Diagnostic  : <comment>{$authResult['diagnostic']}</comment>");
+        }
+        if (!empty($authResult['candidates'])) {
+            $this->line("   Format Dicoba  : " . implode(', ', $authResult['candidates']));
+        }
+        $this->line("   Driver         : " . ($authResult['driver'] ?? 'unknown'));
         return 1;
     }
 }

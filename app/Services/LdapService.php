@@ -115,16 +115,56 @@ class LdapService
                 @ldap_set_option($conn, LDAP_OPT_TIMELIMIT, $this->timeout);
             }
 
-            // Attempt bind with UPN (User Principal Name: username@sig.id)
-            $bind = @ldap_bind($conn, $upn, $password);
+            $domainPrefix = strtoupper(explode('.', $this->domain)[0]); // e.g. SIG
+            
+            // Build candidate logon identities supported by Active Directory
+            $candidates = [];
+            if (!str_contains($cleanIdentifier, '@')) {
+                $candidates[] = "{$cleanIdentifier}@{$this->domain}"; // UPN format: username@sig.id
+                $candidates[] = "{$domainPrefix}\\{$cleanIdentifier}"; // NetBIOS format: SIG\username
+                $candidates[] = $cleanIdentifier;                     // sAMAccountName: username
+            } else {
+                $candidates[] = $cleanIdentifier;                     // Full email / UPN
+                $candidates[] = "{$domainPrefix}\\{$username}";       // NetBIOS format: SIG\username
+            }
+            $candidates = array_values(array_unique($candidates));
 
-            if (!$bind) {
-                $errorMsg = @ldap_error($conn) ?: 'Invalid credentials';
+            $bindSucceeded = false;
+            $successfulCandidate = null;
+            $lastDiagnostic = '';
+            $lastError = '';
+
+            foreach ($candidates as $candidate) {
+                $bind = @ldap_bind($conn, $candidate, $password);
+                if ($bind) {
+                    $bindSucceeded = true;
+                    $successfulCandidate = $candidate;
+                    break;
+                }
+
+                $lastError = @ldap_error($conn) ?: 'Invalid credentials';
+                $diag = '';
+                @ldap_get_option($conn, 0x0032, $diag); // 0x0032 = LDAP_OPT_DIAGNOSTIC_MESSAGE
+                if (!empty($diag)) {
+                    $lastDiagnostic = $diag;
+                }
+            }
+
+            if (!$bindSucceeded) {
                 @ldap_close($conn);
+
+                $adErrorExplanation = self::parseAdDiagnostic($lastDiagnostic);
+                $finalMessage = $adErrorExplanation 
+                    ?: "Autentikasi Active Directory gagal ({$lastError}).";
+
+                Log::warning("[LDAP Auth Failed] User: {$cleanIdentifier} | Kandidat dicoba: " . implode(', ', $candidates) . " | Error: {$lastError} | Diag: {$lastDiagnostic}");
 
                 return [
                     'success' => false,
-                    'error' => "Autentikasi LDAP gagal: {$errorMsg}",
+                    'error' => $finalMessage,
+                    'raw_error' => $lastError,
+                    'diagnostic' => $lastDiagnostic,
+                    'candidates' => $candidates,
                     'driver' => 'php-ldap',
                 ];
             }
@@ -132,18 +172,18 @@ class LdapService
             // Bind succeeded! Extract Active Directory user details
             $userData = [
                 'username' => $username,
-                'email' => $upn,
+                'email' => str_contains($cleanIdentifier, '@') ? $cleanIdentifier : "{$username}@{$this->domain}",
                 'name' => $username,
                 'department' => null,
                 'position' => null,
                 'employee_id' => null,
+                'bound_as' => $successfulCandidate,
             ];
 
             try {
                 $searchBase = !empty($this->baseDn) ? $this->baseDn : 'DC=' . str_replace('.', ',DC=', $this->domain);
                 $escapedUser = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
-                $escapedUpn = ldap_escape($upn, '', LDAP_ESCAPE_FILTER);
-                $filter = "(&(objectClass=user)(|(sAMAccountName={$escapedUser})(userPrincipalName={$escapedUpn})))";
+                $filter = "(&(objectClass=user)(|(sAMAccountName={$escapedUser})(userPrincipalName={$escapedUser}@{$this->domain})(mail={$escapedUser}@{$this->domain})))";
                 $attributes = ['displayName', 'cn', 'mail', 'department', 'title', 'employeeID'];
 
                 $search = @ldap_search($conn, $searchBase, $filter, $attributes);
@@ -152,7 +192,9 @@ class LdapService
                     if ($entries && isset($entries[0])) {
                         $entry = $entries[0];
                         $userData['name'] = $entry['displayname'][0] ?? $entry['cn'][0] ?? $username;
-                        $userData['email'] = $entry['mail'][0] ?? $upn;
+                        if (!empty($entry['mail'][0])) {
+                            $userData['email'] = strtolower($entry['mail'][0]);
+                        }
                         $userData['department'] = $entry['department'][0] ?? null;
                         $userData['position'] = $entry['title'][0] ?? null;
                         $userData['employee_id'] = $entry['employeeid'][0] ?? null;
@@ -239,4 +281,28 @@ class LdapService
             ];
         }
     }
+
+    /**
+     * Parse Active Directory diagnostic string to user-friendly explanation.
+     */
+    public static function parseAdDiagnostic(string $diagnostic): ?string
+    {
+        if (preg_match('/data\s+([0-9a-fA-F]{3,4})/', $diagnostic, $matches)) {
+            $code = strtolower($matches[1]);
+            return match ($code) {
+                '525' => 'Pengguna/Akun tidak ditemukan di Active Directory (Kode: 525). Pastikan username atau NIP benar.',
+                '52e' => 'Kata sandi atau nama akun Active Directory salah (Kode: 52e).',
+                '530' => 'Akun tidak diizinkan masuk pada waktu ini (Kode: 530).',
+                '531' => 'Akun tidak diizinkan masuk dari komputer ini (Kode: 531).',
+                '532' => 'Kata sandi akun Active Directory telah kedaluwarsa (Kode: 532). Silakan perbarui sandi akun SIG.',
+                '533' => 'Akun Active Directory dinonaktifkan (Kode: 533). Silakan hubungi IT Administrator SIG.',
+                '701' => 'Masa berlaku akun Active Directory telah habis (Kode: 701).',
+                '773' => 'Pengguna wajib mengganti kata sandi sebelum dapat masuk (Kode: 773).',
+                '775' => 'Akun Active Directory terkunci karena salah memasukkan kata sandi beberapa kali (Kode: 775).',
+                default => "Respon Active Directory: data {$code}",
+            };
+        }
+        return null;
+    }
 }
+

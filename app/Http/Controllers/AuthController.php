@@ -47,6 +47,7 @@ class AuthController extends Controller
         }
 
         $authenticatedUser = null;
+        $ldapFailureReason = null;
 
         // 1. Try local database authentication first (fast & reliable offline fallback)
         if ($localUser && \Illuminate\Support\Facades\Hash::check($password, $localUser->password)) {
@@ -114,10 +115,14 @@ class AuthController extends Controller
                     }
 
                     Auth::login($authenticatedUser, $request->boolean('remember'));
+                } else {
+                    $ldapFailureReason = $ldapResult['error'] ?? null;
+                    \Illuminate\Support\Facades\Log::warning('[LDAP Auth Failed]: ' . ($ldapResult['error'] ?? 'Unknown error') . ' | Input: ' . $loginIdentifier);
                 }
             } catch (ValidationException $ve) {
                 throw $ve;
             } catch (\Throwable $e) {
+                $ldapFailureReason = 'Gangguan koneksi LDAP: ' . $e->getMessage();
                 \Illuminate\Support\Facades\Log::warning('[LDAP Auth Exception]: ' . $e->getMessage());
             }
         }
@@ -163,8 +168,9 @@ class AuthController extends Controller
             return redirect()->intended($user->getRedirectRoute());
         }
 
+        $errorMessage = $ldapFailureReason ?: trans('auth.failed');
         throw ValidationException::withMessages([
-            'email' => [trans('auth.failed')],
+            'email' => [$errorMessage],
         ]);
     }
 
