@@ -43,24 +43,24 @@ if not defined PHP_EXE (
     )
 )
 
-if defined PHP_EXE (
-    for %%P in ("%PHP_EXE%") do set "PATH=%%~dpP;!PATH!"
-    echo [INFO] Menggunakan PHP: %PHP_EXE%
-    "%PHP_EXE%" -m | findstr /i "ldap" >nul 2>&1
-    if not errorlevel 1 (
-        echo [INFO] PHP LDAP Module: AKTIF - Active Directory Ready
-    ) else (
-        echo [INFO] PHP LDAP Module: Belum aktif di php.ini
-    )
-) else (
+if not defined PHP_EXE (
     echo [ERROR] PHP 8.2+ tidak ditemukan! Pastikan PHP 8.2 atau lebih baru terinstall.
     pause
     exit /b 1
 )
 
+for %%P in ("%PHP_EXE%") do set "PATH=%%~dpP;!PATH!"
+echo [INFO] Menggunakan PHP: %PHP_EXE%
+"%PHP_EXE%" -m | findstr /i "ldap" >nul 2>&1
+if not errorlevel 1 (
+    echo [INFO] PHP LDAP Module: AKTIF - Active Directory Ready
+) else (
+    echo [INFO] PHP LDAP Module: Belum aktif di php.ini
+)
+
 REM 1. Bersihkan instance lama HANYA untuk SBA Operations [port 8080 dan 8443]
 echo [1/5] Membersihkan instance lama SBA Operations jika ada...
-powershell -NoProfile -Command "Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { ($_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*')) -or ($_.ProcessName -eq 'caddy.exe' -and ($_.CommandLine -like '*8443*' -or $_.CommandLine -like '*Caddyfile*')) } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
+powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 8080,8443 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { ($_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*')) -or ($_.ProcessName -eq 'caddy.exe' -and ($_.CommandLine -like '*8443*' -or $_.CommandLine -like '*Caddyfile*')) } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
 echo       [OK] Pembersihan proses lama selesai.
 
 REM 2. Cek apakah MySQL berjalan dan nyalakan diam-diam di background jika belum aktif
@@ -97,6 +97,8 @@ if not exist "%~dp0public\build\manifest.json" (
 REM 4. Jalankan Laravel di Port 8080 di background
 echo [4/5] Menjalankan Backend SBA Operations di port 8080...
 if not exist "%~dp0storage\logs" mkdir "%~dp0storage\logs"
+if not exist "%~dp0bootstrap\cache" mkdir "%~dp0bootstrap\cache"
+del /q /f "%~dp0bootstrap\cache\*.php" 2>nul
 "%PHP_EXE%" artisan optimize:clear >nul 2>&1
 start "" /b cmd /c "cd /d "%~dp0" && "%PHP_EXE%" artisan serve --host=0.0.0.0 --port=8080 > "%~dp0storage\logs\serve.log" 2>&1"
 
