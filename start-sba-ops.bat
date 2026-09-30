@@ -52,12 +52,12 @@ if defined PHP_EXE (
     exit /b 1
 )
 
-REM 1. Bersihkan instance lama HANYA untuk SBA Operations (port 8080 & 8443)
+REM 1. Bersihkan instance lama HANYA untuk SBA Operations [port 8080 dan 8443]
 echo [1/5] Membersihkan instance lama SBA Operations jika ada...
 powershell -NoProfile -Command "Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { ($_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*')) -or ($_.ProcessName -eq 'caddy.exe' -and ($_.CommandLine -like '*8443*' -or $_.CommandLine -like '*Caddyfile*')) } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
 echo       [OK] Pembersihan proses lama selesai.
 
-REM 2. Cek apakah MySQL berjalan & nyalakan diam-diam di background jika belum aktif
+REM 2. Cek apakah MySQL berjalan dan nyalakan diam-diam di background jika belum aktif
 echo [2/5] Memeriksa status MySQL Database...
 tasklist /FI "IMAGENAME eq mysqld.exe" 2>NUL | find /I /N "mysqld.exe">NUL
 if "%ERRORLEVEL%"=="0" (
@@ -144,52 +144,52 @@ echo  PILIHAN MENU:
 echo   [1] Buka Web Browser HTTPS Local (https://localhost:8443)
 echo   [2] Buka Scanner QR SIK Local    (https://localhost:8443/sik-security/scanner)
 echo   [3] Cek Port Aktif (8080, 8443, 3306)
-echo   [4] Lihat Log Server (Laravel & Caddy)
-echo   [Q] Matikan Server SBA Operations ^& Keluar
+echo   [4] Lihat Log Server Laravel dan Caddy
+echo   [Q] Matikan Server SBA Operations dan Keluar
 echo ============================================================
 echo.
 set "opt="
 set /p opt="Pilih menu [1 / 2 / 3 / 4 / Q] lalu tekan Enter: "
 
-if /i "%opt%"=="1" (
-    start https://localhost:8443
-    goto MENU_LOOP
-)
-
-if /i "%opt%"=="2" (
-    start https://localhost:8443/sik-security/scanner
-    goto MENU_LOOP
-)
-
-if /i "%opt%"=="3" (
-    echo.
-    echo Status Port Terkini:
-    netstat -ano | findstr "LISTENING" | findstr ":8080 :8443 :3306"
-    echo.
-    pause
-    goto MENU_LOOP
-)
-
-if /i "%opt%"=="4" (
-    echo.
-    if exist "%~dp0storage\logs\serve.log" (
-        echo --- 15 Baris Terakhir Log Laravel (serve.log) ---
-        powershell -NoProfile -Command "Get-Content '%~dp0storage\logs\serve.log' -Tail 15"
-    )
-    if exist "%~dp0storage\logs\caddy.log" (
-        echo.
-        echo --- 15 Baris Terakhir Log Caddy (caddy.log) ---
-        powershell -NoProfile -Command "Get-Content '%~dp0storage\logs\caddy.log' -Tail 15"
-    )
-    echo.
-    pause
-    goto MENU_LOOP
-)
-
+if /i "%opt%"=="1" goto DO_OPT1
+if /i "%opt%"=="2" goto DO_OPT2
+if /i "%opt%"=="3" goto DO_OPT3
+if /i "%opt%"=="4" goto DO_OPT4
 if /i "%opt%"=="Q" goto DO_SHUTDOWN
 if /i "%opt%"=="quit" goto DO_SHUTDOWN
 if /i "%opt%"=="exit" goto DO_SHUTDOWN
 
+goto MENU_LOOP
+
+:DO_OPT1
+start https://localhost:8443
+goto MENU_LOOP
+
+:DO_OPT2
+start https://localhost:8443/sik-security/scanner
+goto MENU_LOOP
+
+:DO_OPT3
+echo.
+echo Status Port Terkini:
+netstat -ano | findstr "LISTENING" | findstr ":8080 :8443 :3306"
+echo.
+pause
+goto MENU_LOOP
+
+:DO_OPT4
+echo.
+if exist "%~dp0storage\logs\serve.log" (
+    echo --- 15 Baris Terakhir Log Laravel [serve.log] ---
+    powershell -NoProfile -Command "Get-Content '%~dp0storage\logs\serve.log' -Tail 15"
+)
+if exist "%~dp0storage\logs\caddy.log" (
+    echo.
+    echo --- 15 Baris Terakhir Log Caddy [caddy.log] ---
+    powershell -NoProfile -Command "Get-Content '%~dp0storage\logs\caddy.log' -Tail 15"
+)
+echo.
+pause
 goto MENU_LOOP
 
 :DO_SHUTDOWN
