@@ -80,17 +80,34 @@ class LdapService
 
         // Priority 1: Native PHP LDAP (fastest, in-process)
         if (extension_loaded('ldap')) {
-            return $this->authenticateViaNativePhp($username, $upn, $password);
+            return $this->authenticateViaNativePhp($username, $cleanIdentifier, $password);
         }
 
-        // Priority 2: Python Helper Script (fallback if PHP LDAP extension is not loaded)
-        return $this->authenticateViaPython($cleanIdentifier, $password);
+        // Priority 2: Python Helper Script (only if python is installed)
+        if ($this->isPythonAvailable()) {
+            return $this->authenticateViaPython($cleanIdentifier, $password);
+        }
+
+        return [
+            'success' => false,
+            'error' => 'Ekstensi PHP "ldap" belum aktif pada proses web server yang sedang berjalan. Silakan restart aplikasi (jalankan stop-sba-ops.bat lalu start-sba-ops.bat).',
+            'driver' => 'none',
+        ];
+    }
+
+    /**
+     * Check if python executable is available in PATH.
+     */
+    protected function isPythonAvailable(): bool
+    {
+        $check = @shell_exec('where python 2>NUL');
+        return !empty(trim((string) $check));
     }
 
     /**
      * Authenticate via PHP native ext-ldap.
      */
-    protected function authenticateViaNativePhp(string $username, string $upn, string $password): array
+    protected function authenticateViaNativePhp(string $username, string $cleanIdentifier, string $password): array
     {
         try {
             $ldapUri = "ldap://{$this->host}:{$this->port}";
