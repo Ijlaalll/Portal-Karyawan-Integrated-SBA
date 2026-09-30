@@ -49,7 +49,7 @@
                     </button>
                 </div>
 
-                <div id="reader" class="w-full bg-slate-950 rounded-xl overflow-hidden min-h-[220px] flex items-center justify-center border border-slate-800 relative">
+                <div class="w-full bg-slate-950 rounded-xl overflow-hidden min-h-[220px] flex items-center justify-center border border-slate-800 relative">
                     <div id="scannerPlaceholder" class="p-6 text-center text-slate-400 space-y-2">
                         <span class="material-symbols-outlined text-5xl text-slate-600">qr_code_scanner</span>
                         <p class="text-xs">Arahkan kamera ke QR Code Surat Izin Keluar atau gunakan input manual di bawah.</p>
@@ -60,6 +60,7 @@
                             Aktifkan Kamera
                         </button>
                     </div>
+                    <div id="reader" class="w-full hidden"></div>
                 </div>
             </div>
 
@@ -243,40 +244,110 @@
 <script>
     let html5QrCode = null;
     let isScanning = false;
+    let isTransitioning = false;
     let isSubmitting = false;
 
-    function startScanner() {
+    async function startScanner() {
+        if (isScanning || isTransitioning) return;
+        isTransitioning = true;
+
         const readerElement = document.getElementById('reader');
-        document.getElementById('scannerPlaceholder').classList.add('hidden');
+        const placeholderElement = document.getElementById('scannerPlaceholder');
+        const toggleBtn = document.getElementById('toggleCameraBtn');
 
-        html5QrCode = new Html5Qrcode("reader");
-        const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+        if (toggleBtn) {
+            toggleBtn.disabled = true;
+            toggleBtn.textContent = "Menghubungkan...";
+        }
 
-        html5QrCode.start(
-            { facingMode: "environment" },
-            config,
-            (decodedText, decodedResult) => {
-                playBeep();
-                processToken(decodedText);
-                stopScanner();
-            },
-            (errorMessage) => {}
-        ).then(() => {
+        try {
+            // Sembunyikan placeholder, tampilkan dan bersihkan container reader
+            if (placeholderElement) placeholderElement.classList.add('hidden');
+            if (readerElement) {
+                readerElement.classList.remove('hidden');
+                readerElement.innerHTML = "";
+            }
+
+            // Inisialisasi scanner
+            html5QrCode = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+
+            await html5QrCode.start(
+                { facingMode: "environment" },
+                config,
+                (decodedText, decodedResult) => {
+                    playBeep();
+                    processToken(decodedText);
+                    stopScanner();
+                },
+                (errorMessage) => {}
+            );
+
             isScanning = true;
-            document.getElementById('toggleCameraBtn').textContent = "Matikan Kamera";
-        }).catch(err => {
+            if (toggleBtn) {
+                toggleBtn.disabled = false;
+                toggleBtn.textContent = "Matikan Kamera";
+            }
+        } catch (err) {
+            console.error("Gagal start scanner:", err);
+            cleanupScanner();
             alert("Tidak dapat mengakses kamera: " + err);
-            document.getElementById('scannerPlaceholder').classList.remove('hidden');
-        });
+        } finally {
+            isTransitioning = false;
+            if (toggleBtn) toggleBtn.disabled = false;
+        }
     }
 
-    function stopScanner() {
-        if (html5QrCode && isScanning) {
-            html5QrCode.stop().then(() => {
-                isScanning = false;
-                document.getElementById('toggleCameraBtn').textContent = "Buka Kamera";
-                document.getElementById('scannerPlaceholder').classList.remove('hidden');
-            }).catch(err => console.error(err));
+    async function stopScanner() {
+        if (!isScanning && !html5QrCode) {
+            cleanupScanner();
+            return;
+        }
+        if (isTransitioning) return;
+        isTransitioning = true;
+
+        const toggleBtn = document.getElementById('toggleCameraBtn');
+        if (toggleBtn) {
+            toggleBtn.disabled = true;
+            toggleBtn.textContent = "Mematikan...";
+        }
+
+        try {
+            if (html5QrCode) {
+                if (html5QrCode.isScanning) {
+                    await html5QrCode.stop();
+                }
+                try {
+                    await html5QrCode.clear();
+                } catch (clearErr) {}
+                html5QrCode = null;
+            }
+        } catch (err) {
+            console.error("Error stopping scanner:", err);
+        } finally {
+            cleanupScanner();
+            isTransitioning = false;
+            if (toggleBtn) toggleBtn.disabled = false;
+        }
+    }
+
+    function cleanupScanner() {
+        isScanning = false;
+        html5QrCode = null;
+
+        const readerElement = document.getElementById('reader');
+        const placeholderElement = document.getElementById('scannerPlaceholder');
+        const toggleBtn = document.getElementById('toggleCameraBtn');
+
+        if (readerElement) {
+            readerElement.innerHTML = "";
+            readerElement.classList.add('hidden');
+        }
+        if (placeholderElement) {
+            placeholderElement.classList.remove('hidden');
+        }
+        if (toggleBtn) {
+            toggleBtn.textContent = "Buka Kamera";
         }
     }
 
