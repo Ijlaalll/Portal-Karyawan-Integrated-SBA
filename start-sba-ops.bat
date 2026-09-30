@@ -94,11 +94,12 @@ if not exist "%~dp0public\build\manifest.json" (
     echo       [OK] Aset frontend produksi siap.
 )
 
-REM 4. Jalankan Laravel di Port 8080 di background
-echo [4/5] Menjalankan Backend SBA Operations di port 8080...
+REM 4. Sinkronisasi Database & Jalankan Laravel di Port 8080 di background
+echo [4/5] Menjalankan Migrasi Database & Backend SBA Operations...
 if not exist "%~dp0storage\logs" mkdir "%~dp0storage\logs"
 if not exist "%~dp0bootstrap\cache" mkdir "%~dp0bootstrap\cache"
 del /q /f "%~dp0bootstrap\cache\*.php" 2>nul
+"%PHP_EXE%" artisan migrate --force
 "%PHP_EXE%" artisan optimize:clear >nul 2>&1
 start "" /b cmd /c "cd /d "%~dp0" && "%PHP_EXE%" artisan serve --host=0.0.0.0 --port=8080 > "%~dp0storage\logs\serve.log" 2>&1"
 
