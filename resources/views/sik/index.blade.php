@@ -40,7 +40,7 @@
         @endif
 
         <!-- Summary Metric Cards -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-5 mb-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3.5 sm:gap-4 mb-6">
             <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow" style="border-left: 4px solid #2563EB !important;">
                 <p class="text-[11px] font-bold text-[#2563EB] uppercase tracking-wider">Total SIK</p>
                 <p class="text-2xl font-bold text-[#0F172A] mt-1.5">{{ $totalCount }}</p>

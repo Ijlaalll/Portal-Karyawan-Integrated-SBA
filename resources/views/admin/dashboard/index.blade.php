@@ -64,7 +64,7 @@
     <main class="space-y-8">
         
         <!-- Metrics Grid Container (Compact 6-Column Layout) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
             
             <div class="bg-white border border-[#E5E7EB] rounded-lg p-3 h-[88px] flex flex-col justify-between shadow-sm border-l-4 border-l-blue-500">
                 <span class="text-[9px] font-bold text-[#64748B] uppercase tracking-wider block">TOTAL PEMESANAN</span>

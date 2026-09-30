@@ -88,64 +88,64 @@
         </form>
 
         <!-- Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">group</span>
+        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 mb-8">
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-3.5 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">group</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">Total Pengguna</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $totalUsers }}</p>
-                </div>
-            </div>
-
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">meeting_room</span>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">Ruang Meeting</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $meetingRoomCount }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="Total Pengguna">Total Pengguna</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 leading-tight">{{ $totalUsers }}</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-[#FFFBEB] text-[#D97706] flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">wc</span>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-3.5 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">meeting_room</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">Inspeksi Toilet</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $toiletInspectionCount }}</p>
-                </div>
-            </div>
-
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-green-50 text-green-700 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">inventory_2</span>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">ATK</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $atkCount }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="Ruang Meeting">Ruang Meeting</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 leading-tight">{{ $meetingRoomCount }}</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">badge</span>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-3.5 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-[#FFFBEB] text-[#D97706] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">wc</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">SIK</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $sikCount }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="Inspeksi Toilet">Inspeksi Toilet</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 leading-tight">{{ $toiletInspectionCount }}</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">directions_car</span>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-3.5 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-green-50 text-green-700 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">inventory_2</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">Kendaraan</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $vehicleCount }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="ATK">ATK</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 leading-tight">{{ $atkCount }}</p>
+                </div>
+            </div>
+
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-3.5 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">badge</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="SIK">SIK</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 leading-tight">{{ $sikCount }}</p>
+                </div>
+            </div>
+
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-3.5 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">directions_car</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="Kendaraan">Kendaraan</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 leading-tight">{{ $vehicleCount }}</p>
                 </div>
             </div>
         </div>
