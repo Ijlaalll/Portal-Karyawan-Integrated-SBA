@@ -128,14 +128,14 @@
 
                 <div>
                     <label for="email" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                        Alamat Email <span class="text-red-500">*</span>
+                        Akun SIG / Alamat Email <span class="text-red-500">*</span>
                     </label>
                     <div class="relative rounded-xl shadow-xs">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <span class="material-symbols-outlined text-[18px]">mail</span>
+                            <span class="material-symbols-outlined text-[18px]">person</span>
                         </div>
-                        <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}"
-                            placeholder="nama@domain.com"
+                        <input id="email" name="email" type="text" autocomplete="username" required value="{{ old('email') }}"
+                            placeholder="username atau nama@sig.id"
                             class="block w-full rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-[#0F172A] bg-white focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] transition-all"
                             style="border: 1px solid #CBD5E1;">
                     </div>

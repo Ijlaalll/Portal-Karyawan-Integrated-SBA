@@ -25,24 +25,106 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $input = $request->validate([
+            'email' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        // Check if the user is deactivated
-        $user = \App\Models\User::where('email', $credentials['email'])->first();
-        if ($user && $user->status === 'inactive') {
+        $loginIdentifier = trim($input['email']);
+        $password = $input['password'];
+        $domain = config('ldap.domain', 'sig.id');
+
+        // Check if the user exists in local database
+        $localUser = \App\Models\User::where('email', $loginIdentifier)
+            ->orWhere('email', $loginIdentifier . '@' . $domain)
+            ->orWhere('employee_id', $loginIdentifier)
+            ->first();
+
+        if ($localUser && $localUser->status === 'inactive') {
             throw ValidationException::withMessages([
                 'email' => ['Akun Anda telah dinonaktifkan. Silakan hubungi administrator.'],
             ]);
         }
-        
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+
+        $authenticatedUser = null;
+
+        // 1. Try local database authentication first (fast & reliable offline fallback)
+        if ($localUser && \Illuminate\Support\Facades\Hash::check($password, $localUser->password)) {
+            $authenticatedUser = $localUser;
+            Auth::login($authenticatedUser, $request->boolean('remember'));
+        }
+
+        // 2. If not authenticated locally and LDAP is enabled, attempt Active Directory LDAP
+        if (!$authenticatedUser && config('ldap.enabled', true)) {
+            try {
+                $ldapService = app(\App\Services\LdapService::class);
+                $ldapResult = $ldapService->authenticate($loginIdentifier, $password);
+
+                if ($ldapResult['success']) {
+                    $ldapData = $ldapResult['data'];
+                    $ldapEmail = strtolower($ldapData['email']);
+
+                    $authenticatedUser = \App\Models\User::where('email', $ldapEmail)
+                        ->orWhere('email', $ldapData['username'] . '@' . $domain)
+                        ->first();
+
+                    if ($authenticatedUser) {
+                        if ($authenticatedUser->status === 'inactive') {
+                            throw ValidationException::withMessages([
+                                'email' => ['Akun Anda telah dinonaktifkan. Silakan hubungi administrator.'],
+                            ]);
+                        }
+                        // Update hashed password for offline fallback
+                        $authenticatedUser->password = \Illuminate\Support\Facades\Hash::make($password);
+                        if (!empty($ldapData['name']) && empty($authenticatedUser->name)) {
+                            $authenticatedUser->name = $ldapData['name'];
+                        }
+                        if (!empty($ldapData['department']) && empty($authenticatedUser->department)) {
+                            $authenticatedUser->department = $ldapData['department'];
+                        }
+                        if (!empty($ldapData['employee_id']) && empty($authenticatedUser->employee_id)) {
+                            $authenticatedUser->employee_id = $ldapData['employee_id'];
+                        }
+                        if (!empty($ldapData['position']) && empty($authenticatedUser->position)) {
+                            $authenticatedUser->position = $ldapData['position'];
+                        }
+                        $authenticatedUser->save();
+                    } else {
+                        // Automatically provision user from Active Directory
+                        $authenticatedUser = \App\Models\User::create([
+                            'name' => $ldapData['name'] ?: $ldapData['username'],
+                            'email' => $ldapEmail,
+                            'password' => \Illuminate\Support\Facades\Hash::make($password),
+                            'role' => 'user',
+                            'department' => $ldapData['department'] ?? null,
+                            'position' => $ldapData['position'] ?? null,
+                            'employee_id' => $ldapData['employee_id'] ?? null,
+                            'status' => 'active',
+                        ]);
+
+                        // Assign default baseline modules
+                        \App\Models\UserModule::firstOrCreate([
+                            'user_id' => $authenticatedUser->id,
+                            'module' => 'sik',
+                        ]);
+                        \App\Models\UserModule::firstOrCreate([
+                            'user_id' => $authenticatedUser->id,
+                            'module' => 'meeting_room',
+                        ]);
+                    }
+
+                    Auth::login($authenticatedUser, $request->boolean('remember'));
+                }
+            } catch (ValidationException $ve) {
+                throw $ve;
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('[LDAP Auth Exception]: ' . $e->getMessage());
+            }
+        }
+
+        if ($authenticatedUser) {
             $request->session()->regenerate();
-            
-            // Redirect based on user role and assigned modules
-            $user = Auth::user();
+            $user = $authenticatedUser;
             
             $intended = session()->get('url.intended');
             if ($intended) {
