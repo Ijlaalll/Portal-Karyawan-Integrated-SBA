@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Sik;
 
 use App\Http\Controllers\Controller;
 use App\Models\ExitPermit;
+use App\Services\AuditLogService;
 use App\Services\DepartmentApprovalService;
 use App\Services\SikService;
 use Carbon\Carbon;
@@ -150,6 +151,13 @@ class SikController extends Controller
 
         $permit = $this->sikService->createPermit($user, $validated, $submitImmediately);
 
+        AuditLogService::log(
+            'create',
+            "Pengguna {$user->name} membuat pengajuan SIK #{$permit->sik_number} untuk keperluan {$permit->purpose} (" . ($submitImmediately ? 'diajukan' : 'draft') . ")",
+            'sik',
+            ['sik_id' => $permit->id, 'sik_number' => $permit->sik_number, 'purpose' => $permit->purpose]
+        );
+
         $msg = $submitImmediately
             ? 'Pengajuan SIK berhasil dikirim untuk persetujuan HOD / Atasan.'
             : 'Pengajuan SIK berhasil disimpan sebagai DRAFT.';
@@ -216,6 +224,13 @@ class SikController extends Controller
 
         $this->sikService->updateDraft($sik, $request->user(), $validated, $submitImmediately);
 
+        AuditLogService::log(
+            'update',
+            "Pengguna {$request->user()->name} memperbarui SIK #{$sik->sik_number}",
+            'sik',
+            ['sik_id' => $sik->id, 'sik_number' => $sik->sik_number]
+        );
+
         $msg = $submitImmediately
             ? 'Pengajuan SIK berhasil dikirim untuk persetujuan HOD / Atasan.'
             : 'Perubahan DRAFT SIK berhasil disimpan.';
@@ -232,6 +247,13 @@ class SikController extends Controller
 
         $this->sikService->submitDraft($sik, $request->user());
 
+        AuditLogService::log(
+            'update',
+            "Pengguna {$request->user()->name} mengirimkan draf SIK #{$sik->sik_number} untuk persetujuan",
+            'sik',
+            ['sik_id' => $sik->id, 'sik_number' => $sik->sik_number]
+        );
+
         return redirect()->route('sik.show', $sik)
             ->with('success', 'Pengajuan SIK berhasil dikirim untuk persetujuan HOD / Atasan.');
     }
@@ -244,6 +266,13 @@ class SikController extends Controller
         Gate::authorize('cancel', $sik);
 
         $this->sikService->cancel($sik, $request->user());
+
+        AuditLogService::log(
+            'delete',
+            "Pengguna {$request->user()->name} membatalkan pengajuan SIK #{$sik->sik_number}",
+            'sik',
+            ['sik_id' => $sik->id, 'sik_number' => $sik->sik_number]
+        );
 
         return redirect()->route('sik.index')
             ->with('success', 'Pengajuan SIK berhasil dibatalkan.');

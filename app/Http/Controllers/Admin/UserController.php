@@ -8,6 +8,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Models\UserModule;
+use App\Services\AuditLogService;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -94,7 +95,20 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $this->userService->createUser($request->validated());
+        $createdUser = $this->userService->createUser($request->validated());
+
+        AuditLogService::log(
+            'user_management',
+            'create_user',
+            "Admin membuat pengguna baru: {$createdUser->name} ({$createdUser->email}) dengan peran {$createdUser->role}",
+            [
+                'created_user_id' => $createdUser->id,
+                'email' => $createdUser->email,
+                'role' => $createdUser->role,
+                'modules' => $request->input('modules', []),
+            ],
+            auth()->user()
+        );
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Pengguna berhasil dibuat.');
@@ -154,6 +168,21 @@ class UserController extends Controller
 
         $this->userService->updateUser($user, $data);
 
+        AuditLogService::log(
+            'user_management',
+            'update_user',
+            "Admin memperbarui data pengguna: {$user->name} ({$user->email}) - Role: {$data['role']}",
+            [
+                'target_user_id' => $user->id,
+                'email' => $user->email,
+                'role' => $data['role'],
+                'modules' => $data['modules'] ?? [],
+                'department' => $data['department'] ?? null,
+                'position' => $data['position'] ?? null,
+            ],
+            auth()->user()
+        );
+
         return redirect()->route('admin.users.index')
             ->with('success', 'Pengguna berhasil diperbarui.');
     }
@@ -207,11 +236,23 @@ class UserController extends Controller
             }
         }
 
+        $deletedName = $user->name;
+        $deletedEmail = $user->email;
+        $deletedId = $user->id;
+
         // Safe to delete: Delete modules first to prevent FK constraint failures
         DB::transaction(function () use ($user) {
             $user->modules()->delete();
             $user->delete();
         });
+
+        AuditLogService::log(
+            'user_management',
+            'delete_user',
+            "Admin menghapus pengguna: {$deletedName} ({$deletedEmail})",
+            ['deleted_user_id' => $deletedId, 'email' => $deletedEmail],
+            auth()->user()
+        );
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Pengguna berhasil dihapus.');
@@ -555,6 +596,14 @@ class UserController extends Controller
         $user->status = 'active';
         $user->save();
 
+        AuditLogService::log(
+            'user_management',
+            'activate_user',
+            "Admin mengaktifkan pengguna: {$user->name} ({$user->email})",
+            ['target_user_id' => $user->id, 'email' => $user->email],
+            auth()->user()
+        );
+
         return redirect()->route('admin.users.index')
             ->with('success', "Pengguna {$user->name} berhasil diaktifkan.");
     }
@@ -581,6 +630,14 @@ class UserController extends Controller
 
         $user->status = 'inactive';
         $user->save();
+
+        AuditLogService::log(
+            'user_management',
+            'deactivate_user',
+            "Admin menonaktifkan pengguna: {$user->name} ({$user->email})",
+            ['target_user_id' => $user->id, 'email' => $user->email],
+            auth()->user()
+        );
 
         return redirect()->route('admin.users.index')
             ->with('success', "Pengguna {$user->name} berhasil dinonaktifkan.");

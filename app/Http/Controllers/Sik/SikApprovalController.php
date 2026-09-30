@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ExitPermit;
 use App\Services\DepartmentApprovalService;
 use App\Services\SikService;
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -85,6 +86,19 @@ class SikApprovalController extends Controller
 
         $this->sikService->approve($sik, $request->user(), $request->input('approval_note'));
 
+        AuditLogService::log(
+            'sik',
+            'approve_sik',
+            "SIK #{$sik->sik_number} untuk {$sik->user->name} disetujui oleh {$request->user()->name}.",
+            [
+                'sik_id' => $sik->id,
+                'sik_number' => $sik->sik_number,
+                'applicant' => $sik->user->name ?? null,
+                'approval_note' => $request->input('approval_note'),
+            ],
+            $request->user()
+        );
+
         return redirect()->route('sik.approvals.index')
             ->with('success', "SIK #{$sik->sik_number} berhasil disetujui. QR Code telah diterbitkan untuk pemohon.");
     }
@@ -103,6 +117,19 @@ class SikApprovalController extends Controller
         ]);
 
         $this->sikService->reject($sik, $request->user(), $request->input('rejection_reason'));
+
+        AuditLogService::log(
+            'sik',
+            'reject_sik',
+            "SIK #{$sik->sik_number} untuk {$sik->user->name} ditolak oleh {$request->user()->name}.",
+            [
+                'sik_id' => $sik->id,
+                'sik_number' => $sik->sik_number,
+                'applicant' => $sik->user->name ?? null,
+                'rejection_reason' => $request->input('rejection_reason'),
+            ],
+            $request->user()
+        );
 
         return redirect()->route('sik.approvals.index')
             ->with('success', "SIK #{$sik->sik_number} telah ditolak.");
@@ -123,6 +150,18 @@ class SikApprovalController extends Controller
 
         $this->sikService->revoke($sik, $request->user(), $request->input('revoke_reason'));
 
+        AuditLogService::log(
+            'sik',
+            'revoke_sik',
+            "SIK #{$sik->sik_number} dicabut (REVOKED) oleh {$request->user()->name}.",
+            [
+                'sik_id' => $sik->id,
+                'sik_number' => $sik->sik_number,
+                'revoke_reason' => $request->input('revoke_reason'),
+            ],
+            $request->user()
+        );
+
         return redirect()->back()
             ->with('success', "SIK #{$sik->sik_number} berhasil dicabut (REVOKED). QR Code sudah tidak berlaku.");
     }
@@ -141,6 +180,18 @@ class SikApprovalController extends Controller
         ]);
 
         $this->sikService->closeManually($sik, $request->user(), $request->input('close_reason'));
+
+        AuditLogService::log(
+            'sik',
+            'close_manually_sik',
+            "SIK #{$sik->sik_number} ditutup secara manual oleh {$request->user()->name}.",
+            [
+                'sik_id' => $sik->id,
+                'sik_number' => $sik->sik_number,
+                'close_reason' => $request->input('close_reason'),
+            ],
+            $request->user()
+        );
 
         return redirect()->back()
             ->with('success', "SIK #{$sik->sik_number} berhasil ditutup secara administratif (CLOSED_MANUALLY).");

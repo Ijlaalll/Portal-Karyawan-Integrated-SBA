@@ -129,7 +129,7 @@ class CalendarAndDashboardTest extends TestCase
             'status' => 'approved',
         ]);
 
-        $response = $this->actingAs($this->admin)->get(route('admin.dashboard'));
+        $response = $this->actingAs($this->admin)->get(route('admin.dashboard', ['date' => substr($date, 0, 7)]));
         $response->assertStatus(200);
         $response->assertViewHas('stats');
         

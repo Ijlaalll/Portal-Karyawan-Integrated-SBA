@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Room;
 use App\Http\Requests\StoreBookingRequest;
 use App\Services\BookingService;
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -132,6 +133,20 @@ class BookingController extends Controller
                 $request->validated()
             );
 
+            AuditLogService::log(
+                'meeting_room',
+                'create_booking',
+                "Pemesanan ruang '{$booking->room->name}' dibuat untuk tanggal " . \Carbon\Carbon::parse($booking->booking_date)->format('d/m/Y'),
+                [
+                    'booking_id' => $booking->id,
+                    'room_id' => $booking->room_id,
+                    'room_name' => $booking->room->name ?? null,
+                    'booking_date' => (string) $booking->booking_date,
+                    'time' => $booking->start_time . ' - ' . $booking->end_time,
+                ],
+                auth()->user()
+            );
+
             return redirect()
                 ->route('bookings.show', $booking)
                 ->with('success', 'Pemesanan berhasil diajukan.');
@@ -167,6 +182,17 @@ class BookingController extends Controller
 
         try {
             $this->bookingService->cancelBooking($booking, auth()->user());
+
+            AuditLogService::log(
+                'meeting_room',
+                'cancel_booking',
+                "Pemesanan ruang '{$booking->room->name}' dibatalkan oleh pengguna.",
+                [
+                    'booking_id' => $booking->id,
+                    'room_id' => $booking->room_id,
+                ],
+                auth()->user()
+            );
 
             return redirect()
                 ->route('bookings.show', $booking)

@@ -138,6 +138,11 @@ Route::middleware(['auth', 'check_status', 'admin'])->prefix('admin')->as('admin
 
         // Department Approvals Config for SIK
         Route::resource('department-approvals', \App\Http\Controllers\Admin\DepartmentApprovalController::class)->names('settings.department-approvals');
+
+        // Audit Trail (Log Aktivitas Sistem)
+        Route::get('audit-logs', [\App\Http\Controllers\Admin\AuditLogController::class, 'index'])->name('settings.audit-logs.index');
+        Route::get('audit-logs/export', [\App\Http\Controllers\Admin\AuditLogController::class, 'exportCsv'])->name('settings.audit-logs.export');
+        Route::get('audit-logs/{auditLog}', [\App\Http\Controllers\Admin\AuditLogController::class, 'show'])->name('settings.audit-logs.show');
     });
 });
 

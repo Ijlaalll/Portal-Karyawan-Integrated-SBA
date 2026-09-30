@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use App\Services\AuditLogService;
 
 class AuthController extends Controller
 {
@@ -86,10 +87,18 @@ class AuthController extends Controller
                         if (!empty($ldapData['employee_id']) && empty($authenticatedUser->employee_id)) {
                             $authenticatedUser->employee_id = $ldapData['employee_id'];
                         }
-                        if (!empty($ldapData['position']) && empty($authenticatedUser->position)) {
-                            $authenticatedUser->position = $ldapData['position'];
-                        }
                         $authenticatedUser->save();
+
+                        // If standard LDAP user has no modules assigned yet, initialize baseline modules
+                        if ($authenticatedUser->role === 'user' && $authenticatedUser->modules()->count() === 0) {
+                            $baselineModules = ['meeting_room', 'atk', 'sik', 'vehicle'];
+                            foreach ($baselineModules as $mod) {
+                                \App\Models\UserModule::firstOrCreate([
+                                    'user_id' => $authenticatedUser->id,
+                                    'module' => $mod,
+                                ]);
+                            }
+                        }
                     } else {
                         // Automatically provision user from Active Directory
                         $authenticatedUser = \App\Models\User::create([
@@ -103,15 +112,15 @@ class AuthController extends Controller
                             'status' => 'active',
                         ]);
 
-                        // Assign default baseline modules
-                        \App\Models\UserModule::firstOrCreate([
-                            'user_id' => $authenticatedUser->id,
-                            'module' => 'sik',
-                        ]);
-                        \App\Models\UserModule::firstOrCreate([
-                            'user_id' => $authenticatedUser->id,
-                            'module' => 'meeting_room',
-                        ]);
+                        // Assign default baseline modules (meeting_room, atk, sik, vehicle)
+                        // Note: toilet_inspection is specifically excluded as it is reserved for designated staff
+                        $baselineModules = ['meeting_room', 'atk', 'sik', 'vehicle'];
+                        foreach ($baselineModules as $mod) {
+                            \App\Models\UserModule::firstOrCreate([
+                                'user_id' => $authenticatedUser->id,
+                                'module' => $mod,
+                            ]);
+                        }
                     }
 
                     Auth::login($authenticatedUser, $request->boolean('remember'));
@@ -130,6 +139,18 @@ class AuthController extends Controller
         if ($authenticatedUser) {
             $request->session()->regenerate();
             $user = $authenticatedUser;
+
+            // Record audit trail for successful login
+            AuditLogService::log(
+                'auth',
+                'login',
+                "Pengguna {$user->name} ({$user->email}) berhasil masuk ke sistem.",
+                [
+                    'role' => $user->role,
+                    'auth_type' => isset($ldapData) ? 'LDAP' : 'Database',
+                ],
+                $user
+            );
             
             $intended = session()->get('url.intended');
             if ($intended) {
@@ -169,6 +190,18 @@ class AuthController extends Controller
         }
 
         $errorMessage = $ldapFailureReason ?: trans('auth.failed');
+
+        // Record audit trail for failed login attempt
+        AuditLogService::log(
+            'auth',
+            'login_failed',
+            "Percobaan login gagal untuk akun '{$loginIdentifier}'. Alasan: {$errorMessage}",
+            [
+                'identifier' => $loginIdentifier,
+                'reason' => $errorMessage,
+            ]
+        );
+
         throw ValidationException::withMessages([
             'email' => [$errorMessage],
         ]);
@@ -179,6 +212,17 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $user = Auth::user();
+        if ($user) {
+            AuditLogService::log(
+                'auth',
+                'logout',
+                "Pengguna {$user->name} ({$user->email}) telah keluar dari sistem.",
+                ['role' => $user->role],
+                $user
+            );
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();
@@ -219,6 +263,15 @@ class AuthController extends Controller
         if (!$user->hasModuleAccess($module)) {
             abort(403, 'Akses tidak sah ke modul ini.');
         }
+
+        // Record audit trail for module switch
+        AuditLogService::log(
+            $module,
+            'switch_module',
+            "Pengguna {$user->name} beralih ke modul {$module}.",
+            ['module' => $module],
+            $user
+        );
 
         session(['active_module' => $module]);
         if ($user->isAdmin()) {

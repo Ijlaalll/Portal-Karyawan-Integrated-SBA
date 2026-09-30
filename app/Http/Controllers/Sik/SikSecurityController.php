@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ExitPermit;
 use App\Models\SikScanLog;
 use App\Services\SikScanService;
+use App\Services\AuditLogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -157,11 +158,25 @@ class SikSecurityController extends Controller
             'notes' => ['nullable', 'string', 'max:500'],
         ]);
 
+        $gateName = $request->input('gate', 'Pos Utama / Main Gate');
         $permit = $this->sikScanService->confirmExit(
             $sik->id,
             $user,
-            $request->input('gate', 'Pos Utama / Main Gate'),
+            $gateName,
             $request->input('notes')
+        );
+
+        AuditLogService::log(
+            'sik',
+            'scan_exit',
+            "Petugas Security mengonfirmasi KELUAR untuk SIK #{$permit->sik_number} ({$permit->user->name}) via {$gateName}",
+            [
+                'sik_id' => $permit->id,
+                'sik_number' => $permit->sik_number,
+                'user_name' => $permit->user->name ?? null,
+                'gate' => $gateName,
+            ],
+            $user
         );
 
         if ($request->wantsJson()) {
@@ -194,11 +209,25 @@ class SikSecurityController extends Controller
             'notes' => ['nullable', 'string', 'max:500'],
         ]);
 
+        $gateName = $request->input('gate', 'Pos Utama / Main Gate');
         $permit = $this->sikScanService->confirmReturn(
             $sik->id,
             $user,
-            $request->input('gate', 'Pos Utama / Main Gate'),
+            $gateName,
             $request->input('notes')
+        );
+
+        AuditLogService::log(
+            'sik',
+            'scan_return',
+            "Petugas Security mengonfirmasi KEMBALI untuk SIK #{$permit->sik_number} ({$permit->user->name}) via {$gateName}",
+            [
+                'sik_id' => $permit->id,
+                'sik_number' => $permit->sik_number,
+                'user_name' => $permit->user->name ?? null,
+                'gate' => $gateName,
+            ],
+            $user
         );
 
         if ($request->wantsJson()) {

@@ -48,6 +48,12 @@ class NavigationService
                         'route' => 'admin.settings.smtp.show',
                         'active' => request()->routeIs('admin.settings.smtp.*'),
                     ],
+                    [
+                        'title' => 'Audit Trail (Log Aktivitas)',
+                        'icon' => 'receipt_long',
+                        'route' => 'admin.settings.audit-logs.index',
+                        'active' => request()->routeIs('admin.settings.audit-logs.*'),
+                    ],
                 ]
             ];
 
@@ -625,20 +631,19 @@ class NavigationService
 
             if ($user->isGa()) {
                 // GA gets identical SIK menu to Admin, EXCEPT 'Konfigurasi Approval' which is Admin-only
-                if ($user->isEmployee()) {
-                    $sikSubmenu[] = [
-                        'title' => 'Ajukan SIK',
-                        'icon' => 'post_add',
-                        'route' => 'sik.create',
-                        'active' => request()->routeIs('sik.create'),
-                    ];
-                    $sikSubmenu[] = [
-                        'title' => 'SIK Saya',
-                        'icon' => 'assignment_ind',
-                        'route' => 'sik.index',
-                        'active' => request()->routeIs('sik.index') || (request()->is('sik/*') && !request()->routeIs('sik.create') && !request()->is('sik-management*') && !request()->is('admin/sik*')),
-                    ];
-                }
+                // Requester menu for GA
+                $sikSubmenu[] = [
+                    'title' => 'Ajukan SIK',
+                    'icon' => 'post_add',
+                    'route' => 'sik.create',
+                    'active' => request()->routeIs('sik.create'),
+                ];
+                $sikSubmenu[] = [
+                    'title' => 'SIK Saya',
+                    'icon' => 'assignment_ind',
+                    'route' => 'sik.index',
+                    'active' => request()->routeIs('sik.index') || (request()->is('sik/*') && !request()->routeIs('sik.create') && !request()->is('sik-management*') && !request()->is('admin/sik*')),
+                ];
 
                 if ($user->isSikApprover() || $isAuthorizedApprover) {
                     $sikSubmenu[] = [
@@ -698,20 +703,19 @@ class NavigationService
                 // Non-GA normal users (Employee / Department Approvers)
                 $isManager = $deptService->isUserHod($user) || $deptService->isUserHodApprover($user);
 
-                if ($user->isEmployee()) {
-                    $sikSubmenu[] = [
-                        'title' => 'Ajukan SIK',
-                        'icon' => 'post_add',
-                        'route' => 'sik.create',
-                        'active' => request()->routeIs('sik.create'),
-                    ];
-                    $sikSubmenu[] = [
-                        'title' => 'SIK Saya',
-                        'icon' => 'assignment_ind',
-                        'route' => 'sik.index',
-                        'active' => request()->routeIs('sik.index') || (request()->is('sik/*') && !request()->routeIs('sik.create') && !request()->is('sik.scanner')),
-                    ];
-                }
+                // Requester menu items always available for users with SIK module access
+                $sikSubmenu[] = [
+                    'title' => 'Ajukan SIK',
+                    'icon' => 'post_add',
+                    'route' => 'sik.create',
+                    'active' => request()->routeIs('sik.create'),
+                ];
+                $sikSubmenu[] = [
+                    'title' => 'SIK Saya',
+                    'icon' => 'assignment_ind',
+                    'route' => 'sik.index',
+                    'active' => request()->routeIs('sik.index') || (request()->is('sik/*') && !request()->routeIs('sik.create') && !request()->is('sik.scanner')),
+                ];
 
                 if ($isAuthorizedApprover || $user->isSikApprover()) {
                     $sikSubmenu[] = [
