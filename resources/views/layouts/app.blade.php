@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Sistem Reservasi Ruang Meeting')</title>
+    <title>@yield('title', 'GA One - Portal Karyawan Terintegrasi SBA')</title>
+    <!-- Favicon GA One -->
+    <link rel="icon" type="image/png" href="{{ asset('images/ga_one_icon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -367,11 +370,9 @@
                 <!-- Expanded Header / Brand & Multi-Module Identity Section -->
                 <div class="sidebar-expanded-header px-4 py-3 flex items-center justify-between border-b border-[#E5E7EB] shrink-0 min-h-[64px] bg-white">
                     <div class="flex items-center gap-3 overflow-hidden min-w-0">
-                        <div class="w-9 h-9 rounded-xl bg-[#2563EB] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
-                            SBA
-                        </div>
+                        <img src="{{ asset('images/ga_one_icon.png') }}" alt="GA One" class="w-9 h-9 rounded-xl shrink-0 shadow-xs object-contain">
                         <div class="whitespace-nowrap overflow-hidden min-w-0">
-                            <h1 class="text-sm font-bold text-[#0F172A] leading-none">SBA System</h1>
+                            <h1 class="text-sm font-extrabold text-[#0F172A] leading-none tracking-tight">GA One</h1>
                             <p class="text-[10px] font-medium text-[#64748B] mt-0.5 leading-tight truncate">PT. Solusi Bangun Andalas</p>
                             @if($currentModuleName)
                                 <p class="text-[11px] font-bold text-[#2563EB] mt-1 pt-1 border-t border-[#F1F5F9] leading-tight truncate">
@@ -390,12 +391,10 @@
 
                 <!-- Collapsed Header / Compact Brand Section -->
                 <div class="sidebar-collapsed-header hidden flex-col items-center justify-center gap-2 py-3 px-2 border-b border-[#E5E7EB] shrink-0 bg-white min-h-[64px]">
-                    <div class="w-9 h-9 rounded-xl bg-[#2563EB] text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0 cursor-pointer"
-                         onmouseenter="handleItemMouseEnter(event, 'SBA System{{ $currentModuleName ? ' - ' . e($currentModuleName) : '' }}')"
+                    <img src="{{ asset('images/ga_one_icon.png') }}" alt="GA One" class="w-9 h-9 rounded-xl shadow-xs shrink-0 cursor-pointer object-contain"
+                         onmouseenter="handleItemMouseEnter(event, 'GA One{{ $currentModuleName ? ' - ' . e($currentModuleName) : '' }}')"
                          onmouseleave="handleItemMouseLeave(event)"
-                         title="SBA System">
-                        SBA
-                    </div>
+                         title="GA One">
                     <button type="button" onclick="toggleSidebar()" aria-label="Expand Sidebar" title="Buka Sidebar" class="p-1 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors flex items-center justify-center">
                         <span class="material-symbols-outlined text-[18px]">keyboard_double_arrow_right</span>
                     </button>
