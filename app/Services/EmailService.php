@@ -37,12 +37,17 @@ class EmailService
         }
         
         if ($smtp) {
+            $encryption = strtolower($smtp->encryption ?? '');
+            $isExplicitTls = in_array($encryption, ['tls', 'ssl']);
+
             config([
                 'mail.mailers.smtp.host' => $smtp->host,
                 'mail.mailers.smtp.port' => $smtp->port,
                 'mail.mailers.smtp.username' => $smtp->username,
                 'mail.mailers.smtp.password' => $this->smtpSettingsService->decryptPassword($smtp->password),
-                'mail.mailers.smtp.encryption' => $smtp->encryption,
+                'mail.mailers.smtp.encryption' => $isExplicitTls ? $smtp->encryption : null,
+                'mail.mailers.smtp.auto_tls' => $isExplicitTls,
+                'mail.mailers.smtp.verify_peer' => false,
                 'mail.from.address' => $smtp->from_address,
                 'mail.from.name' => $smtp->from_name,
                 'mail.default' => 'smtp',
