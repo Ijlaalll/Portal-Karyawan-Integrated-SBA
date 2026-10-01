@@ -166,6 +166,10 @@ class AuditLogTest extends TestCase
 
         $submenuTitles = collect($settingsItem['submenu'])->pluck('title')->toArray();
         $this->assertContains('Audit Trail (Log Aktivitas)', $submenuTitles);
+
+        // Requirement: Pengaturan must always be at the very bottom
+        $lastItem = end($menu);
+        $this->assertEquals('settings_menu', $lastItem['id'] ?? null, 'Modul Pengaturan harus selalu berada di posisi paling bawah');
     }
 
     public function test_regular_user_with_sik_access_can_view_sik_menu_without_employee_profile(): void

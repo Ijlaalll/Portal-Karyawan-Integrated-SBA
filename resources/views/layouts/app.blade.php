@@ -435,6 +435,13 @@
                             </div>
                         @endif
 
+                        @if($groupId === 'settings_menu')
+                            <!-- Non-interactive PENGATURAN Section Label -->
+                            <div class="pt-4 pb-1 px-3 sidebar-text-label pointer-events-none select-none">
+                                <p class="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider leading-none">PENGATURAN</p>
+                            </div>
+                        @endif
+
                         @if(isset($group['submenu']))
                             <!-- Group Parent Menu -->
                             <div class="nav-group-item relative" data-group-id="{{ $group['id'] ?? '' }}">

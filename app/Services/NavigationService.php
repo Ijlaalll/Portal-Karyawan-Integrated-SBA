@@ -23,40 +23,6 @@ class NavigationService
                 'active' => request()->routeIs('admin.home'),
             ];
 
-            // Settings Group
-            $menu[] = [
-                'title' => 'Pengaturan',
-                'icon' => 'settings',
-                'id' => 'settings_menu',
-                'active' => (request()->is('admin/settings*') || request()->routeIs('admin.users.*')) && !request()->is('admin/settings/department-approvals*') && !request()->routeIs('admin.settings.department-approvals.*'),
-                'submenu' => [
-                    [
-                        'title' => 'Pengguna',
-                        'icon' => 'group',
-                        'route' => 'admin.users.index',
-                        'active' => request()->routeIs('admin.users.*'),
-                    ],
-                    [
-                        'title' => 'Cost Center',
-                        'icon' => 'payments',
-                        'route' => 'admin.settings.cost-centers.index',
-                        'active' => request()->routeIs('admin.settings.cost-centers.*'),
-                    ],
-                    [
-                        'title' => 'SMTP Settings',
-                        'icon' => 'mail',
-                        'route' => 'admin.settings.smtp.show',
-                        'active' => request()->routeIs('admin.settings.smtp.*'),
-                    ],
-                    [
-                        'title' => 'Audit Trail (Log Aktivitas)',
-                        'icon' => 'receipt_long',
-                        'route' => 'admin.settings.audit-logs.index',
-                        'active' => request()->routeIs('admin.settings.audit-logs.*'),
-                    ],
-                ]
-            ];
-
             // Meeting Room Module Group (Admin version)
             $menu[] = [
                 'title' => 'Ruang Meeting',
@@ -300,6 +266,40 @@ class NavigationService
                         'icon' => 'local_gas_station',
                         'route' => 'vehicles.fuel.index',
                         'active' => request()->routeIs('vehicles.fuel.*'),
+                    ],
+                ]
+            ];
+
+            // Settings Group (Selalu paling bawah sesuai requirement sistem)
+            $menu[] = [
+                'title' => 'Pengaturan',
+                'icon' => 'settings',
+                'id' => 'settings_menu',
+                'active' => (request()->is('admin/settings*') || request()->routeIs('admin.users.*')) && !request()->is('admin/settings/department-approvals*') && !request()->routeIs('admin.settings.department-approvals.*'),
+                'submenu' => [
+                    [
+                        'title' => 'Pengguna',
+                        'icon' => 'group',
+                        'route' => 'admin.users.index',
+                        'active' => request()->routeIs('admin.users.*'),
+                    ],
+                    [
+                        'title' => 'Cost Center',
+                        'icon' => 'payments',
+                        'route' => 'admin.settings.cost-centers.index',
+                        'active' => request()->routeIs('admin.settings.cost-centers.*'),
+                    ],
+                    [
+                        'title' => 'SMTP Settings',
+                        'icon' => 'mail',
+                        'route' => 'admin.settings.smtp.show',
+                        'active' => request()->routeIs('admin.settings.smtp.*'),
+                    ],
+                    [
+                        'title' => 'Audit Trail (Log Aktivitas)',
+                        'icon' => 'receipt_long',
+                        'route' => 'admin.settings.audit-logs.index',
+                        'active' => request()->routeIs('admin.settings.audit-logs.*'),
                     ],
                 ]
             ];
