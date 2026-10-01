@@ -416,7 +416,7 @@ class SmtpSettingsController extends Controller
             // Log the successful test email
             EmailLog::create([
                 'recipient' => $validated['recipient'],
-                'subject' => 'Test SMTP - Meeting Room System',
+                'subject' => 'Uji Coba SMTP Berhasil - Portal Karyawan Terintegrasi SBA',
                 'email_type' => 'test_email',
                 'status' => 'sent',
             ]);
@@ -451,7 +451,7 @@ class SmtpSettingsController extends Controller
             // Log the failed test email
             EmailLog::create([
                 'recipient' => $validated['recipient'],
-                'subject' => 'Test SMTP - Meeting Room System',
+                'subject' => 'Uji Coba SMTP Berhasil - Portal Karyawan Terintegrasi SBA',
                 'email_type' => 'test_email',
                 'status' => 'failed',
                 'error_detail' => 'SMTP Error: ' . $errorMessage,
