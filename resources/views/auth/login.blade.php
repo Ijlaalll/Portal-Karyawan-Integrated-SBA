@@ -3,231 +3,262 @@
 @section('title', 'Masuk - GA One | Portal Karyawan Terintegrasi SBA')
 
 @section('content')
-<div class="min-h-screen w-full relative flex items-center justify-center p-4 sm:p-6 lg:p-12 overflow-x-hidden font-sans">
-    <!-- 1. Cinematic Factory Background (Aerial View of SBA Plant Lhoknga) -->
-    <div class="fixed inset-0 bg-cover bg-center bg-no-repeat z-0 transform scale-105 transition-transform duration-1000 ease-out"
-         style="background-image: url('{{ asset('images/sba-factory-aerial.jpg') }}'); filter: brightness(0.7) saturate(1.15);">
+<!-- Container Utama Halaman Login -->
+<div class="linda-login-wrapper">
+
+    <!-- 1. Cinematic Factory Background (Full Viewport SBA Plant - Color Graded) -->
+    <div class="linda-bg-cinematic"></div>
+
+    <!-- 2. Dark Atmospheric Cyan & Navy Overlay (Identik dengan Referensi Linda) -->
+    <div class="linda-overlay-dark"></div>
+
+    <!-- 3. Ambient Radial Lighting (Cyan, Emerald, Royal Blue Glows) -->
+    <div class="linda-ambient-glows"></div>
+
+    <!-- 4. Constellation Network Nodes Overlay (Persis seperti pada latar gunung Linda) -->
+    <div class="linda-constellation-container">
+        <!-- SVG Constellation Mesh di Kiri Bawah -->
+        <svg class="linda-constellation-svg" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Garis Jaringan -->
+            <line x1="40" y1="520" x2="110" y2="440" stroke="rgba(6, 182, 212, 0.3)" stroke-width="1.5" />
+            <line x1="110" y1="440" x2="90" y2="350" stroke="rgba(6, 182, 212, 0.25)" stroke-width="1.5" />
+            <line x1="110" y1="440" x2="210" y2="470" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1.5" />
+            <line x1="90" y1="350" x2="20" y2="280" stroke="rgba(6, 182, 212, 0.2)" stroke-width="1.5" />
+            <line x1="210" y1="470" x2="290" y2="400" stroke="rgba(6, 182, 212, 0.25)" stroke-width="1.5" />
+            <line x1="90" y1="350" x2="290" y2="400" stroke="rgba(56, 189, 248, 0.2)" stroke-width="1.2" stroke-dasharray="4 4" />
+            <line x1="290" y1="400" x2="380" y2="460" stroke="rgba(6, 182, 212, 0.2)" stroke-width="1.2" stroke-dasharray="4 4" />
+
+            <!-- Titik-titik Berpendar -->
+            <circle cx="40" cy="520" r="4" fill="#06B6D4" />
+            <circle cx="110" cy="440" r="5" fill="#10B981" />
+            <circle cx="90" cy="350" r="4.5" fill="#38BDF8" />
+            <circle cx="20" cy="280" r="3.5" fill="#06B6D4" />
+            <circle cx="210" cy="470" r="4.5" fill="#34D399" />
+            <circle cx="290" cy="400" r="5" fill="#38BDF8" />
+            <circle cx="380" cy="460" r="3.5" fill="#06B6D4" />
+        </svg>
+
+        <!-- Node 1: DATA INTEGRATION (Kiri Tengah) -->
+        <div class="linda-node-pin" style="top: 32%; left: 14%;">
+            <span class="linda-pin-glow"></span>
+            <span class="linda-pin-dot"></span>
+            <span class="linda-pin-label">DATA INTEGRATION</span>
+        </div>
+
+        <!-- Node 2: MONITORING (Atas Tengah Pabrik) -->
+        <div class="linda-node-pin" style="top: 24%; left: 44%;">
+            <span class="linda-pin-glow"></span>
+            <span class="linda-pin-dot"></span>
+            <span class="linda-pin-label">MONITORING</span>
+        </div>
+
+        <!-- Node 3: OPERATIONAL (Tengah Bawah) -->
+        <div class="linda-node-pin" style="top: 66%; left: 34%;">
+            <span class="linda-pin-glow"></span>
+            <span class="linda-pin-dot"></span>
+            <span class="linda-pin-label">OPERATIONAL</span>
+        </div>
+
+        <!-- Node 4: SECURE (Kanan Bawah) -->
+        <div class="linda-node-pin" style="top: 78%; left: 48%;">
+            <span class="linda-pin-glow"></span>
+            <span class="linda-pin-dot"></span>
+            <span class="linda-pin-label">SECURE</span>
+        </div>
     </div>
 
-    <!-- 2. Dark Atmospheric Cyan & Navy Blueprint Vignette Overlay (Matches Linda Reference) -->
-    <div class="fixed inset-0 z-0 bg-gradient-to-r from-[#061224]/95 via-[#0A1A33]/85 to-[#08152B]/92 pointer-events-none"></div>
-    
-    <!-- 3. Ambient Radial Glow Lights -->
-    <div class="fixed inset-0 z-0 pointer-events-none" 
-         style="background: radial-gradient(circle at 18% 45%, rgba(6, 182, 212, 0.22) 0%, transparent 55%), radial-gradient(circle at 82% 25%, rgba(37, 99, 235, 0.20) 0%, transparent 50%), radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.15) 0%, transparent 60%);">
-    </div>
-
-    <!-- 4. Subtle Engineering Coordinate Grid -->
-    <div class="fixed inset-0 z-0 pointer-events-none opacity-10" 
-         style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px); background-size: 36px 36px;">
-    </div>
-
-    <!-- 5. Main Content Container -->
-    <div class="max-w-7xl w-full mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center py-6 sm:py-8">
+    <!-- 5. Konten Halaman (Grid 2 Kolom) -->
+    <div class="linda-content-container">
         
         <!-- ========================================== -->
-        <!-- LEFT COLUMN: Brand Hero & Network Nodes   -->
+        <!-- KOLOM KIRI: Brand Hero Headline & Modules  -->
         <!-- ========================================== -->
-        <div class="col-span-12 lg:col-span-7 space-y-8 relative">
+        <div class="linda-left-hero">
             
-            <!-- Floating Network Graphic Overlay (SVG Constellation) -->
-            <div class="relative max-w-lg">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-[#38BDF8] border border-cyan-500/30 bg-[#0C2340]/70 backdrop-blur-md shadow-lg shadow-cyan-950/40">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                    <span class="tracking-wide">PORTAL INTEGRASI KARYAWAN SBA</span>
-                </div>
-
-                <!-- Main Hero Typography -->
-                <h1 class="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-white tracking-tight leading-[1.12] mt-6">
-                    Connecting services<br>
-                    into <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] via-[#06B6D4] to-[#38BDF8]">One Place.</span>
-                </h1>
-
-                <p class="text-sm sm:text-base text-slate-300 font-medium tracking-wide mt-4 flex items-center gap-2">
-                    <span class="text-[#38BDF8] font-bold">#Growing together.</span>
-                    <span class="text-slate-500">•</span>
-                    <span class="text-slate-300">PT Solusi Bangun Andalas</span>
-                </p>
+            <!-- Badge Identitas Resmi -->
+            <div class="linda-badge">
+                <span class="linda-badge-pulse"></span>
+                <span class="linda-badge-text">PORTAL INTEGRASI KARYAWAN SBA</span>
             </div>
 
-            <!-- Operational Feature Badges (Interactive 5-Module Network) -->
-            <div class="pt-4 max-w-xl">
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <div class="flex items-center gap-2.5 bg-slate-900/60 hover:bg-slate-900/80 border border-slate-700/60 rounded-xl px-3.5 py-2.5 backdrop-blur-md transition-all duration-200">
-                        <span class="material-symbols-outlined text-[19px] text-[#38BDF8]">meeting_room</span>
-                        <div>
-                            <p class="text-xs font-bold text-white leading-tight">Ruang Meeting</p>
-                            <p class="text-[10px] text-slate-400">Offline & Hybrid</p>
-                        </div>
-                    </div>
+            <!-- Headline Utama (Gaya Persis Linda) -->
+            <h1 class="linda-hero-heading">
+                Connecting services<br>
+                into <span class="linda-gradient-text">One Place.</span>
+            </h1>
 
-                    <div class="flex items-center gap-2.5 bg-slate-900/60 hover:bg-slate-900/80 border border-slate-700/60 rounded-xl px-3.5 py-2.5 backdrop-blur-md transition-all duration-200">
-                        <span class="material-symbols-outlined text-[19px] text-[#34D399]">inventory_2</span>
-                        <div>
-                            <p class="text-xs font-bold text-white leading-tight">Logistik ATK</p>
-                            <p class="text-[10px] text-slate-400">Katalog & Stok</p>
-                        </div>
-                    </div>
+            <p class="linda-hero-sub">
+                <span class="linda-tag-blue">#Growing together.</span>
+                <span class="linda-tag-dot">•</span>
+                <span class="linda-tag-sub">PT Solusi Bangun Andalas</span>
+            </p>
 
-                    <div class="flex items-center gap-2.5 bg-slate-900/60 hover:bg-slate-900/80 border border-slate-700/60 rounded-xl px-3.5 py-2.5 backdrop-blur-md transition-all duration-200">
-                        <span class="material-symbols-outlined text-[19px] text-[#F59E0B]">badge</span>
-                        <div>
-                            <p class="text-xs font-bold text-white leading-tight">Izin Keluar (SIK)</p>
-                            <p class="text-[10px] text-slate-400">QR Code Security</p>
-                        </div>
+            <!-- 6 Modul Utama Layanan SBA -->
+            <div class="linda-modules-grid">
+                <div class="linda-mod-pill">
+                    <span class="material-symbols-outlined text-[18px] text-[#38BDF8]">meeting_room</span>
+                    <div>
+                        <div class="linda-mod-title">Ruang Meeting</div>
+                        <div class="linda-mod-desc">Offline &amp; Hybrid</div>
                     </div>
+                </div>
 
-                    <div class="flex items-center gap-2.5 bg-slate-900/60 hover:bg-slate-900/80 border border-slate-700/60 rounded-xl px-3.5 py-2.5 backdrop-blur-md transition-all duration-200">
-                        <span class="material-symbols-outlined text-[19px] text-[#60A5FA]">directions_car</span>
-                        <div>
-                            <p class="text-xs font-bold text-white leading-tight">Kendaraan</p>
-                            <p class="text-[10px] text-slate-400">Armada & Supir</p>
-                        </div>
+                <div class="linda-mod-pill">
+                    <span class="material-symbols-outlined text-[18px] text-[#34D399]">inventory_2</span>
+                    <div>
+                        <div class="linda-mod-title">Logistik ATK</div>
+                        <div class="linda-mod-desc">Katalog &amp; Stok</div>
                     </div>
+                </div>
 
-                    <div class="flex items-center gap-2.5 bg-slate-900/60 hover:bg-slate-900/80 border border-slate-700/60 rounded-xl px-3.5 py-2.5 backdrop-blur-md transition-all duration-200">
-                        <span class="material-symbols-outlined text-[19px] text-[#A78BFA]">wc</span>
-                        <div>
-                            <p class="text-xs font-bold text-white leading-tight">Inspeksi Toilet</p>
-                            <p class="text-[10px] text-slate-400">Checklist Pabrik</p>
-                        </div>
+                <div class="linda-mod-pill">
+                    <span class="material-symbols-outlined text-[18px] text-[#F59E0B]">badge</span>
+                    <div>
+                        <div class="linda-mod-title">Izin Keluar (SIK)</div>
+                        <div class="linda-mod-desc">QR Code Gate</div>
                     </div>
+                </div>
 
-                    <div class="flex items-center gap-2.5 bg-slate-900/60 hover:bg-slate-900/80 border border-slate-700/60 rounded-xl px-3.5 py-2.5 backdrop-blur-md transition-all duration-200">
-                        <span class="material-symbols-outlined text-[19px] text-[#38BDF8]">verified_user</span>
-                        <div>
-                            <p class="text-xs font-bold text-white leading-tight">Single Sign-On</p>
-                            <p class="text-[10px] text-slate-400">Akun Terpadu</p>
-                        </div>
+                <div class="linda-mod-pill">
+                    <span class="material-symbols-outlined text-[18px] text-[#60A5FA]">directions_car</span>
+                    <div>
+                        <div class="linda-mod-title">Kendaraan</div>
+                        <div class="linda-mod-desc">Armada &amp; Supir</div>
+                    </div>
+                </div>
+
+                <div class="linda-mod-pill">
+                    <span class="material-symbols-outlined text-[18px] text-[#A78BFA]">wc</span>
+                    <div>
+                        <div class="linda-mod-title">Inspeksi Toilet</div>
+                        <div class="linda-mod-desc">Checklist Pabrik</div>
+                    </div>
+                </div>
+
+                <div class="linda-mod-pill">
+                    <span class="material-symbols-outlined text-[18px] text-[#38BDF8]">verified_user</span>
+                    <div>
+                        <div class="linda-mod-title">Single Sign-On</div>
+                        <div class="linda-mod-desc">Akun Terpadu</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ========================================== -->
-        <!-- RIGHT COLUMN: Floating Glassmorphism Card  -->
+        <!-- KOLOM KANAN: Kartu Login Glassmorphism     -->
         <!-- ========================================== -->
-        <div class="col-span-12 lg:col-span-5 flex justify-center lg:justify-end">
-            <div class="w-full max-w-[440px] bg-[#0B1528]/85 backdrop-blur-2xl border border-white/12 rounded-3xl p-7 sm:p-9 shadow-2xl relative overflow-hidden"
-                 style="box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 35px -8px rgba(6, 182, 212, 0.25);">
+        <div class="linda-right-card-wrapper">
+            <div class="linda-card">
                 
-                <!-- Glowing Top Accent Line (Linda Style) -->
-                <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#38BDF8] to-transparent"></div>
+                <!-- Glowing Top Accent Line (Ciri Khas Kartu Linda) -->
+                <div class="linda-card-top-accent"></div>
 
-                <!-- Brand Logo & Header -->
-                <div class="text-center mb-6">
-                    <img src="{{ asset('images/ga_one_logo_white.png') }}" alt="GA One" class="h-11 sm:h-12 w-auto mx-auto object-contain drop-shadow-md">
+                <!-- Logo GA One & Subtitle Resmi -->
+                <div class="linda-card-header">
+                    <!-- Logo GA One White Versi HiDPI Crisp (Anti Crop-Artifacts) -->
+                    <div class="linda-logo-box">
+                        <img src="{{ asset('images/ga_one_logo_white.png') }}?v=2" alt="GA One" class="linda-logo-img">
+                    </div>
                     
-                    <p class="text-[12px] font-medium text-slate-300 tracking-wide mt-2.5">
+                    <p class="linda-card-subtitle">
                         Integrated <span class="text-[#34D399] font-bold">Monitoring</span> &amp; <span class="text-[#38BDF8] font-bold">Service</span> System App
                     </p>
-                    <p class="text-xs text-slate-400 mt-1 font-medium">Sign in to continue</p>
+                    <p class="linda-card-prompt">Sign in to continue</p>
                 </div>
 
-                <!-- Validation Errors Alert -->
+                <!-- Notifikasi Error Validasi -->
                 @if ($errors->any())
-                    <div class="mb-5 rounded-xl bg-red-950/60 p-3.5 border border-red-500/40 text-xs space-y-1">
-                        <div class="flex items-center gap-2 text-red-300 font-bold">
-                            <span class="material-symbols-outlined text-[17px]">error</span>
+                    <div class="linda-alert-error">
+                        <div class="linda-alert-title">
+                            <span class="material-symbols-outlined text-[16px]">error</span>
                             Gagal Masuk
                         </div>
                         @foreach ($errors->all() as $error)
-                            <p class="text-red-200/90 pl-6 leading-relaxed">{{ $error }}</p>
+                            <p class="linda-alert-msg">{{ $error }}</p>
                         @endforeach
                     </div>
                 @endif
 
-                <!-- Login Form -->
-                <form class="space-y-4" action="{{ url('/login') }}" method="POST" id="login-form" onsubmit="setLoadingState();">
+                <!-- Formulir Login -->
+                <form class="linda-form" action="{{ url('/login') }}" method="POST" id="login-form" onsubmit="setLoadingState();">
                     @csrf
 
-                    <!-- Email Input -->
-                    <div>
-                        <label for="email" class="block text-xs font-semibold text-slate-300 mb-1.5">
-                            Email
-                        </label>
-                        <div class="relative rounded-xl shadow-xs group">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#38BDF8] transition-colors">
-                                <span class="material-symbols-outlined text-[19px]">mail</span>
-                            </div>
+                    <!-- Email Field -->
+                    <div class="linda-field-group">
+                        <label for="email" class="linda-label">Email</label>
+                        <div class="linda-input-wrap">
+                            <span class="material-symbols-outlined linda-input-icon">mail</span>
                             <input id="email" name="email" type="text" autocomplete="username" required value="{{ old('email') }}"
                                 placeholder="Enter email"
-                                class="block w-full rounded-xl pl-11 pr-4 py-3 text-sm text-white bg-slate-900/70 border border-slate-700/80 placeholder-slate-500 focus:bg-slate-900/95 focus:outline-none focus:ring-2 focus:ring-[#38BDF8] focus:border-transparent transition-all">
+                                class="linda-input">
                         </div>
                     </div>
 
-                    <!-- Password Input -->
-                    <div>
-                        <label for="password" class="block text-xs font-semibold text-slate-300 mb-1.5">
-                            Password
-                        </label>
-                        <div class="relative rounded-xl shadow-xs group">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#38BDF8] transition-colors">
-                                <span class="material-symbols-outlined text-[19px]">lock</span>
-                            </div>
+                    <!-- Password Field -->
+                    <div class="linda-field-group">
+                        <label for="password" class="linda-label">Password</label>
+                        <div class="linda-input-wrap">
+                            <span class="material-symbols-outlined linda-input-icon">lock</span>
                             <input id="password" name="password" type="password" autocomplete="current-password" required
                                 placeholder="Enter password"
-                                class="block w-full rounded-xl pl-11 pr-12 py-3 text-sm text-white bg-slate-900/70 border border-slate-700/80 placeholder-slate-500 focus:bg-slate-900/95 focus:outline-none focus:ring-2 focus:ring-[#38BDF8] focus:border-transparent transition-all">
+                                class="linda-input linda-input-password">
                             
                             <button type="button" onclick="togglePasswordVisibility();" 
-                                class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-[#38BDF8] transition-colors focus:outline-none cursor-pointer"
+                                class="linda-pwd-toggle"
                                 title="Tampilkan / Sembunyikan Kata Sandi">
                                 <span class="material-symbols-outlined text-[20px]" id="password-toggle-icon">visibility</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Remember Me & Forgot Password -->
-                    <div class="flex items-center justify-between pt-1">
-                        <label for="remember" class="inline-flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
-                            <input id="remember" name="remember" type="checkbox"
-                                class="h-4 w-4 rounded border-slate-700 bg-slate-900/80 text-[#2563EB] focus:ring-[#38BDF8] focus:ring-offset-0 cursor-pointer">
+                    <!-- Remember me & Forgot Password -->
+                    <div class="linda-options-row">
+                        <label for="remember" class="linda-remember-label">
+                            <input id="remember" name="remember" type="checkbox" class="linda-checkbox">
                             <span>Remember me</span>
                         </label>
                         
-                        <button type="button" onclick="showForgotPasswordModal();" 
-                            class="text-xs font-medium text-[#38BDF8] hover:text-cyan-300 transition-colors cursor-pointer">
+                        <button type="button" onclick="showForgotPasswordModal();" class="linda-forgot-btn">
                             Forgot password?
                         </button>
                     </div>
 
-                    <!-- Submit Button: Gradient Luminous Style matching Linda -->
+                    <!-- Tombol Log in Bergradasi (Persis Linda: Emerald -> Cyan -> Blue) -->
                     <div class="pt-2">
-                        <button type="submit" id="submit-button"
-                            class="flex w-full justify-center items-center gap-2 rounded-xl py-3.5 px-4 text-sm font-bold text-white bg-gradient-to-r from-[#10B981] via-[#06B6D4] to-[#2563EB] hover:from-[#059669] hover:via-[#0891B2] hover:to-[#1D4ED8] shadow-lg shadow-cyan-900/30 hover:shadow-cyan-500/25 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer">
+                        <button type="submit" id="submit-button" class="linda-submit-btn">
                             <span id="button-text">Log in</span>
-                            <span class="material-symbols-outlined text-[19px] shrink-0" id="button-icon">arrow_forward</span>
-                            <span id="button-spinner" class="hidden animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+                            <span class="material-symbols-outlined text-[19px]" id="button-icon">arrow_forward</span>
+                            <span id="button-spinner" class="linda-spinner hidden"></span>
                         </button>
                     </div>
                 </form>
 
-                <!-- Separator -->
-                <div class="relative flex items-center justify-center my-5">
-                    <div class="border-t border-slate-800 w-full"></div>
-                    <span class="bg-[#0B1528] px-3 text-[11px] text-slate-400 uppercase tracking-wider shrink-0 font-medium">or continue with</span>
-                    <div class="border-t border-slate-800 w-full"></div>
+                <!-- Separator 'or continue with' -->
+                <div class="linda-separator">
+                    <div class="linda-sep-line"></div>
+                    <span class="linda-sep-text">or continue with</span>
+                    <div class="linda-sep-line"></div>
                 </div>
 
-                <!-- SSO Button (Single Sign-On SIG) -->
+                <!-- Tombol SSO (Single Sign-On SIG) -->
                 <div>
-                    <button type="button" onclick="document.getElementById('email').focus();"
-                        class="w-full flex items-center justify-between px-4 py-3 bg-slate-800/60 hover:bg-slate-800/90 border border-slate-700/80 rounded-xl text-xs font-semibold text-slate-200 hover:text-white transition-all cursor-pointer shadow-xs">
+                    <button type="button" onclick="document.getElementById('email').focus();" class="linda-sso-btn">
                         <div class="flex items-center gap-2.5">
-                            <span class="material-symbols-outlined text-[18px] text-[#38BDF8]">verified_user</span>
+                            <span class="material-symbols-outlined text-[19px] text-[#38BDF8]">verified_user</span>
                             <span>SSO / Single Sign-On</span>
                         </div>
-                        <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
+                        <span class="material-symbols-outlined text-[18px] text-slate-400">chevron_right</span>
                     </button>
                 </div>
 
-                <!-- Footer Badges -->
-                <div class="pt-6 border-t border-slate-800/80 text-center space-y-2">
-                    <p class="text-[11px] text-slate-400 flex items-center justify-center gap-1.5 font-medium">
+                <!-- Footer Kartu -->
+                <div class="linda-card-footer">
+                    <p class="linda-footer-badge">
                         <span class="material-symbols-outlined text-[15px] text-[#34D399]">shield</span>
                         Secure. Reliable. Connected.
                     </p>
-                    <p class="text-[10px] text-slate-500 tracking-wide uppercase font-semibold">
+                    <p class="linda-footer-copyright">
                         &copy; {{ date('Y') }} PT SOLUSI BANGUN ANDALAS
                     </p>
                 </div>
@@ -237,9 +268,9 @@
 </div>
 
 <!-- Modal Bantuan Lupa Password -->
-<div id="forgot-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-    <div class="bg-[#0F172A] border border-slate-700 rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
-        <div class="w-12 h-12 rounded-full bg-cyan-950/70 border border-cyan-500/40 text-[#38BDF8] flex items-center justify-center mx-auto">
+<div id="forgot-modal" class="linda-modal-overlay hidden">
+    <div class="linda-modal-box">
+        <div class="linda-modal-icon-wrap">
             <span class="material-symbols-outlined text-[24px]">support_agent</span>
         </div>
         <div>
@@ -248,21 +279,674 @@
                 Akun portal ini terintegrasi dengan kredensial Single Sign-On (SSO). Untuk mengatur ulang kata sandi atau kendala akun, silakan hubungi <strong>Helpdesk IT SBA</strong> atau Administrator Sistem.
             </p>
         </div>
-        <button type="button" onclick="closeForgotPasswordModal();"
-            class="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-[#2563EB] hover:bg-blue-600 transition-colors cursor-pointer">
+        <button type="button" onclick="closeForgotPasswordModal();" class="linda-modal-close-btn">
             Mengerti &amp; Tutup
         </button>
     </div>
 </div>
 
+<!-- ============================================================== -->
+<!-- CSS Mandiri & Terisolasi Penuh (Mencegah Masalah Tailwind Build) -->
+<!-- ============================================================== -->
 <style>
-    /* Prevent browser white autofill background override in dark theme */
+    /* 1. Layout & Viewport Wrapper */
+    .linda-login-wrapper {
+        position: relative;
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem 1rem;
+        overflow-x: hidden;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* 2. Full Viewport Aerial Factory Background */
+    .linda-bg-cinematic {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 0 !important;
+        background-image: url('{{ asset('images/sba-factory-aerial.jpg') }}?v=2') !important;
+        background-size: cover !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        filter: brightness(0.7) contrast(1.1) saturate(0.95);
+        pointer-events: none;
+    }
+
+    /* 3. Dark Atmospheric Vignette Overlay */
+    .linda-overlay-dark {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 1 !important;
+        background: radial-gradient(circle at 75% 35%, rgba(10, 25, 52, 0.78) 0%, rgba(6, 14, 28, 0.94) 70%),
+                    linear-gradient(135deg, rgba(6, 18, 38, 0.94) 0%, rgba(9, 22, 44, 0.85) 45%, rgba(5, 12, 24, 0.96) 100%) !important;
+        pointer-events: none;
+    }
+
+    /* 4. Ambient Radial Glow Lights */
+    .linda-ambient-glows {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background: radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.22) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.22) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.15) 0%, transparent 55%);
+    }
+
+    /* 5. Constellation Network Pins */
+    .linda-constellation-container {
+        position: fixed;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+    }
+
+    .linda-constellation-svg {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 480px;
+        height: 480px;
+        opacity: 0.7;
+    }
+
+    .linda-node-pin {
+        position: absolute;
+        display: none;
+        align-items: center;
+        gap: 8px;
+        transform: translate(-50%, -50%);
+    }
+
+    @media (min-width: 1024px) {
+        .linda-node-pin {
+            display: flex;
+        }
+    }
+
+    .linda-pin-glow {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 9999px;
+        background: rgba(6, 182, 212, 0.6);
+        animation: linda-pulse 2.5s infinite ease-in-out;
+    }
+
+    .linda-pin-dot {
+        position: relative;
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        background: #00F2FE;
+        box-shadow: 0 0 10px #00F2FE;
+    }
+
+    .linda-pin-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #38BDF8;
+        background: rgba(6, 20, 42, 0.75);
+        padding: 2px 7px;
+        border-radius: 6px;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        backdrop-filter: blur(8px);
+    }
+
+    @keyframes linda-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(2.2); opacity: 0; }
+    }
+
+    /* 6. Content Grid */
+    .linda-content-container {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 1240px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+        .linda-content-container {
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 3.5rem;
+        }
+    }
+
+    /* 7. Left Hero Column */
+    .linda-left-hero {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .linda-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: #38BDF8;
+        background: rgba(12, 35, 64, 0.85);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        backdrop-filter: blur(12px);
+        width: fit-content;
+        box-shadow: 0 4px 15px rgba(6, 182, 212, 0.15);
+    }
+
+    .linda-badge-pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        background: #38BDF8;
+        box-shadow: 0 0 8px #38BDF8;
+        animation: linda-pulse 2s infinite ease-in-out;
+    }
+
+    .linda-hero-heading {
+        font-size: 2.5rem;
+        line-height: 1.15;
+        font-weight: 800;
+        color: #FFFFFF;
+        letter-spacing: -0.02em;
+        margin: 0;
+    }
+
+    @media (min-width: 640px) {
+        .linda-hero-heading { font-size: 3.25rem; }
+    }
+
+    @media (min-width: 1024px) {
+        .linda-hero-heading { font-size: 3.6rem; }
+    }
+
+    .linda-gradient-text {
+        background: linear-gradient(90deg, #10B981 0%, #06B6D4 50%, #38BDF8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .linda-hero-sub {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    .linda-tag-blue { color: #38BDF8; font-weight: 700; }
+    .linda-tag-dot { color: #64748B; }
+    .linda-tag-sub { color: #CBD5E1; font-weight: 500; }
+
+    /* Module Badges Grid */
+    .linda-modules-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        max-width: 580px;
+        padding-top: 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .linda-modules-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    .linda-mod-pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(11, 22, 42, 0.7);
+        border: 1px solid rgba(71, 85, 105, 0.5);
+        border-radius: 14px;
+        padding: 10px 14px;
+        backdrop-filter: blur(12px);
+        transition: all 0.2s ease;
+    }
+
+    .linda-mod-pill:hover {
+        background: rgba(15, 30, 58, 0.9);
+        border-color: rgba(56, 189, 248, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .linda-mod-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: #F8FAFC;
+        line-height: 1.2;
+    }
+
+    .linda-mod-desc {
+        font-size: 10px;
+        color: #94A3B8;
+        line-height: 1.2;
+    }
+
+    /* 8. Right Login Card (Solid Dark Glassmorphism, Crisp Contrast) */
+    .linda-right-card-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    @media (min-width: 1024px) {
+        .linda-right-card-wrapper {
+            justify-content: flex-end;
+        }
+    }
+
+    .linda-card {
+        width: 100%;
+        max-width: 440px;
+        background: rgba(11, 20, 36, 0.92) !important;
+        backdrop-filter: blur(28px) !important;
+        -webkit-backdrop-filter: blur(28px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 26px !important;
+        padding: 34px 34px 28px !important;
+        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8),
+                    0 0 40px -10px rgba(6, 182, 212, 0.25) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    .linda-card-top-accent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent 0%, #10B981 35%, #06B6D4 65%, transparent 100%);
+    }
+
+    .linda-card-header {
+        text-align: center;
+        margin-bottom: 1.6rem;
+    }
+
+    .linda-logo-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0.65rem;
+    }
+
+    .linda-logo-img {
+        height: 46px;
+        width: auto;
+        max-width: 220px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+    }
+
+    .linda-card-subtitle {
+        font-size: 12px;
+        font-weight: 500;
+        color: #CBD5E1;
+        letter-spacing: 0.02em;
+        margin: 0;
+    }
+
+    .linda-card-prompt {
+        font-size: 11px;
+        color: #94A3B8;
+        font-weight: 500;
+        margin-top: 4px;
+        margin-bottom: 0;
+    }
+
+    /* Error Alert */
+    .linda-alert-error {
+        margin-bottom: 1.25rem;
+        background: rgba(127, 29, 29, 0.6);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        border-radius: 12px;
+        padding: 10px 14px;
+    }
+
+    .linda-alert-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #FCA5A5;
+    }
+
+    .linda-alert-msg {
+        font-size: 11px;
+        color: #FECACA;
+        padding-left: 22px;
+        margin-top: 4px;
+    }
+
+    /* Form & Input Fields */
+    .linda-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+    }
+
+    .linda-field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .linda-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #E2E8F0;
+    }
+
+    .linda-input-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .linda-input-icon {
+        position: absolute;
+        left: 14px;
+        color: #94A3B8;
+        font-size: 19px;
+        pointer-events: none;
+        transition: color 0.2s ease;
+    }
+
+    .linda-input-wrap:focus-within .linda-input-icon {
+        color: #38BDF8;
+    }
+
+    .linda-input {
+        width: 100% !important;
+        background: rgba(8, 16, 28, 0.85) !important;
+        border: 1px solid rgba(71, 85, 105, 0.7) !important;
+        border-radius: 12px !important;
+        padding: 12px 16px 12px 42px !important;
+        font-size: 13.5px !important;
+        color: #FFFFFF !important;
+        outline: none !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .linda-input::placeholder {
+        color: #64748B !important;
+    }
+
+    .linda-input:focus {
+        background: rgba(8, 16, 28, 0.98) !important;
+        border-color: #06B6D4 !important;
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25) !important;
+    }
+
+    .linda-input-password {
+        padding-right: 44px !important;
+    }
+
+    .linda-pwd-toggle {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        color: #94A3B8;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 4px;
+        transition: color 0.2s ease;
+    }
+
+    .linda-pwd-toggle:hover {
+        color: #38BDF8;
+    }
+
+    /* Options Row */
+    .linda-options-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 2px;
+    }
+
+    .linda-remember-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #CBD5E1;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .linda-checkbox {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1px solid #475569;
+        background: rgba(8, 16, 28, 0.9);
+        accent-color: #2563EB;
+        cursor: pointer;
+    }
+
+    .linda-forgot-btn {
+        background: none;
+        border: none;
+        font-size: 12px;
+        font-weight: 600;
+        color: #38BDF8;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .linda-forgot-btn:hover {
+        color: #67E8F9;
+        text-decoration: underline;
+    }
+
+    /* Primary Submit Button: Linda Vibrant Gradient */
+    .linda-submit-btn {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        padding: 13.5px 20px !important;
+        border-radius: 12px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        color: #FFFFFF !important;
+        background: linear-gradient(90deg, #10B981 0%, #06B6D4 50%, #2563EB 100%) !important;
+        border: none !important;
+        cursor: pointer !important;
+        box-shadow: 0 10px 25px -4px rgba(6, 182, 212, 0.35) !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .linda-submit-btn:hover {
+        background: linear-gradient(90deg, #059669 0%, #0891B2 50%, #1D4ED8 100%) !important;
+        box-shadow: 0 12px 30px -4px rgba(6, 182, 212, 0.5) !important;
+        transform: translateY(-1px);
+    }
+
+    .linda-submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .linda-spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #FFFFFF;
+        border-top-color: transparent;
+        border-radius: 9999px;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Separator */
+    .linda-separator {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 1.4rem 0 1.1rem;
+    }
+
+    .linda-sep-line {
+        flex-grow: 1;
+        height: 1px;
+        background: rgba(51, 65, 85, 0.7);
+    }
+
+    .linda-sep-text {
+        padding: 0 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #94A3B8;
+        background: transparent;
+    }
+
+    /* SSO Button */
+    .linda-sso-btn {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 12px 16px !important;
+        background: rgba(15, 27, 48, 0.7) !important;
+        border: 1px solid rgba(71, 85, 105, 0.6) !important;
+        border-radius: 12px !important;
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        color: #E2E8F0 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .linda-sso-btn:hover {
+        background: rgba(22, 38, 66, 0.9) !important;
+        border-color: rgba(56, 189, 248, 0.4) !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Card Footer */
+    .linda-card-footer {
+        margin-top: 1.4rem;
+        padding-top: 1.1rem;
+        border-top: 1px solid rgba(51, 65, 85, 0.5);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .linda-footer-badge {
+        font-size: 11px;
+        color: #94A3B8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .linda-footer-copyright {
+        font-size: 10px;
+        font-weight: 600;
+        color: #64748B;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin: 0;
+    }
+
+    /* Modal Styling */
+    .linda-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: rgba(4, 10, 20, 0.75);
+        backdrop-filter: blur(8px);
+    }
+
+    .linda-modal-box {
+        background: #0D1B2E;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 20px;
+        max-width: 380px;
+        width: 100%;
+        padding: 24px;
+        text-align: center;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .linda-modal-icon-wrap {
+        width: 48px;
+        height: 48px;
+        border-radius: 9999px;
+        background: rgba(6, 182, 212, 0.15);
+        border: 1px solid rgba(6, 182, 212, 0.4);
+        color: #38BDF8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .linda-modal-close-btn {
+        width: 100%;
+        padding: 11px 16px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #FFFFFF;
+        background: #2563EB;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .linda-modal-close-btn:hover {
+        background: #1D4ED8;
+    }
+
+    /* Prevent browser autofill white background override */
     input:-webkit-autofill,
     input:-webkit-autofill:hover, 
     input:-webkit-autofill:focus {
-        -webkit-box-shadow: 0 0 0px 1000px #0F172A inset !important;
+        -webkit-box-shadow: 0 0 0px 1000px #091322 inset !important;
         -webkit-text-fill-color: #FFFFFF !important;
-        border-color: #38BDF8 !important;
+        border-color: #06B6D4 !important;
     }
 </style>
 
@@ -286,10 +970,11 @@
         const spinner = document.getElementById('button-spinner');
         
         button.disabled = true;
-        button.classList.add('opacity-75', 'cursor-not-allowed');
+        button.style.opacity = '0.8';
+        button.style.cursor = 'not-allowed';
         text.textContent = 'Memproses Masuk...';
-        if (icon) icon.classList.add('hidden');
-        spinner.classList.remove('hidden');
+        if (icon) icon.style.display = 'none';
+        if (spinner) spinner.classList.remove('hidden');
     }
 
     function showForgotPasswordModal() {
