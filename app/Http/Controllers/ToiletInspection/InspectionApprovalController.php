@@ -71,6 +71,13 @@ class InspectionApprovalController extends Controller
             ]);
         });
 
+        app(\App\Services\EmailService::class)->sendToiletInspectionStatusUpdated(
+            $inspection,
+            'approved',
+            $request->input('notes'),
+            auth()->user()->name
+        );
+
         return redirect()->route('toilet_inspection.dashboard')
             ->with('success', 'Inspeksi berhasil disetujui.');
     }
@@ -105,6 +112,13 @@ class InspectionApprovalController extends Controller
                 'actioned_at' => now(),
             ]);
         });
+
+        app(\App\Services\EmailService::class)->sendToiletInspectionStatusUpdated(
+            $inspection,
+            'rejected',
+            $request->input('notes'),
+            auth()->user()->name
+        );
 
         return redirect()->route('toilet_inspection.dashboard')
             ->with('success', 'Inspeksi berhasil ditolak.');

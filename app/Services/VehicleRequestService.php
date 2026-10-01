@@ -83,6 +83,8 @@ class VehicleRequestService
 
             // Notify GA as the confirmed operational approval authority
             $gaUsers = User::where('role', 'ga')->where('status', 'active')->get();
+            $emailService = app(\App\Services\EmailService::class);
+
             foreach ($gaUsers as $ga) {
                 Notification::send(
                     $ga->id,
@@ -90,7 +92,11 @@ class VehicleRequestService
                     "Permohonan #{$requestNumber} dari {$user->name} menunggu persetujuan dan penugasan armada.",
                     route('vehicles.requests.show', $request->id)
                 );
+                $emailService->sendVehicleRequestSubmittedToGa($request, $ga->email);
             }
+
+            // Notify requester confirmation email
+            $emailService->sendVehicleRequestSubmittedToRequester($request);
 
             return $request;
         });
@@ -168,6 +174,16 @@ class VehicleRequestService
                 route('vehicles.requests.show', $req->id)
             );
 
+            $emailService = app(\App\Services\EmailService::class);
+            $emailService->sendVehicleRequestApprovedToRequester($req);
+
+            if ($driverId !== null) {
+                $driver = Driver::with('user')->find($driverId);
+                if ($driver) {
+                    $emailService->sendVehicleRequestApprovedToDriver($req, $driver);
+                }
+            }
+
             return $req;
         });
     }
@@ -201,6 +217,8 @@ class VehicleRequestService
                 "Permohonan #{$req->request_number} ditolak. Alasan: {$reason}",
                 route('vehicles.requests.show', $req->id)
             );
+
+            app(\App\Services\EmailService::class)->sendVehicleRequestRejectedToRequester($req, $reason);
 
             return $req;
         });

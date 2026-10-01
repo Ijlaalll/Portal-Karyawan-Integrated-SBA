@@ -41,9 +41,11 @@ class SmtpSettingsService
      */
     public function createSettings(array $data): SmtpSetting
     {
-        // Encrypt the password
+        // Encrypt the password if provided
         if (!empty($data['password'])) {
             $data['password'] = Crypt::encryptString($data['password']);
+        } else {
+            $data['password'] = null;
         }
 
         // Default first configuration to active
@@ -68,9 +70,11 @@ class SmtpSettingsService
     {
         $settings = SmtpSetting::findOrFail($id);
 
-        // Encrypt the password if provided
+        // Encrypt the password if provided, or clear if unauthenticated relay is requested
         if (!empty($data['password'])) {
             $data['password'] = Crypt::encryptString($data['password']);
+        } elseif (!empty($data['clear_password'])) {
+            $data['password'] = null;
         } else {
             // Keep the old password if it's empty/not-provided
             $data['password'] = $settings->password;

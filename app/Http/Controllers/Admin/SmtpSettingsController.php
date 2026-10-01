@@ -126,17 +126,19 @@ class SmtpSettingsController extends Controller
     {
         $isCreate = !$request->filled('id');
 
+        $isNoAuth = $request->boolean('no_auth') || ((int)$request->input('port') === 25 && !$request->filled('password') && !$request->filled('username'));
+
         $rules = [
             'host' => ['required', 'string'],
             'port' => ['required', 'integer'],
-            'username' => ['required', 'string'],
+            'username' => [$isNoAuth ? 'nullable' : 'required', 'string'],
             'encryption' => ['nullable', 'string', 'in:tls,ssl,none'],
             'from_address' => ['required', 'email'],
             'from_name' => ['required', 'string', 'max:255'],
         ];
 
         if ($isCreate) {
-            $rules['password'] = ['required', 'string'];
+            $rules['password'] = [$isNoAuth ? 'nullable' : 'required', 'string'];
         } else {
             $rules['password'] = ['nullable', 'string'];
             $rules['id'] = ['required', 'exists:smtp_settings,id'];
@@ -147,6 +149,12 @@ class SmtpSettingsController extends Controller
         // Normalize 'none' encryption to null in database
         if (isset($validated['encryption']) && $validated['encryption'] === 'none') {
             $validated['encryption'] = null;
+        }
+
+        if ($isNoAuth) {
+            $validated['username'] = $validated['username'] ?: null;
+            $validated['password'] = null;
+            $validated['clear_password'] = true;
         }
 
         if ($isCreate) {
@@ -185,7 +193,8 @@ class SmtpSettingsController extends Controller
                 $oldSettings->encryption !== $validated['encryption'] ||
                 $oldSettings->from_address !== $validated['from_address'] ||
                 $oldSettings->from_name !== $validated['from_name'] ||
-                (!empty($validated['password']) && $validated['password'] !== $this->smtpService->decryptPassword($oldSettings->password))
+                (!empty($validated['password']) && $validated['password'] !== $this->smtpService->decryptPassword($oldSettings->password)) ||
+                (!empty($validated['clear_password']) && !empty($oldSettings->password))
             ) {
                 $hasChanges = true;
             }

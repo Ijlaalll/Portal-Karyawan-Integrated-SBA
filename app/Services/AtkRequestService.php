@@ -75,6 +75,8 @@ class AtkRequestService
 
             // Notify GA Users
             $gaUsers = User::where('role', 'ga')->get();
+            $emailService = app(\App\Services\EmailService::class);
+
             foreach ($gaUsers as $ga) {
                 Notification::send(
                     $ga->id,
@@ -82,7 +84,11 @@ class AtkRequestService
                     "Permintaan ATK {$requestNumber} telah diajukan oleh " . auth()->user()->name,
                     route('atk.requests.show', $request->id) // link for GA/Admin
                 );
+                $emailService->sendAtkRequestSubmittedToGa($request, $ga->email);
             }
+
+            // Notify requester confirmation email
+            $emailService->sendAtkRequestSubmittedToRequester($request);
 
             return $request;
         });
@@ -121,6 +127,8 @@ class AtkRequestService
                 route('atk.requests.user') // link for User
             );
 
+            app(\App\Services\EmailService::class)->sendAtkRequestApproved($request);
+
             return $request;
         });
     }
@@ -158,6 +166,8 @@ class AtkRequestService
                 "Permintaan ATK {$request->request_number} ditolak. Alasan: {$reason}",
                 route('atk.requests.user')
             );
+
+            app(\App\Services\EmailService::class)->sendAtkRequestRejected($request, $reason);
 
             return $request;
         });
@@ -269,6 +279,8 @@ class AtkRequestService
                 "Permintaan ATK {$request->request_number} telah diselesaikan. Terima kasih.",
                 route('atk.requests.user')
             );
+
+            app(\App\Services\EmailService::class)->sendAtkRequestReady($request);
 
             return $request;
         });

@@ -113,6 +113,10 @@ class SikService
                     "Pengajuan SIK #{$permit->sik_number} dari {$user->name} ({$permit->department}) menunggu persetujuan Anda.",
                     route('sik.approvals.index')
                 );
+
+                $emailService = app(\App\Services\EmailService::class);
+                $emailService->sendSikSubmittedToApprover($permit, $approver);
+                $emailService->sendSikSubmittedToRequester($permit);
             }
 
             return $permit;
@@ -195,6 +199,10 @@ class SikService
                     "Pengajuan SIK #{$sik->sik_number} dari {$user->name} ({$sik->department}) menunggu persetujuan Anda.",
                     route('sik.approvals.index')
                 );
+
+                $emailService = app(\App\Services\EmailService::class);
+                $emailService->sendSikSubmittedToApprover($sik, $approver);
+                $emailService->sendSikSubmittedToRequester($sik);
             }
 
             return $sik;
@@ -243,6 +251,10 @@ class SikService
                 "Pengajuan SIK #{$sik->sik_number} dari {$user->name} ({$sik->department}) menunggu persetujuan Anda.",
                 route('sik.approvals.index')
             );
+
+            $emailService = app(\App\Services\EmailService::class);
+            $emailService->sendSikSubmittedToApprover($sik, $approver);
+            $emailService->sendSikSubmittedToRequester($sik);
 
             return $sik;
         });
@@ -296,6 +308,15 @@ class SikService
                 route('sik.show', $sik)
             );
 
+            $emailService = app(\App\Services\EmailService::class);
+            $emailService->sendSikApproved($sik);
+
+            // Notify active security officers
+            $securityUsers = User::where('role', 'security')->where('status', 'active')->get();
+            foreach ($securityUsers as $sec) {
+                $emailService->sendSikApprovedToSecurity($sik, $sec->email);
+            }
+
             return $sik;
         });
     }
@@ -348,6 +369,8 @@ class SikService
                 "Pengajuan SIK #{$sik->sik_number} Anda ditolak. Alasan: " . trim($reason),
                 route('sik.show', $sik)
             );
+
+            app(\App\Services\EmailService::class)->sendSikRejected($sik, trim($reason));
 
             return $sik;
         });

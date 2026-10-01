@@ -123,6 +123,12 @@ class BookingService
             $emailService->sendReservationCreated($booking);
             $emailService->sendReservationApproved($booking);
 
+            // Notify GA managers by email
+            $gaUsers = User::where('role', 'ga')->get();
+            foreach ($gaUsers as $ga) {
+                $emailService->sendReservationCreatedAdmin($booking, $ga->email);
+            }
+
             return $booking;
         });
     }
@@ -132,6 +138,8 @@ class BookingService
      */
     public function triggerTaskCreation(Booking $booking): void
     {
+        $emailService = app(\App\Services\EmailService::class);
+
         if ($booking->meeting_type === 'offline') {
             $booking->update([
                 'ga_status' => 'pending',
@@ -144,6 +152,7 @@ class BookingService
                     "Pemesanan offline '{$booking->title}' siap disiapkan. Silakan siapkan ruangan {$booking->room->name}.",
                     route('ga.preparations')
                 );
+                $emailService->sendHybridTaskToGa($booking, $ga->email);
             }
         } elseif ($booking->meeting_type === 'hybrid') {
             $booking->update([
@@ -160,6 +169,7 @@ class BookingService
                     "Pemesanan hybrid '{$booking->title}' siap disiapkan. Silakan siapkan ruangan {$booking->room->name}.",
                     route('ga.preparations')
                 );
+                $emailService->sendHybridTaskToGa($booking, $ga->email);
             }
             // Notify IT
             $itUsers = User::where('role', 'it')->get();
@@ -170,6 +180,7 @@ class BookingService
                     "Pemesanan hybrid '{$booking->title}' membutuhkan persiapan teknis. Silakan siapkan peralatan hybrid.",
                     route('it.preparations')
                 );
+                $emailService->sendHybridTaskToIt($booking, $it->email);
             }
         }
     }

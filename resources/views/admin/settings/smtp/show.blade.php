@@ -117,10 +117,19 @@
                 <form action="{{ route('admin.settings.smtp.update') }}" method="POST" class="space-y-6">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Internal Relay Toggle -->
+                        <div class="md:col-span-2 bg-blue-50/70 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
+                            <input type="checkbox" name="no_auth" id="create_no_auth" value="1" onchange="toggleCreateNoAuth(this.checked)" class="mt-0.5 rounded border-slate-300 text-[#2563EB] focus:ring-[#2563EB]">
+                            <label for="create_no_auth" class="text-xs text-slate-700 cursor-pointer select-none">
+                                <span class="font-bold text-blue-900 block mb-0.5">Mode Internal Relay Korporat SBA (Port 25 / Tanpa Password)</span>
+                                Centang opsi ini jika menghubungkan ke mail relay internal intranet SBA (Port 25 tanpa autentikasi username & password, diamankan dengan IP Whitelist server).
+                            </label>
+                        </div>
+
                         <!-- SMTP Host -->
                         <div class="md:col-span-2">
                             <label for="host" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">SMTP Host</label>
-                            <input type="text" name="host" id="host" value="{{ old('host') }}" placeholder="Contoh: smtp.mailtrap.io atau smtp.gmail.com" required
+                            <input type="text" name="host" id="host" value="{{ old('host') }}" placeholder="Contoh: 10.x.x.x atau mailrelay.sba.co.id atau smtp.gmail.com" required
                                 class="block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] sm:text-sm">
                             @error('host')
                                 <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -130,7 +139,7 @@
                         <!-- SMTP Port -->
                         <div>
                             <label for="port" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">SMTP Port</label>
-                            <input type="number" name="port" id="port" value="{{ old('port', 587) }}" placeholder="Contoh: 587 atau 465 atau 25" required
+                            <input type="number" name="port" id="port" value="{{ old('port', 587) }}" placeholder="Contoh: 25, 587, atau 465" required
                                 class="block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] sm:text-sm">
                             @error('port')
                                 <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -154,7 +163,7 @@
                         <!-- SMTP Username -->
                         <div>
                             <label for="username" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">SMTP Username</label>
-                            <input type="text" name="username" id="username" value="{{ old('username') }}" placeholder="Masukkan username SMTP" required
+                            <input type="text" name="username" id="username" value="{{ old('username') }}" placeholder="Masukkan username SMTP"
                                 class="block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] sm:text-sm">
                             @error('username')
                                 <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -164,7 +173,7 @@
                         <!-- SMTP Password -->
                         <div>
                             <label for="password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">SMTP Password</label>
-                            <input type="password" name="password" id="password" placeholder="Masukkan password SMTP" required
+                            <input type="password" name="password" id="password" placeholder="Masukkan password SMTP"
                                 class="block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] sm:text-sm">
                             @error('password')
                                 <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -211,10 +220,19 @@
                             <input type="hidden" name="id" value="{{ $settings->id }}">
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Internal Relay Toggle -->
+                                <div class="md:col-span-2 bg-blue-50/70 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
+                                    <input type="checkbox" name="no_auth" id="edit_no_auth" value="1" {{ (empty($settings->password) && (int)$settings->port === 25) ? 'checked' : '' }} onchange="toggleEditNoAuth(this.checked)" class="mt-0.5 rounded border-slate-300 text-[#2563EB] focus:ring-[#2563EB]">
+                                    <label for="edit_no_auth" class="text-xs text-slate-700 cursor-pointer select-none">
+                                        <span class="font-bold text-blue-900 block mb-0.5">Mode Internal Relay Korporat SBA (Port 25 / Tanpa Password)</span>
+                                        Centang opsi ini jika menggunakan mail server intranet SBA (Port 25 tanpa password, dilindungi IP Whitelist server). Password saat ini akan dihapus saat disimpan.
+                                    </label>
+                                </div>
+
                                 <!-- SMTP Host -->
                                 <div class="md:col-span-2">
                                     <label for="host" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">SMTP Host</label>
-                                    <input type="text" name="host" id="host" value="{{ old('host', $settings->host ?? '') }}" placeholder="Contoh: smtp.mailtrap.io atau smtp.gmail.com" required
+                                    <input type="text" name="host" id="host" value="{{ old('host', $settings->host ?? '') }}" placeholder="Contoh: 10.x.x.x atau mailrelay.sba.co.id atau smtp.gmail.com" required
                                         class="block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] sm:text-sm">
                                     @error('host')
                                         <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -224,7 +242,7 @@
                                 <!-- SMTP Port -->
                                 <div>
                                     <label for="port" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">SMTP Port</label>
-                                    <input type="number" name="port" id="port" value="{{ old('port', $settings->port ?? 2525) }}" placeholder="Contoh: 587 atau 465 atau 25" required
+                                    <input type="number" name="port" id="port" value="{{ old('port', $settings->port ?? 25) }}" placeholder="Contoh: 25, 587, atau 465" required
                                         class="block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] sm:text-sm">
                                     @error('port')
                                         <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -254,7 +272,7 @@
                                 <!-- SMTP Username -->
                                 <div>
                                     <label for="username" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">SMTP Username</label>
-                                    <input type="text" name="username" id="username" value="{{ old('username', $settings->username ?? '') }}" placeholder="Masukkan username SMTP" required
+                                    <input type="text" name="username" id="username" value="{{ old('username', $settings->username ?? '') }}" placeholder="Masukkan username SMTP"
                                         class="block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] sm:text-sm">
                                     @error('username')
                                         <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -266,7 +284,7 @@
                                     <label for="password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">SMTP Password</label>
                                     <input type="password" name="password" id="password" placeholder="••••••••"
                                         class="block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] sm:text-sm">
-                                    <p class="mt-1 text-[10px] text-slate-400">Leave blank to keep the current SMTP password.</p>
+                                    <p class="mt-1 text-[10px] text-slate-400">Kosongkan jika ingin mempertahankan password saat ini (atau jika mode relay internal).</p>
                                     @error('password')
                                         <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                                     @enderror
@@ -524,6 +542,43 @@
             function closeTestEmailModal() {
                 document.getElementById('testEmailModal').classList.add('hidden');
             }
+
+            function toggleCreateNoAuth(checked) {
+                const userField = document.getElementById('username');
+                const passField = document.getElementById('password');
+                const portField = document.getElementById('port');
+                const encField = document.getElementById('encryption');
+                if (checked) {
+                    portField.value = '25';
+                    encField.value = 'none';
+                    userField.required = false;
+                    passField.required = false;
+                    userField.placeholder = '(Opsional / Dikosongkan untuk Relay Internal)';
+                    passField.placeholder = '(Opsional / Dikosongkan untuk Relay Internal)';
+                } else {
+                    userField.required = true;
+                    passField.required = true;
+                    userField.placeholder = 'Masukkan username SMTP';
+                    passField.placeholder = 'Masukkan password SMTP';
+                }
+            }
+
+            function toggleEditNoAuth(checked) {
+                const userField = document.getElementById('username');
+                const passField = document.getElementById('password');
+                const portField = document.getElementById('port');
+                const encField = document.getElementById('encryption');
+                if (checked) {
+                    portField.value = '25';
+                    encField.value = 'none';
+                    userField.required = false;
+                    userField.placeholder = '(Opsional / Dikosongkan untuk Relay Internal)';
+                    passField.placeholder = '(Tanpa Password / Relay Internal)';
+                } else {
+                    userField.placeholder = 'Masukkan username SMTP';
+                    passField.placeholder = '••••••••';
+                }
+            }
         </script>
     @endif
 
@@ -775,46 +830,68 @@
 
             <!-- List Placeholder info card -->
             <div class="lg:col-span-1">
-                <div class="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm flex flex-col space-y-4">
+                <div class="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm flex flex-col space-y-4 max-h-[700px] overflow-y-auto">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Placeholder Variabel</h3>
-                    <p class="text-xs text-slate-500">Anda dapat menggunakan variabel placeholder di bawah ini untuk merender data dinamis dari backend secara aman.</p>
+                    <p class="text-xs text-slate-500">Anda dapat menggunakan variabel placeholder di bawah ini untuk merender data dinamis dari backend secara aman ke dalam subjek atau pesan email.</p>
                     
-                    <div class="divide-y divide-slate-100 text-xs">
-                        <div class="py-2 flex justify-between">
-                            <span class="font-mono text-[#2563EB]">{user_name}</span>
-                            <span class="text-slate-500">Nama Pemesan</span>
+                    <!-- Ruang Meeting & Hybrid -->
+                    <div class="border-t border-slate-100 pt-3">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">🏢 Ruang Meeting & Hybrid</h4>
+                        <div class="divide-y divide-slate-100 text-xs">
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{title}</span><span class="text-slate-500">Judul Meeting</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{user_name}</span><span class="text-slate-500">Pemesan</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{room_name}</span><span class="text-slate-500">Ruangan</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{date}</span><span class="text-slate-500">Tanggal</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{start_time} - {end_time}</span><span class="text-slate-500">Waktu</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{additional_requirements}</span><span class="text-slate-500">Kebutuhan Khusus</span></div>
                         </div>
-                        <div class="py-2 flex justify-between">
-                            <span class="font-mono text-[#2563EB]">{user_email}</span>
-                            <span class="text-slate-500">Email Pemesan</span>
+                    </div>
+
+                    <!-- ATK -->
+                    <div class="border-t border-slate-100 pt-3">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">📦 Permintaan ATK</h4>
+                        <div class="divide-y divide-slate-100 text-xs">
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{request_number}</span><span class="text-slate-500">No. Permintaan</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{item_count}</span><span class="text-slate-500">Jumlah Macam</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{items_detail}</span><span class="text-slate-500">Daftar Barang</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{rejection_reason}</span><span class="text-slate-500">Alasan Tolak</span></div>
                         </div>
-                        <div class="py-2 flex justify-between">
-                            <span class="font-mono text-[#2563EB]">{room_name}</span>
-                            <span class="text-slate-500">Nama Ruangan</span>
+                    </div>
+
+                    <!-- SIK -->
+                    <div class="border-t border-slate-100 pt-3">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">📋 Surat Izin Keluar (SIK)</h4>
+                        <div class="divide-y divide-slate-100 text-xs">
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{sik_number}</span><span class="text-slate-500">Nomor SIK</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{permit_date}</span><span class="text-slate-500">Tanggal Izin</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{departure_time} - {return_time}</span><span class="text-slate-500">Jam Izin</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{purpose}</span><span class="text-slate-500">Keperluan</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{approver_name}</span><span class="text-slate-500">Nama Atasan</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{approval_note}</span><span class="text-slate-500">Catatan Approval</span></div>
                         </div>
-                        <div class="py-2 flex justify-between">
-                            <span class="font-mono text-[#2563EB]">{date}</span>
-                            <span class="text-slate-500">Tanggal Booking</span>
+                    </div>
+
+                    <!-- Kendaraan -->
+                    <div class="border-t border-slate-100 pt-3">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">🚗 Kendaraan Operasional</h4>
+                        <div class="divide-y divide-slate-100 text-xs">
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{request_number}</span><span class="text-slate-500">No. Permohonan</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{destination}</span><span class="text-slate-500">Tujuan</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{vehicle_name}</span><span class="text-slate-500">Unit Mobil</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{plate_number}</span><span class="text-slate-500">Plat Nomor</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{driver_name}</span><span class="text-slate-500">Nama Supir</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{driver_phone}</span><span class="text-slate-500">Kontak Supir</span></div>
                         </div>
-                        <div class="py-2 flex justify-between">
-                            <span class="font-mono text-[#2563EB]">{start_time}</span>
-                            <span class="text-slate-500">Waktu Mulai</span>
-                        </div>
-                        <div class="py-2 flex justify-between">
-                            <span class="font-mono text-[#2563EB]">{end_time}</span>
-                            <span class="text-slate-500">Waktu Selesai</span>
-                        </div>
-                        <div class="py-2 flex justify-between">
-                            <span class="font-mono text-[#2563EB]">{reservation_id}</span>
-                            <span class="text-slate-500">ID Reservasi</span>
-                        </div>
-                        <div class="py-2 flex justify-between">
-                            <span class="font-mono text-[#2563EB]">{status}</span>
-                            <span class="text-slate-500">Status Booking</span>
-                        </div>
-                        <div class="py-2 flex justify-between">
-                            <span class="font-mono text-[#2563EB]">{cancellation_note}</span>
-                            <span class="text-slate-500">Alasan Tolak / Batal</span>
+                    </div>
+
+                    <!-- Inspeksi Toilet -->
+                    <div class="border-t border-slate-100 pt-3">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">🧹 Inspeksi Toilet</h4>
+                        <div class="divide-y divide-slate-100 text-xs">
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{location_name}</span><span class="text-slate-500">Nama Lokasi</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{inspector_name}</span><span class="text-slate-500">Petugas</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{issues_list}</span><span class="text-slate-500">Temuan Rusak</span></div>
+                            <div class="py-1 flex justify-between"><span class="font-mono text-[#2563EB]">{spv_name}</span><span class="text-slate-500">Nama SPV</span></div>
                         </div>
                     </div>
                 </div>

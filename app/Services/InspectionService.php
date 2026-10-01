@@ -45,6 +45,27 @@ class InspectionService
                 }
             }
 
+            // Trigger email notifications
+            $emailService = app(EmailService::class);
+            $emailService->sendToiletInspectionSubmittedToInspector($inspection);
+
+            $inspection->load(['results.checklistItem', 'location', 'inspector']);
+            $issues = [];
+            foreach ($inspection->results as $res) {
+                if (!$res->is_ok) {
+                    $itemName = $res->checklistItem ? $res->checklistItem->name : 'Item';
+                    $remarks = $res->remarks ? " ({$res->remarks})" : '';
+                    $issues[] = "{$itemName}: KOTOR / RUSAK{$remarks}";
+                }
+            }
+
+            if (!empty($issues)) {
+                $spvUsers = \App\Models\User::whereIn('role', ['spv', 'ga'])->where('status', 'active')->get();
+                foreach ($spvUsers as $spv) {
+                    $emailService->sendToiletInspectionIssueReported($inspection, $spv->email, $issues);
+                }
+            }
+
             return $inspection;
         });
     }
