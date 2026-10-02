@@ -614,8 +614,6 @@
     .linda-input-icon {
         position: absolute;
         left: 14px;
-        width: 20px;
-        height: 20px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -623,7 +621,6 @@
         font-size: 19px;
         pointer-events: none;
         transition: color 0.2s ease;
-        overflow: hidden;
     }
 
     .linda-input-wrap:focus-within .linda-input-icon {
@@ -660,7 +657,7 @@
 
     .linda-pwd-toggle {
         position: absolute;
-        right: 12px;
+        right: 10px;
         background: none;
         border: none;
         color: #94A3B8;
@@ -668,15 +665,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 28px;
-        height: 28px;
-        padding: 4px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
         transition: color 0.2s ease;
-        overflow: hidden;
     }
 
     .linda-pwd-toggle:hover {
         color: #38BDF8;
+    }
+
+    #password-toggle-icon {
+        font-size: 20px !important;
+        line-height: 1 !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* Options Row */
