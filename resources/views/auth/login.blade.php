@@ -839,8 +839,8 @@
     /* ============================================================== */
     @media (max-width: 1023px) {
         .linda-login-wrapper {
-            padding: 1.25rem 1rem 2.25rem;
-            align-items: flex-start;
+            padding: 1.5rem 1.25rem 2.5rem;
+            align-items: center;
         }
 
         /* Foto background: geser ke kanan (60%) agar struktur pabrik SBA lebih terlihat di layar portrait */
@@ -860,17 +860,53 @@
         }
 
         .gaone-network-bg {
-            opacity: 0.45;
+            opacity: 0.4;
             width: 75vw;
             height: 38vh;
         }
 
         .linda-content-container {
-            gap: 1.5rem;
+            gap: 1.25rem;
+            max-width: 440px;
+            margin: 0 auto;
         }
 
         .linda-left-hero {
-            gap: 1rem;
+            gap: 0.75rem;
+            align-items: center;
+            text-align: center;
+        }
+
+        .linda-badge {
+            margin: 0 auto;
+        }
+
+        .linda-hero-heading {
+            font-size: 1.75rem !important;
+            text-align: center;
+            line-height: 1.22 !important;
+        }
+
+        .linda-hero-sub {
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Sembunyikan 6 modul pills di HP & Tablet agar layar LEGA, LAPANG, dan tidak sesak */
+        .linda-modules-grid {
+            display: none !important;
+        }
+
+        /* Kartu Login ramping dan proporsional (tidak membentang terlalu lebar menabrak sisi layar) */
+        .linda-right-card-wrapper {
+            justify-content: center !important;
+        }
+
+        .linda-card {
+            max-width: 360px !important;
+            margin: 0 auto !important;
+            padding: 24px 22px 20px !important;
+            border-radius: 22px !important;
         }
     }
 
@@ -879,22 +915,22 @@
     /* ============================================================== */
     @media (max-width: 639px) {
         .linda-login-wrapper {
-            padding: 1rem 0.75rem 2rem;
+            padding: 1.25rem 1rem 2.25rem;
         }
 
         .linda-content-container {
-            gap: 1.15rem;
+            gap: 1rem;
         }
 
         .linda-left-hero {
-            gap: 0.75rem;
+            gap: 0.6rem;
         }
 
-        /* Badge compact */
+        /* Badge compact di HP */
         .linda-badge {
-            padding: 4px 10px;
-            font-size: 10px;
-            gap: 6px;
+            padding: 4px 11px;
+            font-size: 9.5px;
+            gap: 5px;
         }
 
         .linda-badge-pulse {
@@ -902,53 +938,22 @@
             height: 6px;
         }
 
-        /* Headline compact agar form login langsung terlihat (above the fold) */
+        /* Headline compact & proporsional */
         .linda-hero-heading {
-            font-size: 1.65rem !important;
-            line-height: 1.18 !important;
+            font-size: 1.45rem !important;
+            line-height: 1.22 !important;
             letter-spacing: -0.01em !important;
         }
 
         .linda-hero-sub {
-            font-size: 0.82rem;
-            gap: 6px;
+            font-size: 0.8rem;
+            gap: 5px;
             flex-wrap: wrap;
         }
 
-        /* 6 Modul Pills jadi micro-chips 3 kolom (menghemat > 115px tinggi layar!) */
-        .linda-modules-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            gap: 6px !important;
-            padding-top: 0.2rem;
-        }
-
-        .linda-mod-pill {
-            padding: 7px 8px !important;
-            border-radius: 10px !important;
-            gap: 6px !important;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .linda-mod-pill span.material-symbols-outlined {
-            font-size: 15px !important;
-            flex-shrink: 0;
-        }
-
-        .linda-mod-title {
-            font-size: 9.5px !important;
-            line-height: 1.15 !important;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .linda-mod-desc {
-            display: none !important;
-        }
-
-        /* Kartu Login compact & ergonomis untuk jempol */
+        /* Kartu Login ramping, ergonomis, dan mengambang anggun */
         .linda-card {
+            max-width: 350px !important;
             padding: 22px 18px 18px !important;
             border-radius: 20px !important;
             box-shadow:
@@ -959,20 +964,20 @@
         }
 
         .linda-card-header {
-            margin-bottom: 1.1rem !important;
+            margin-bottom: 1.05rem !important;
         }
 
         .linda-logo-box {
-            margin-bottom: 0.45rem !important;
+            margin-bottom: 0.4rem !important;
         }
 
         .linda-logo-img {
-            height: 38px !important;
-            max-width: 190px !important;
+            height: 36px !important;
+            max-width: 175px !important;
         }
 
         .linda-card-subtitle {
-            font-size: 11px !important;
+            font-size: 10.5px !important;
         }
 
         .linda-card-prompt {
@@ -981,7 +986,7 @@
         }
 
         .linda-form {
-            gap: 0.85rem !important;
+            gap: 0.82rem !important;
         }
 
         .linda-field-group {
@@ -1020,24 +1025,24 @@
         }
 
         .linda-submit-btn {
-            padding: 11.5px 16px !important;
+            padding: 11px 16px !important;
             font-size: 13.5px !important;
             border-radius: 10px !important;
         }
 
         .linda-separator {
-            margin: 1rem 0 0.85rem !important;
+            margin: 0.9rem 0 0.8rem !important;
         }
 
         .linda-sso-btn {
-            padding: 10px 14px !important;
+            padding: 9.5px 14px !important;
             font-size: 12px !important;
             border-radius: 10px !important;
         }
 
         .linda-card-footer {
-            margin-top: 1rem !important;
-            padding-top: 0.85rem !important;
+            margin-top: 0.9rem !important;
+            padding-top: 0.8rem !important;
         }
     }
 
