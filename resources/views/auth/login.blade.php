@@ -493,19 +493,20 @@
     .linda-card {
         width: 100%;
         max-width: 440px;
-        /* Kartu gelap pekat — kontras tinggi terhadap background pabrik */
-        background: rgba(8, 15, 28, 0.96) !important;
-        backdrop-filter: blur(32px) saturate(1.4) !important;
-        -webkit-backdrop-filter: blur(32px) saturate(1.4) !important;
-        /* Border tipis biru: kartu terlihat tegas di atas foto background */
-        border: 1px solid rgba(37, 99, 235, 0.35) !important;
+        /* Deep Navy Blue Glassmorphism — identitas biru GA One, efek frosted glass */
+        background: rgba(10, 20, 48, 0.82) !important;
+        backdrop-filter: blur(36px) saturate(1.6) brightness(0.95) !important;
+        -webkit-backdrop-filter: blur(36px) saturate(1.6) brightness(0.95) !important;
+        /* Border: kiri-atas lebih terang (highlight), kanan-bawah lebih gelap (shadow) */
+        border: 1px solid rgba(56, 189, 248, 0.22) !important;
         border-radius: 26px !important;
         padding: 34px 34px 28px !important;
-        /* Drop shadow besar + subtle blue outer glow */
+        /* Outer glow biru + drop shadow dalam */
         box-shadow:
-            0 32px 64px -16px rgba(0, 0, 0, 0.85),
-            0 0 0 1px rgba(56, 189, 248, 0.08),
-            0 0 48px -12px rgba(37, 99, 235, 0.4) !important;
+            0 24px 64px -12px rgba(0, 0, 0, 0.75),
+            0 0 0 1px rgba(37, 99, 235, 0.15),
+            0 0 60px -15px rgba(37, 99, 235, 0.5),
+            inset 0 1px 0 rgba(147, 197, 253, 0.12) !important;  /* inner top highlight */
         position: relative !important;
         overflow: hidden !important;
     }
@@ -621,26 +622,26 @@
 
     .linda-input {
         width: 100% !important;
-        /* Input nyaris hitam pekat — kontras teks putih sangat tajam */
-        background: rgba(4, 8, 16, 0.95) !important;
-        border: 1px solid rgba(37, 99, 235, 0.3) !important;
+        /* Input dark navy — lebih gelap dari kartu, kontras tinggi untuk teks */
+        background: rgba(5, 12, 30, 0.88) !important;
+        border: 1px solid rgba(56, 189, 248, 0.2) !important;
         border-radius: 12px !important;
         padding: 12px 16px 12px 42px !important;
         font-size: 13.5px !important;
-        color: #FFFFFF !important;
+        color: #F0F6FF !important;
         outline: none !important;
         transition: all 0.22s ease !important;
     }
 
     .linda-input::placeholder {
-        color: #475569 !important;
+        color: #4B6080 !important;
     }
 
     .linda-input:focus {
-        background: rgba(4, 8, 16, 1) !important;
+        background: rgba(5, 12, 30, 0.98) !important;
         /* Focus ring biru GA One */
-        border-color: #2563EB !important;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3) !important;
+        border-color: #3B82F6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.28) !important;
     }
 
     .linda-input-password {
