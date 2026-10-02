@@ -130,7 +130,7 @@
                 <div class="linda-card-header">
                     <!-- Logo GA One White Versi HiDPI Crisp (Anti Crop-Artifacts) -->
                     <div class="linda-logo-box">
-                        <img src="{{ asset('images/ga_one_logo_white.png') }}?v=2" alt="GA One" class="linda-logo-img">
+                        <img src="{{ asset('images/ga_one_logo_white.png') }}?v=3" alt="GA One" class="linda-logo-img">
                     </div>
                     
                     <p class="linda-card-subtitle">
