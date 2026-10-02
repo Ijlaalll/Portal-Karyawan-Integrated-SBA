@@ -849,6 +849,241 @@
     }
 
     /* ============================================================== */
+    /* RESPONSIVE DESIGN: LAPTOPS & SHORT VIEWPORTS (WIDTH >= 1024px) */
+    /* Khusus laptop seperti laptop server (1366x768, zoom 125%/150%, */
+    /* atau layar dengan tinggi terbatas <= 820px).                    */
+    /* Layar laptop lokal (tinggi normal > 820px) 100% tidak berubah. */
+    /* ============================================================== */
+    @media (min-width: 1024px) and (max-height: 820px) {
+        .linda-login-wrapper {
+            padding: 0.75rem 1.5rem !important;
+            min-height: 100vh !important;
+        }
+
+        .linda-content-container {
+            gap: 2rem !important;
+            max-width: 1140px !important;
+        }
+
+        /* Kolom Kiri Hero */
+        .linda-left-hero {
+            gap: 0.85rem !important;
+        }
+
+        .linda-badge {
+            padding: 4px 12px !important;
+            font-size: 10px !important;
+        }
+
+        .linda-hero-heading {
+            font-size: 2.65rem !important;
+            line-height: 1.12 !important;
+        }
+
+        .linda-hero-sub {
+            font-size: 0.88rem !important;
+        }
+
+        .linda-modules-grid {
+            gap: 7px !important;
+            padding-top: 0.2rem !important;
+        }
+
+        .linda-mod-pill {
+            padding: 7px 11px !important;
+            border-radius: 11px !important;
+            gap: 8px !important;
+        }
+
+        .linda-mod-pill .material-symbols-outlined {
+            font-size: 20px !important;
+        }
+
+        .linda-mod-title {
+            font-size: 10.5px !important;
+        }
+
+        .linda-mod-desc {
+            font-size: 9.5px !important;
+        }
+
+        /* Kolom Kanan Kartu Login */
+        .linda-card {
+            max-width: 410px !important;
+            padding: 20px 26px 16px !important;
+            border-radius: 20px !important;
+        }
+
+        .linda-card-header {
+            margin-bottom: 0.85rem !important;
+        }
+
+        .linda-logo-box {
+            margin-bottom: 0.35rem !important;
+        }
+
+        .linda-logo-img {
+            height: 38px !important;
+            max-width: 190px !important;
+        }
+
+        .linda-card-subtitle {
+            font-size: 11px !important;
+        }
+
+        .linda-card-prompt {
+            font-size: 10px !important;
+            margin-top: 2px !important;
+        }
+
+        .linda-form {
+            gap: 0.72rem !important;
+        }
+
+        .linda-field-group {
+            gap: 4px !important;
+        }
+
+        .linda-label {
+            font-size: 11.5px !important;
+        }
+
+        .linda-input {
+            padding: 9px 14px 9px 38px !important;
+            font-size: 12.5px !important;
+            border-radius: 10px !important;
+        }
+
+        .linda-input-password {
+            padding-right: 40px !important;
+        }
+
+        .linda-input-icon {
+            left: 12px !important;
+            font-size: 17px !important;
+        }
+
+        .linda-pwd-toggle {
+            right: 8px !important;
+            width: 28px !important;
+            height: 28px !important;
+        }
+
+        #password-toggle-icon {
+            font-size: 18px !important;
+        }
+
+        .linda-options-row {
+            padding-top: 0px !important;
+        }
+
+        .linda-remember-label {
+            font-size: 11px !important;
+        }
+
+        .linda-checkbox {
+            width: 14px !important;
+            height: 14px !important;
+        }
+
+        .linda-forgot-btn {
+            font-size: 11px !important;
+        }
+
+        .linda-submit-btn {
+            padding: 10.5px 18px !important;
+            font-size: 13px !important;
+            border-radius: 10px !important;
+        }
+
+        .linda-separator {
+            margin: 0.75rem 0 0.65rem !important;
+        }
+
+        .linda-sso-btn {
+            padding: 8.5px 14px !important;
+            font-size: 11.5px !important;
+            border-radius: 10px !important;
+        }
+
+        .linda-card-footer {
+            margin-top: 0.75rem !important;
+            padding-top: 0.65rem !important;
+            gap: 4px !important;
+        }
+
+        .linda-footer-badge {
+            font-size: 10px !important;
+        }
+
+        .linda-footer-copyright {
+            font-size: 9px !important;
+        }
+    }
+
+    /* Khusus layar laptop sangat pendek (height <= 660px, misal 1366x768 zoom 125%) */
+    @media (min-width: 1024px) and (max-height: 660px) {
+        .linda-login-wrapper {
+            padding: 0.5rem 1.25rem !important;
+        }
+
+        .linda-content-container {
+            gap: 1.5rem !important;
+        }
+
+        .linda-hero-heading {
+            font-size: 2.25rem !important;
+        }
+
+        .linda-modules-grid {
+            gap: 5px !important;
+        }
+
+        .linda-mod-pill {
+            padding: 5px 9px !important;
+        }
+
+        .linda-card {
+            max-width: 385px !important;
+            padding: 15px 22px 12px !important;
+            border-radius: 18px !important;
+        }
+
+        .linda-card-header {
+            margin-bottom: 0.6rem !important;
+        }
+
+        .linda-logo-img {
+            height: 32px !important;
+        }
+
+        .linda-form {
+            gap: 0.55rem !important;
+        }
+
+        .linda-input {
+            padding: 7.5px 12px 7.5px 36px !important;
+        }
+
+        .linda-submit-btn {
+            padding: 9px 16px !important;
+        }
+
+        .linda-separator {
+            margin: 0.55rem 0 0.45rem !important;
+        }
+
+        .linda-sso-btn {
+            padding: 7px 12px !important;
+        }
+
+        .linda-card-footer {
+            margin-top: 0.55rem !important;
+            padding-top: 0.45rem !important;
+        }
+    }
+
+    /* ============================================================== */
     /* RESPONSIVE DESIGN: TABLET & MOBILE VIEWPORTS (< 1024px)        */
     /* ============================================================== */
     @media (max-width: 1023px) {
