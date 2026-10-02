@@ -268,7 +268,7 @@
 </div>
 
 <!-- Modal Bantuan Lupa Password -->
-<div id="forgot-modal" class="linda-modal-overlay hidden">
+<div id="forgot-modal" class="linda-modal-overlay">
     <div class="linda-modal-box">
         <div class="linda-modal-icon-wrap">
             <span class="material-symbols-outlined text-[24px]">support_agent</span>
@@ -885,15 +885,19 @@
 
     /* Modal Styling */
     .linda-modal-overlay {
+        display: none !important;  /* Hidden by default, opened via JS */
         position: fixed;
         inset: 0;
         z-index: 50;
-        display: flex;
         align-items: center;
         justify-content: center;
         padding: 1rem;
         background: rgba(4, 10, 20, 0.75);
         backdrop-filter: blur(8px);
+    }
+
+    .linda-modal-overlay.linda-modal-visible {
+        display: flex !important; /* Shown when JS adds this class */
     }
 
     .linda-modal-box {
@@ -978,11 +982,11 @@
     }
 
     function showForgotPasswordModal() {
-        document.getElementById('forgot-modal').classList.remove('hidden');
+        document.getElementById('forgot-modal').classList.add('linda-modal-visible');
     }
 
     function closeForgotPasswordModal() {
-        document.getElementById('forgot-modal').classList.add('hidden');
+        document.getElementById('forgot-modal').classList.remove('linda-modal-visible');
     }
 </script>
 @endsection
