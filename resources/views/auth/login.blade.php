@@ -458,6 +458,10 @@
         transition: all 0.2s ease;
     }
 
+    .linda-mod-pill > div {
+        min-width: 0;
+    }
+
     .linda-mod-pill:hover {
         background: rgba(15, 30, 58, 0.9);
         border-color: rgba(56, 189, 248, 0.4);
@@ -828,6 +832,213 @@
         letter-spacing: 0.06em;
         text-transform: uppercase;
         margin: 0;
+    }
+
+    /* ============================================================== */
+    /* RESPONSIVE DESIGN: TABLET & MOBILE VIEWPORTS (< 1024px)        */
+    /* ============================================================== */
+    @media (max-width: 1023px) {
+        .linda-login-wrapper {
+            padding: 1.25rem 1rem 2.25rem;
+            align-items: flex-start;
+        }
+
+        /* Foto background: geser ke kanan (60%) agar struktur pabrik SBA lebih terlihat di layar portrait */
+        .gaone-bg {
+            background-position: 60% 32% !important;
+        }
+
+        /* Overlay vertikal khusus portrait: kontras seimbang dari atas hingga bawah */
+        .gaone-overlay {
+            background: linear-gradient(
+                to bottom,
+                rgba(5, 14, 35, 0.78) 0%,
+                rgba(5, 14, 35, 0.52) 28%,
+                rgba(5, 14, 35, 0.65) 65%,
+                rgba(5, 14, 35, 0.88) 100%
+            ) !important;
+        }
+
+        .gaone-network-bg {
+            opacity: 0.45;
+            width: 75vw;
+            height: 38vh;
+        }
+
+        .linda-content-container {
+            gap: 1.5rem;
+        }
+
+        .linda-left-hero {
+            gap: 1rem;
+        }
+    }
+
+    /* ============================================================== */
+    /* RESPONSIVE DESIGN: SMARTPHONE MOBILE VIEWPORTS (< 640px)       */
+    /* ============================================================== */
+    @media (max-width: 639px) {
+        .linda-login-wrapper {
+            padding: 1rem 0.75rem 2rem;
+        }
+
+        .linda-content-container {
+            gap: 1.15rem;
+        }
+
+        .linda-left-hero {
+            gap: 0.75rem;
+        }
+
+        /* Badge compact */
+        .linda-badge {
+            padding: 4px 10px;
+            font-size: 10px;
+            gap: 6px;
+        }
+
+        .linda-badge-pulse {
+            width: 6px;
+            height: 6px;
+        }
+
+        /* Headline compact agar form login langsung terlihat (above the fold) */
+        .linda-hero-heading {
+            font-size: 1.65rem !important;
+            line-height: 1.18 !important;
+            letter-spacing: -0.01em !important;
+        }
+
+        .linda-hero-sub {
+            font-size: 0.82rem;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* 6 Modul Pills jadi micro-chips 3 kolom (menghemat > 115px tinggi layar!) */
+        .linda-modules-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 6px !important;
+            padding-top: 0.2rem;
+        }
+
+        .linda-mod-pill {
+            padding: 7px 8px !important;
+            border-radius: 10px !important;
+            gap: 6px !important;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .linda-mod-pill span.material-symbols-outlined {
+            font-size: 15px !important;
+            flex-shrink: 0;
+        }
+
+        .linda-mod-title {
+            font-size: 9.5px !important;
+            line-height: 1.15 !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .linda-mod-desc {
+            display: none !important;
+        }
+
+        /* Kartu Login compact & ergonomis untuk jempol */
+        .linda-card {
+            padding: 22px 18px 18px !important;
+            border-radius: 20px !important;
+            box-shadow:
+                0 16px 40px -8px rgba(0, 0, 0, 0.75),
+                0 0 0 1px rgba(37, 99, 235, 0.15),
+                0 0 40px -10px rgba(37, 99, 235, 0.45),
+                inset 0 1px 0 rgba(147, 197, 253, 0.12) !important;
+        }
+
+        .linda-card-header {
+            margin-bottom: 1.1rem !important;
+        }
+
+        .linda-logo-box {
+            margin-bottom: 0.45rem !important;
+        }
+
+        .linda-logo-img {
+            height: 38px !important;
+            max-width: 190px !important;
+        }
+
+        .linda-card-subtitle {
+            font-size: 11px !important;
+        }
+
+        .linda-card-prompt {
+            font-size: 10px !important;
+            margin-top: 2px !important;
+        }
+
+        .linda-form {
+            gap: 0.85rem !important;
+        }
+
+        .linda-field-group {
+            gap: 4px !important;
+        }
+
+        .linda-label {
+            font-size: 11.5px !important;
+        }
+
+        .linda-input {
+            padding: 10px 14px 10px 38px !important;
+            font-size: 13px !important;
+            border-radius: 10px !important;
+        }
+
+        .linda-input-icon {
+            left: 12px !important;
+            font-size: 18px !important;
+        }
+
+        .linda-pwd-toggle {
+            right: 10px !important;
+        }
+
+        .linda-options-row {
+            padding-top: 0px !important;
+        }
+
+        .linda-remember-label {
+            font-size: 11.5px !important;
+        }
+
+        .linda-forgot-btn {
+            font-size: 11.5px !important;
+        }
+
+        .linda-submit-btn {
+            padding: 11.5px 16px !important;
+            font-size: 13.5px !important;
+            border-radius: 10px !important;
+        }
+
+        .linda-separator {
+            margin: 1rem 0 0.85rem !important;
+        }
+
+        .linda-sso-btn {
+            padding: 10px 14px !important;
+            font-size: 12px !important;
+            border-radius: 10px !important;
+        }
+
+        .linda-card-footer {
+            margin-top: 1rem !important;
+            padding-top: 0.85rem !important;
+        }
     }
 
     /* Modal Styling */
