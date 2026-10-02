@@ -6,36 +6,36 @@
 <!-- Container Utama Halaman Login -->
 <div class="linda-login-wrapper">
 
-    <!-- 1. Cinematic Factory Background (Full Viewport SBA Plant - Color Graded) -->
-    <div class="linda-bg-cinematic"></div>
+    <!-- 1. Foto Pabrik SBA (tampak jelas sebagai background, seperti Linda menampilkan foto tambang) -->
+    <div class="gaone-bg"></div>
 
-    <!-- 2. Dark Atmospheric Cyan & Navy Overlay (Identik dengan Referensi Linda) -->
-    <div class="linda-overlay-dark"></div>
+    <!-- 2. Overlay Directional: kiri lebih gelap untuk readability, kanan lebih transparan agar foto terlihat -->
+    <div class="gaone-overlay"></div>
 
-    <!-- 3. Ambient Radial Lighting (Cyan, Emerald, Royal Blue Glows) -->
-    <div class="linda-ambient-glows"></div>
+    <!-- 3. Ambient Glow Biru GA One -->
+    <div class="gaone-glows"></div>
 
     <!-- 4. Constellation Network Nodes Overlay (Persis seperti pada latar gunung Linda) -->
     <div class="linda-constellation-container">
         <!-- SVG Constellation Mesh di Kiri Bawah -->
         <svg class="linda-constellation-svg" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Garis Jaringan -->
-            <line x1="40" y1="520" x2="110" y2="440" stroke="rgba(6, 182, 212, 0.3)" stroke-width="1.5" />
-            <line x1="110" y1="440" x2="90" y2="350" stroke="rgba(6, 182, 212, 0.25)" stroke-width="1.5" />
-            <line x1="110" y1="440" x2="210" y2="470" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1.5" />
-            <line x1="90" y1="350" x2="20" y2="280" stroke="rgba(6, 182, 212, 0.2)" stroke-width="1.5" />
-            <line x1="210" y1="470" x2="290" y2="400" stroke="rgba(6, 182, 212, 0.25)" stroke-width="1.5" />
-            <line x1="90" y1="350" x2="290" y2="400" stroke="rgba(56, 189, 248, 0.2)" stroke-width="1.2" stroke-dasharray="4 4" />
-            <line x1="290" y1="400" x2="380" y2="460" stroke="rgba(6, 182, 212, 0.2)" stroke-width="1.2" stroke-dasharray="4 4" />
+                    <!-- Garis Jaringan biru GA One -->
+            <line x1="40" y1="520" x2="110" y2="440" stroke="rgba(37, 99, 235, 0.35)" stroke-width="1.5" />
+            <line x1="110" y1="440" x2="90" y2="350" stroke="rgba(37, 99, 235, 0.28)" stroke-width="1.5" />
+            <line x1="110" y1="440" x2="210" y2="470" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.5" />
+            <line x1="90" y1="350" x2="20" y2="280" stroke="rgba(37, 99, 235, 0.22)" stroke-width="1.5" />
+            <line x1="210" y1="470" x2="290" y2="400" stroke="rgba(56, 189, 248, 0.28)" stroke-width="1.2" />
+            <line x1="90" y1="350" x2="290" y2="400" stroke="rgba(147, 197, 253, 0.2)" stroke-width="1.2" stroke-dasharray="4 4" />
+            <line x1="290" y1="400" x2="380" y2="460" stroke="rgba(37, 99, 235, 0.22)" stroke-width="1.2" stroke-dasharray="4 4" />
 
-            <!-- Titik-titik Berpendar -->
-            <circle cx="40" cy="520" r="4" fill="#06B6D4" />
-            <circle cx="110" cy="440" r="5" fill="#10B981" />
-            <circle cx="90" cy="350" r="4.5" fill="#38BDF8" />
-            <circle cx="20" cy="280" r="3.5" fill="#06B6D4" />
-            <circle cx="210" cy="470" r="4.5" fill="#34D399" />
-            <circle cx="290" cy="400" r="5" fill="#38BDF8" />
-            <circle cx="380" cy="460" r="3.5" fill="#06B6D4" />
+            <!-- Titik Node Bersinar (GA One Blue) -->
+            <circle cx="40" cy="520" r="4" fill="#2563EB" />
+            <circle cx="110" cy="440" r="5" fill="#38BDF8" />
+            <circle cx="90" cy="350" r="4.5" fill="#60A5FA" />
+            <circle cx="20" cy="280" r="3.5" fill="#2563EB" />
+            <circle cx="210" cy="470" r="4.5" fill="#38BDF8" />
+            <circle cx="290" cy="400" r="5" fill="#93C5FD" />
+            <circle cx="380" cy="460" r="3.5" fill="#2563EB" />
         </svg>
 
         <!-- Node 1: DATA INTEGRATION (Kiri Tengah) -->
@@ -302,42 +302,48 @@
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* 2. Full Viewport Aerial Factory Background */
-    .linda-bg-cinematic {
+    /* 2. Full Viewport Aerial Factory Background — foto pabrik SBA tampak jelas seperti Linda menampilkan foto tambang */
+    .gaone-bg {
         position: fixed !important;
         inset: 0 !important;
         width: 100vw !important;
         height: 100vh !important;
         z-index: 0 !important;
-        background-image: url('{{ asset('images/sba-factory-aerial.jpg') }}?v=2') !important;
+        background-image: url('{{ asset('images/sba-factory-aerial.jpg') }}?v=3') !important;
         background-size: cover !important;
-        background-position: center center !important;
+        background-position: center 35% !important;
         background-repeat: no-repeat !important;
-        filter: brightness(0.7) contrast(1.1) saturate(0.95);
         pointer-events: none;
     }
 
-    /* 3. Dark Atmospheric Vignette Overlay */
-    .linda-overlay-dark {
+    /* 3. Overlay — tipis di kanan agar foto pabrik terlihat, lebih gelap di kiri untuk readability teks hero */
+    .gaone-overlay {
         position: fixed !important;
         inset: 0 !important;
         width: 100vw !important;
         height: 100vh !important;
         z-index: 1 !important;
-        background: radial-gradient(circle at 75% 35%, rgba(10, 25, 52, 0.78) 0%, rgba(6, 14, 28, 0.94) 70%),
-                    linear-gradient(135deg, rgba(6, 18, 38, 0.94) 0%, rgba(9, 22, 44, 0.85) 45%, rgba(5, 12, 24, 0.96) 100%) !important;
+        /* Gradient: kiri gelap (agar teks Hero terbaca) -> tengah semi-transparan -> kanan agak gelap (agar kartu kontras) */
+        background: linear-gradient(
+            to right,
+            rgba(5, 14, 35, 0.82) 0%,
+            rgba(5, 14, 35, 0.55) 30%,
+            rgba(5, 14, 35, 0.32) 58%,
+            rgba(5, 14, 35, 0.52) 100%
+        ) !important;
         pointer-events: none;
     }
 
-    /* 4. Ambient Radial Glow Lights */
-    .linda-ambient-glows {
+    /* 4. Ambient Radial Glow Lights — identitas warna biru GA One */
+    .gaone-glows {
         position: fixed;
         inset: 0;
         z-index: 2;
         pointer-events: none;
-        background: radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.22) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.22) 0%, transparent 45%),
-                    radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.15) 0%, transparent 55%);
+        background:
+            radial-gradient(ellipse at 10% 55%, rgba(37, 99, 235, 0.28) 0%, transparent 45%),
+            radial-gradient(ellipse at 85% 20%, rgba(6, 182, 212, 0.18) 0%, transparent 40%),
+            radial-gradient(ellipse at 50% 95%, rgba(37, 99, 235, 0.14) 0%, transparent 50%);
     }
 
     /* 5. Constellation Network Pins */
@@ -476,8 +482,9 @@
         .linda-hero-heading { font-size: 3.6rem; }
     }
 
+    /* Identitas GA One: gradasi biru royal -> biru muda -> putih cerah */
     .linda-gradient-text {
-        background: linear-gradient(90deg, #10B981 0%, #06B6D4 50%, #38BDF8 100%);
+        background: linear-gradient(90deg, #60A5FA 0%, #93C5FD 50%, #FFFFFF 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -490,7 +497,7 @@
         margin: 0;
     }
 
-    .linda-tag-blue { color: #38BDF8; font-weight: 700; }
+    .linda-tag-blue { color: #93C5FD; font-weight: 700; }
     .linda-tag-dot { color: #64748B; }
     .linda-tag-sub { color: #CBD5E1; font-weight: 500; }
 
@@ -574,7 +581,8 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: linear-gradient(90deg, transparent 0%, #10B981 35%, #06B6D4 65%, transparent 100%);
+        /* Identitas GA One: gradasi biru cerah */
+        background: linear-gradient(90deg, transparent 0%, #2563EB 30%, #38BDF8 65%, transparent 100%);
     }
 
     .linda-card-header {
@@ -762,7 +770,7 @@
         text-decoration: underline;
     }
 
-    /* Primary Submit Button: Linda Vibrant Gradient */
+    /* Primary Submit Button: Identitas Biru GA One */
     .linda-submit-btn {
         width: 100% !important;
         display: flex !important;
@@ -774,17 +782,18 @@
         font-size: 14px !important;
         font-weight: 700 !important;
         color: #FFFFFF !important;
-        background: linear-gradient(90deg, #10B981 0%, #06B6D4 50%, #2563EB 100%) !important;
+        /* GA One blue: biru tua -> biru cerah -> cyan */
+        background: linear-gradient(90deg, #1D4ED8 0%, #2563EB 50%, #38BDF8 100%) !important;
         border: none !important;
         cursor: pointer !important;
-        box-shadow: 0 10px 25px -4px rgba(6, 182, 212, 0.35) !important;
+        box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.55) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     .linda-submit-btn:hover {
-        background: linear-gradient(90deg, #059669 0%, #0891B2 50%, #1D4ED8 100%) !important;
-        box-shadow: 0 12px 30px -4px rgba(6, 182, 212, 0.5) !important;
-        transform: translateY(-1px);
+        background: linear-gradient(90deg, #1E40AF 0%, #1D4ED8 50%, #2563EB 100%) !important;
+        box-shadow: 0 10px 28px -4px rgba(37, 99, 235, 0.7) !important;
+        transform: translateY(-1.5px);
     }
 
     .linda-submit-btn:active {
