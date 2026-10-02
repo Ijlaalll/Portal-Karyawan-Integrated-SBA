@@ -24,7 +24,7 @@
         </div>
     @endif
 
-    <form action="{{ route('inspections.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6" onsubmit="this.querySelector('button[type=submit]').disabled = true; return true;">
+    <form action="{{ route('inspections.store') }}" method="POST" enctype="multipart/form-data" data-turbo="false" class="space-y-6" onsubmit="this.querySelector('button[type=submit]').disabled = true; return true;">
         @csrf
 
         <!-- Location Selection -->

@@ -21,6 +21,7 @@
 
         <div class="flex items-center gap-3">
             <a href="{{ route('admin.settings.audit-logs.export', request()->all()) }}" 
+               data-turbo="false"
                class="inline-flex items-center gap-2 rounded-xl bg-white border border-[#CBD5E1] px-4 py-2.5 text-xs sm:text-sm font-semibold text-[#0F172A] shadow-xs hover:bg-[#F8FAFC] hover:border-[#94A3B8] transition-all">
                 <span class="material-symbols-outlined text-[18px] text-[#2563EB]">download</span>
                 Ekspor Log (CSV)
