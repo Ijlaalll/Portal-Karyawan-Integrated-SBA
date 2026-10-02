@@ -614,10 +614,16 @@
     .linda-input-icon {
         position: absolute;
         left: 14px;
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         color: #94A3B8;
         font-size: 19px;
         pointer-events: none;
         transition: color 0.2s ease;
+        overflow: hidden;
     }
 
     .linda-input-wrap:focus-within .linda-input-icon {
@@ -661,8 +667,12 @@
         cursor: pointer;
         display: flex;
         align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
         padding: 4px;
         transition: color 0.2s ease;
+        overflow: hidden;
     }
 
     .linda-pwd-toggle:hover {

@@ -7,9 +7,34 @@
 	tls internal {
 		on_demand
 	}
-	reverse_proxy 127.0.0.1:8080 {
-		header_up Host {host}
-		header_up X-Real-IP {remote_host}
-		header_up X-Forwarded-Proto https
+
+	header {
+		Access-Control-Allow-Origin *
+		Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE"
+		Access-Control-Allow-Headers "*"
+	}
+
+	header /fonts/* {
+		Access-Control-Allow-Origin *
+		Cache-Control "public, max-age=31536000, immutable"
+	}
+
+	@static {
+		file {
+			root ./public
+			try_files {path}
+		}
+	}
+	handle @static {
+		root * ./public
+		file_server
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:8080 {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+			header_up X-Forwarded-Proto https
+		}
 	}
 }

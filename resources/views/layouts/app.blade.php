@@ -13,6 +13,11 @@
     <link rel="preload" href="{{ asset('fonts/inter-variable-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ asset('fonts/material-symbols-outlined.woff2') }}" as="font" type="font/woff2" crossorigin>
 
+    <!-- Fallback Google Fonts CDN (Menjamin simbol selalu muncul di semua perangkat tanpa kompromi) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- 2. Local Hotwired Turbo (SPA-like instant transitions, 100% intranet-ready) -->
@@ -37,13 +42,14 @@
             src: url('{{ asset('fonts/inter-variable-latin.woff2') }}') format('woff2');
         }
 
-        /* 2. Self-hosted Material Symbols Font (Intranet / Offline Guaranteed) */
+        /* 2. Self-hosted Material Symbols Font (Intranet / Offline Guaranteed) with CDN Fallback */
         @font-face {
             font-family: 'Material Symbols Outlined';
             font-style: normal;
             font-weight: 100 700;
             font-display: block;
-            src: url('{{ asset('fonts/material-symbols-outlined.woff2') }}') format('woff2');
+            src: url('{{ asset('fonts/material-symbols-outlined.woff2') }}') format('woff2'),
+                 url('https://fonts.gstatic.com/s/materialsymbolsoutlined/v218/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpYo3REOpAiUM425vgw.woff2') format('woff2');
         }
 
         /* 3. Zero-FOIC / Zero-TOFU CSS Guard */
