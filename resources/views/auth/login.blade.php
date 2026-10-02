@@ -281,7 +281,7 @@
         width: 100vw !important;
         height: 100vh !important;
         z-index: 0 !important;
-        background-image: url('{{ asset('images/sba-factory-aerial.jpg') }}?v=3') !important;
+        background-image: url('{{ asset('images/sba-factory-aerial.jpg') }}?v=4') !important;
         background-size: cover !important;
         background-position: center 35% !important;
         background-repeat: no-repeat !important;
@@ -493,14 +493,19 @@
     .linda-card {
         width: 100%;
         max-width: 440px;
-        background: rgba(11, 20, 36, 0.92) !important;
-        backdrop-filter: blur(28px) !important;
-        -webkit-backdrop-filter: blur(28px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        /* Kartu gelap pekat — kontras tinggi terhadap background pabrik */
+        background: rgba(8, 15, 28, 0.96) !important;
+        backdrop-filter: blur(32px) saturate(1.4) !important;
+        -webkit-backdrop-filter: blur(32px) saturate(1.4) !important;
+        /* Border tipis biru: kartu terlihat tegas di atas foto background */
+        border: 1px solid rgba(37, 99, 235, 0.35) !important;
         border-radius: 26px !important;
         padding: 34px 34px 28px !important;
-        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8),
-                    0 0 40px -10px rgba(6, 182, 212, 0.25) !important;
+        /* Drop shadow besar + subtle blue outer glow */
+        box-shadow:
+            0 32px 64px -16px rgba(0, 0, 0, 0.85),
+            0 0 0 1px rgba(56, 189, 248, 0.08),
+            0 0 48px -12px rgba(37, 99, 235, 0.4) !important;
         position: relative !important;
         overflow: hidden !important;
     }
@@ -611,29 +616,31 @@
     }
 
     .linda-input-wrap:focus-within .linda-input-icon {
-        color: #38BDF8;
+        color: #2563EB;
     }
 
     .linda-input {
         width: 100% !important;
-        background: rgba(8, 16, 28, 0.85) !important;
-        border: 1px solid rgba(71, 85, 105, 0.7) !important;
+        /* Input nyaris hitam pekat — kontras teks putih sangat tajam */
+        background: rgba(4, 8, 16, 0.95) !important;
+        border: 1px solid rgba(37, 99, 235, 0.3) !important;
         border-radius: 12px !important;
         padding: 12px 16px 12px 42px !important;
         font-size: 13.5px !important;
         color: #FFFFFF !important;
         outline: none !important;
-        transition: all 0.2s ease !important;
+        transition: all 0.22s ease !important;
     }
 
     .linda-input::placeholder {
-        color: #64748B !important;
+        color: #475569 !important;
     }
 
     .linda-input:focus {
-        background: rgba(8, 16, 28, 0.98) !important;
-        border-color: #06B6D4 !important;
-        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25) !important;
+        background: rgba(4, 8, 16, 1) !important;
+        /* Focus ring biru GA One */
+        border-color: #2563EB !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3) !important;
     }
 
     .linda-input-password {
