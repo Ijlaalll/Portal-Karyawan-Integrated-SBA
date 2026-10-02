@@ -371,7 +371,7 @@
         }
         
         // Run toggle on page load to restore state if customized
-        document.addEventListener('DOMContentLoaded', function() {
+        function initToiletDashboard() {
             toggleCustomDates();
 
             // Restore scroll position
@@ -392,7 +392,13 @@
                     }, 300);
                 }
             }
-        });
+        }
+
+        if (window.onPageLoad) {
+            window.onPageLoad(initToiletDashboard);
+        } else {
+            document.addEventListener('DOMContentLoaded', initToiletDashboard);
+        }
     </script>
 
     @if($totalInspections > 0)

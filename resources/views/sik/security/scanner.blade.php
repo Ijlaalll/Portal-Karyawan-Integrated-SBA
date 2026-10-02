@@ -238,8 +238,8 @@
 <!-- Tailwind Safelist Helper for Dynamic JS Colors -->
 <div class="hidden bg-purple-600 hover:bg-purple-700 bg-emerald-600 hover:bg-emerald-700 bg-slate-600 hover:bg-slate-700 bg-indigo-600 hover:bg-indigo-700"></div>
 
-<!-- HTML5-QRCode Scanner Script from CDN -->
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<!-- HTML5-QRCode Scanner Script (Self-hosted for guaranteed offline intranet gate scanning) -->
+<script src="{{ asset('js/html5-qrcode.min.js') }}"></script>
 
 <script>
     let html5QrCode = null;

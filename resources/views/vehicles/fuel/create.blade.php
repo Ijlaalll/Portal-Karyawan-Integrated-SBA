@@ -124,12 +124,18 @@
         document.getElementById('vehicle_fuel_text').textContent = fuel || '-';
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    function initFuelCreate() {
         const select = document.getElementById('vehicle_id');
         if (select) {
             updateVehicleInfo(select);
         }
-    });
+    }
+
+    if (window.onPageLoad) {
+        window.onPageLoad(initFuelCreate);
+    } else {
+        document.addEventListener('DOMContentLoaded', initFuelCreate);
+    }
 </script>
 <style>
     /* Hilangkan panah stepper spinner bawaan browser agar tidak menimpa badge teks satuan (KM/Liter) */

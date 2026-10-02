@@ -205,10 +205,12 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    function initUserCreateForm() {
         const roleSelect = document.getElementById('role');
         const managementContainer = document.getElementById('management-access-container');
         const adminInfo = document.getElementById('admin-management-info');
+
+        if (!roleSelect || !managementContainer) return;
 
         function toggleManagementAccess() {
             if (roleSelect.value === 'admin') {
@@ -220,8 +222,15 @@
             }
         }
 
+        roleSelect.removeEventListener('change', toggleManagementAccess);
         roleSelect.addEventListener('change', toggleManagementAccess);
         toggleManagementAccess(); // Run on load
-    });
+    }
+
+    if (window.onPageLoad) {
+        window.onPageLoad(initUserCreateForm);
+    } else {
+        document.addEventListener('DOMContentLoaded', initUserCreateForm);
+    }
 </script>
 @endsection

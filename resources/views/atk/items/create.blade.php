@@ -279,9 +279,15 @@
     }
 
     // Run toggle on load to restore state if validation fails
-    document.addEventListener('DOMContentLoaded', function() {
+    function initAtkItemCreate() {
         toggleCategoryInput();
         updateDeleteButtons();
-    });
+    }
+
+    if (window.onPageLoad) {
+        window.onPageLoad(initAtkItemCreate);
+    } else {
+        document.addEventListener('DOMContentLoaded', initAtkItemCreate);
+    }
 </script>
 @endsection
