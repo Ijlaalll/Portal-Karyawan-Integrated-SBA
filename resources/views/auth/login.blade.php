@@ -15,56 +15,28 @@
     <!-- 3. Ambient Glow Biru GA One -->
     <div class="gaone-glows"></div>
 
-    <!-- 4. Constellation Network Nodes Overlay (Persis seperti pada latar gunung Linda) -->
-    <div class="linda-constellation-container">
-        <!-- SVG Constellation Mesh di Kiri Bawah -->
-        <svg class="linda-constellation-svg" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Garis Jaringan biru GA One -->
-            <line x1="40" y1="520" x2="110" y2="440" stroke="rgba(37, 99, 235, 0.35)" stroke-width="1.5" />
-            <line x1="110" y1="440" x2="90" y2="350" stroke="rgba(37, 99, 235, 0.28)" stroke-width="1.5" />
-            <line x1="110" y1="440" x2="210" y2="470" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.5" />
-            <line x1="90" y1="350" x2="20" y2="280" stroke="rgba(37, 99, 235, 0.22)" stroke-width="1.5" />
-            <line x1="210" y1="470" x2="290" y2="400" stroke="rgba(56, 189, 248, 0.28)" stroke-width="1.2" />
-            <line x1="90" y1="350" x2="290" y2="400" stroke="rgba(147, 197, 253, 0.2)" stroke-width="1.2" stroke-dasharray="4 4" />
-            <line x1="290" y1="400" x2="380" y2="460" stroke="rgba(37, 99, 235, 0.22)" stroke-width="1.2" stroke-dasharray="4 4" />
-
-            <!-- Titik Node Bersinar (GA One Blue) -->
-            <circle cx="40" cy="520" r="4" fill="#2563EB" />
-            <circle cx="110" cy="440" r="5" fill="#38BDF8" />
-            <circle cx="90" cy="350" r="4.5" fill="#60A5FA" />
-            <circle cx="20" cy="280" r="3.5" fill="#2563EB" />
-            <circle cx="210" cy="470" r="4.5" fill="#38BDF8" />
-            <circle cx="290" cy="400" r="5" fill="#93C5FD" />
-            <circle cx="380" cy="460" r="3.5" fill="#2563EB" />
+    <!-- 4. Ambient Network SVG — subtle decoration di sudut kiri bawah, tidak mengganggu konten -->
+    <div class="gaone-network-bg">
+        <svg viewBox="0 0 700 500" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+            <!-- Garis jaringan biru tipis sebagai dekorasi ambient -->
+            <line x1="20" y1="480" x2="120" y2="380" stroke="rgba(37,99,235,0.4)" stroke-width="1.2"/>
+            <line x1="120" y1="380" x2="80" y2="260" stroke="rgba(56,189,248,0.35)" stroke-width="1.2"/>
+            <line x1="80" y1="260" x2="30" y2="180" stroke="rgba(37,99,235,0.28)" stroke-width="1"/>
+            <line x1="120" y1="380" x2="240" y2="420" stroke="rgba(56,189,248,0.32)" stroke-width="1.2"/>
+            <line x1="240" y1="420" x2="350" y2="360" stroke="rgba(37,99,235,0.25)" stroke-width="1" stroke-dasharray="5 4"/>
+            <line x1="80" y1="260" x2="200" y2="290" stroke="rgba(147,197,253,0.22)" stroke-width="1" stroke-dasharray="4 5"/>
+            <line x1="200" y1="290" x2="350" y2="360" stroke="rgba(37,99,235,0.2)" stroke-width="1" stroke-dasharray="5 4"/>
+            <line x1="350" y1="360" x2="460" y2="400" stroke="rgba(56,189,248,0.22)" stroke-width="1" stroke-dasharray="4 5"/>
+            <!-- Titik simpul bersinar -->
+            <circle cx="20" cy="480" r="3.5" fill="#2563EB" opacity="0.8"/>
+            <circle cx="120" cy="380" r="5" fill="#38BDF8" opacity="0.9"/>
+            <circle cx="80" cy="260" r="4" fill="#60A5FA" opacity="0.85"/>
+            <circle cx="30" cy="180" r="3" fill="#2563EB" opacity="0.7"/>
+            <circle cx="240" cy="420" r="4.5" fill="#38BDF8" opacity="0.8"/>
+            <circle cx="200" cy="290" r="3.5" fill="#93C5FD" opacity="0.7"/>
+            <circle cx="350" cy="360" r="5" fill="#2563EB" opacity="0.85"/>
+            <circle cx="460" cy="400" r="3" fill="#60A5FA" opacity="0.65"/>
         </svg>
-
-        <!-- Node 1: DATA INTEGRATION (Kiri Tengah) -->
-        <div class="linda-node-pin" style="top: 32%; left: 14%;">
-            <span class="linda-pin-glow"></span>
-            <span class="linda-pin-dot"></span>
-            <span class="linda-pin-label">DATA INTEGRATION</span>
-        </div>
-
-        <!-- Node 2: MONITORING (Atas Tengah Pabrik) -->
-        <div class="linda-node-pin" style="top: 24%; left: 44%;">
-            <span class="linda-pin-glow"></span>
-            <span class="linda-pin-dot"></span>
-            <span class="linda-pin-label">MONITORING</span>
-        </div>
-
-        <!-- Node 3: OPERATIONAL (Tengah Bawah) -->
-        <div class="linda-node-pin" style="top: 66%; left: 34%;">
-            <span class="linda-pin-glow"></span>
-            <span class="linda-pin-dot"></span>
-            <span class="linda-pin-label">OPERATIONAL</span>
-        </div>
-
-        <!-- Node 4: SECURE (Kanan Bawah) -->
-        <div class="linda-node-pin" style="top: 78%; left: 48%;">
-            <span class="linda-pin-glow"></span>
-            <span class="linda-pin-dot"></span>
-            <span class="linda-pin-label">SECURE</span>
-        </div>
     </div>
 
     <!-- 5. Konten Halaman (Grid 2 Kolom) -->
@@ -93,10 +65,10 @@
                 <span class="linda-tag-sub">PT Solusi Bangun Andalas</span>
             </p>
 
-            <!-- 6 Modul Utama Layanan SBA -->
+            <!-- 6 Modul Utama Layanan SBA — ikon konsisten biru GA One -->
             <div class="linda-modules-grid">
                 <div class="linda-mod-pill">
-                    <span class="material-symbols-outlined text-[18px] text-[#38BDF8]">meeting_room</span>
+                    <span class="material-symbols-outlined gaone-icon-blue">meeting_room</span>
                     <div>
                         <div class="linda-mod-title">Ruang Meeting</div>
                         <div class="linda-mod-desc">Offline &amp; Hybrid</div>
@@ -104,7 +76,7 @@
                 </div>
 
                 <div class="linda-mod-pill">
-                    <span class="material-symbols-outlined text-[18px] text-[#34D399]">inventory_2</span>
+                    <span class="material-symbols-outlined gaone-icon-sky">inventory_2</span>
                     <div>
                         <div class="linda-mod-title">Logistik ATK</div>
                         <div class="linda-mod-desc">Katalog &amp; Stok</div>
@@ -112,7 +84,7 @@
                 </div>
 
                 <div class="linda-mod-pill">
-                    <span class="material-symbols-outlined text-[18px] text-[#F59E0B]">badge</span>
+                    <span class="material-symbols-outlined gaone-icon-light">badge</span>
                     <div>
                         <div class="linda-mod-title">Izin Keluar (SIK)</div>
                         <div class="linda-mod-desc">QR Code Gate</div>
@@ -120,7 +92,7 @@
                 </div>
 
                 <div class="linda-mod-pill">
-                    <span class="material-symbols-outlined text-[18px] text-[#60A5FA]">directions_car</span>
+                    <span class="material-symbols-outlined gaone-icon-sky">directions_car</span>
                     <div>
                         <div class="linda-mod-title">Kendaraan</div>
                         <div class="linda-mod-desc">Armada &amp; Supir</div>
@@ -128,7 +100,7 @@
                 </div>
 
                 <div class="linda-mod-pill">
-                    <span class="material-symbols-outlined text-[18px] text-[#A78BFA]">wc</span>
+                    <span class="material-symbols-outlined gaone-icon-blue">wc</span>
                     <div>
                         <div class="linda-mod-title">Inspeksi Toilet</div>
                         <div class="linda-mod-desc">Checklist Pabrik</div>
@@ -136,7 +108,7 @@
                 </div>
 
                 <div class="linda-mod-pill">
-                    <span class="material-symbols-outlined text-[18px] text-[#38BDF8]">verified_user</span>
+                    <span class="material-symbols-outlined gaone-icon-light">verified_user</span>
                     <div>
                         <div class="linda-mod-title">Single Sign-On</div>
                         <div class="linda-mod-desc">Akun Terpadu</div>
@@ -162,7 +134,7 @@
                     </div>
                     
                     <p class="linda-card-subtitle">
-                        Integrated <span class="text-[#34D399] font-bold">Monitoring</span> &amp; <span class="text-[#38BDF8] font-bold">Service</span> System App
+                        Integrated <span style="color:#60A5FA;font-weight:700;">Monitoring</span> &amp; <span style="color:#93C5FD;font-weight:700;">Service</span> System App
                     </p>
                     <p class="linda-card-prompt">Sign in to continue</p>
                 </div>
@@ -346,71 +318,29 @@
             radial-gradient(ellipse at 50% 95%, rgba(37, 99, 235, 0.14) 0%, transparent 50%);
     }
 
-    /* 5. Constellation Network Pins */
-    .linda-constellation-container {
-        position: fixed;
-        inset: 0;
-        z-index: 3;
-        pointer-events: none;
-    }
 
-    .linda-constellation-svg {
-        position: absolute;
+    /* 5. Ambient Network SVG Background (sudut kiri bawah, tidak overlap konten) */
+    .gaone-network-bg {
+        position: fixed;
         bottom: 0;
         left: 0;
-        width: 480px;
-        height: 480px;
-        opacity: 0.7;
+        width: min(55vw, 700px);
+        height: min(65vh, 500px);
+        z-index: 3;
+        pointer-events: none;
+        opacity: 0.85;
     }
 
-    .linda-node-pin {
-        position: absolute;
-        display: none;
-        align-items: center;
-        gap: 8px;
-        transform: translate(-50%, -50%);
-    }
-
-    @media (min-width: 1024px) {
-        .linda-node-pin {
-            display: flex;
-        }
-    }
-
-    .linda-pin-glow {
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        border-radius: 9999px;
-        background: rgba(6, 182, 212, 0.6);
-        animation: linda-pulse 2.5s infinite ease-in-out;
-    }
-
-    .linda-pin-dot {
-        position: relative;
-        width: 8px;
-        height: 8px;
-        border-radius: 9999px;
-        background: #00F2FE;
-        box-shadow: 0 0 10px #00F2FE;
-    }
-
-    .linda-pin-label {
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: #38BDF8;
-        background: rgba(6, 20, 42, 0.75);
-        padding: 2px 7px;
-        border-radius: 6px;
-        border: 1px solid rgba(56, 189, 248, 0.3);
-        backdrop-filter: blur(8px);
-    }
+    /* Icon warna biru GA One untuk module pills */
+    .gaone-icon-blue  { font-size: 18px; color: #2563EB; }
+    .gaone-icon-sky   { font-size: 18px; color: #38BDF8; }
+    .gaone-icon-light { font-size: 18px; color: #93C5FD; }
 
     @keyframes linda-pulse {
         0%, 100% { transform: scale(1); opacity: 0.8; }
         50% { transform: scale(2.2); opacity: 0; }
     }
+
 
     /* 6. Content Grid */
     .linda-content-container {
