@@ -9,14 +9,14 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/ga_one_icon.png') }}?v=2">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/ga_one_icon.png') }}?v=2">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=2">
-    <link rel="apple-touch-icon" href="{{ asset('images/ga_one_icon.png') }}?v=2">
-    <!-- Google Fonts Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet" />
+    <!-- 1. Critical Font Preloads (Zero-FOUT & Zero-FOIC Instant Loading) -->
+    <link rel="preload" href="{{ asset('fonts/inter-variable-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/material-symbols-outlined.woff2') }}" as="font" type="font/woff2" crossorigin>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.3.0/dist/turbo.es2017-umd.js" data-turbo-track="reload"></script>
+
+    <!-- 2. Local Hotwired Turbo (SPA-like instant transitions, 100% intranet-ready) -->
+    <script src="{{ asset('js/turbo.js') }}" data-turbo-track="reload"></script>
 
     <script>
         (function() {
@@ -28,15 +28,25 @@
         })();
     </script>
     <style>
-        /* Self-hosted Material Symbols Font (Intranet / Offline Guaranteed) */
+        /* 1. Self-hosted Inter Variable Font (100% Offline & Intranet Guaranteed) */
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 100 900;
+            font-display: swap;
+            src: url('{{ asset('fonts/inter-variable-latin.woff2') }}') format('woff2');
+        }
+
+        /* 2. Self-hosted Material Symbols Font (Intranet / Offline Guaranteed) */
         @font-face {
             font-family: 'Material Symbols Outlined';
             font-style: normal;
             font-weight: 100 700;
             font-display: block;
-            src: url('/fonts/material-symbols-outlined.woff2') format('woff2');
+            src: url('{{ asset('fonts/material-symbols-outlined.woff2') }}') format('woff2');
         }
 
+        /* 3. Zero-FOIC / Zero-TOFU CSS Guard */
         .material-symbols-outlined {
             font-family: 'Material Symbols Outlined' !important;
             font-weight: normal;
@@ -53,6 +63,11 @@
             text-rendering: optimizeLegibility;
             -moz-osx-font-smoothing: grayscale;
             font-feature-settings: 'liga';
+            /* ZERO-FOIC / ZERO-TOFU GUARD: Mencegah kebocoran teks mentah ligature sebelum font siap */
+            overflow: hidden;
+            text-overflow: clip;
+            user-select: none;
+            vertical-align: middle;
         }
 
         /* Custom scrollbar for sidebar */
@@ -812,6 +827,41 @@
                 closeUserPopover();
                 closeMobileSidebar();
             });
+
+            // ==============================================================
+            // INSTANT SPA PREFETCHING (Zero-Latency Navigation Desktop/Mobile)
+            // ==============================================================
+            const prefetchedUrls = new Set();
+            function prefetchUrl(url) {
+                if (!url || prefetchedUrls.has(url) || url.includes('#') || url.startsWith('javascript:') || url.includes('/logout')) return;
+                try {
+                    const parsed = new URL(url, window.location.origin);
+                    if (parsed.origin !== window.location.origin) return;
+                    if (parsed.pathname === window.location.pathname && parsed.search === window.location.search) return;
+                    prefetchedUrls.add(url);
+                    const link = document.createElement('link');
+                    link.rel = 'prefetch';
+                    link.href = url;
+                    link.as = 'document';
+                    document.head.appendChild(link);
+                } catch(e) {}
+            }
+
+            // Desktop hover prefetch (loads in background ~100ms before click)
+            document.addEventListener('mouseover', function(e) {
+                const anchor = e.target.closest('a');
+                if (anchor && anchor.href && !anchor.hasAttribute('download') && anchor.getAttribute('target') !== '_blank') {
+                    prefetchUrl(anchor.href);
+                }
+            }, { passive: true });
+
+            // Mobile touch prefetch (initiates background fetch on screen touch)
+            document.addEventListener('touchstart', function(e) {
+                const anchor = e.target.closest('a');
+                if (anchor && anchor.href && !anchor.hasAttribute('download') && anchor.getAttribute('target') !== '_blank') {
+                    prefetchUrl(anchor.href);
+                }
+            }, { passive: true });
 
             // EXPANDED ACCORDION: Single parent group open at a time
             function handleParentClick(event, groupId) {

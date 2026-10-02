@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak SIK - {{ $sik->sik_number }}</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Self-hosted Inter Font for Offline Intranet Printing -->
+    <link rel="preload" href="{{ asset('fonts/inter-variable-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 100 900;
+            font-display: swap;
+            src: url('{{ asset('fonts/inter-variable-latin.woff2') }}') format('woff2');
+        }
         @media print {
             body { background: white !important; padding: 0 !important; }
             .no-print { display: none !important; }

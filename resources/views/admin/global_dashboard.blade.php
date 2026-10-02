@@ -850,7 +850,7 @@
 </div>
 
 <!-- scripts integration -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('js/chart.umd.js') }}"></script>
 <script>
     // Universal Global Dashboard period switcher maintaining independent section states
     function setPeriodUrl(targetSection, val) {

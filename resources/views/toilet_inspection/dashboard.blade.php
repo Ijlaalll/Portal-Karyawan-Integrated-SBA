@@ -396,7 +396,7 @@
     </script>
 
     @if($totalInspections > 0)
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="{{ asset('js/chart.umd.js') }}"></script>
         <script>
             function initToiletDashboardCharts() {
                 // Status Chart
