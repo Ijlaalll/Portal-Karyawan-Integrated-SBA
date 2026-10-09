@@ -595,7 +595,7 @@
             <!-- Main Content Container -->
             <div id="main-content" class="flex-1 ml-[280px] flex flex-col h-screen overflow-hidden bg-[#F9FAFB] transition-[margin-left] duration-300 ease-in-out">
                 <!-- Header -->
-                <header id="app-layout-header" class="h-16 w-full flex justify-between items-center px-8 bg-white border-b border-[#E5E7EB] z-40 sticky top-0 shrink-0">
+                <header id="app-layout-header" class="h-16 w-full flex justify-between items-center px-4 sm:px-6 lg:px-6 xl:px-8 bg-white border-b border-[#E5E7EB] z-40 sticky top-0 shrink-0">
                     <div class="flex items-center gap-3 min-w-0">
                         <button type="button" onclick="openMobileSidebar()" aria-label="Buka Menu" class="lg:hidden p-2 -ml-2 rounded-xl text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[24px]">menu</span>
@@ -659,7 +659,7 @@
                 </header>
                 
                 <!-- Main Body -->
-                <main id="app-layout-main" class="flex-1 overflow-auto p-8">
+                <main id="app-layout-main" class="flex-1 overflow-auto p-4 sm:p-6 lg:p-6 xl:p-8">
                     @yield('content')
                 </main>
             </div>

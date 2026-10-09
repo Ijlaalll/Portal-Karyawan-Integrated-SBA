@@ -83,7 +83,7 @@
         </div>
 
         <!-- KPI Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
             <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-4 h-[76px]">
                 <div class="h-10 w-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-[20px]">book_online</span>
@@ -218,7 +218,7 @@
         </div>
 
         <!-- KPI Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
             <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-4 h-[76px]">
                 <div class="h-10 w-10 rounded-lg bg-[#FEF3C7] text-[#D97706] flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-[20px]">analytics</span>
@@ -346,7 +346,7 @@
         </div>
 
         <!-- KPI Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
             <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-4 h-[76px]">
                 <div class="h-10 w-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
@@ -518,7 +518,7 @@
         </div>
 
         <!-- KPI Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
             <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-4 h-[76px]">
                 <div class="h-10 w-10 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-[20px]">assignment</span>
@@ -710,7 +710,7 @@
         </div>
 
         <!-- KPI Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
             <!-- Permohonan Periode Ini -->
             <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-4 h-[76px]">
                 <div class="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">

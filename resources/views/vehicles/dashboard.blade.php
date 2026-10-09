@@ -131,69 +131,69 @@
             <span class="text-xs text-slate-500 font-medium">Berdasarkan jadwal permohonan yang diajukan</span>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-medium text-slate-500">Total Permohonan</span>
-                    <span class="p-2 bg-slate-100 text-slate-600 rounded-xl">
+        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between min-w-0">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-medium text-slate-500 truncate" title="Total Permohonan">Total Permohonan</span>
+                    <span class="p-2 bg-slate-100 text-slate-600 rounded-xl shrink-0">
                         <span class="material-symbols-outlined text-[18px]">receipt_long</span>
                     </span>
                 </div>
-                <div class="mt-3">
-                    <div class="text-2xl font-bold text-slate-900">{{ number_format($totalRequestsInPeriod) }}</div>
-                    <div class="text-[11px] text-slate-400 mt-0.5">Dalam Periode</div>
+                <div class="mt-3 min-w-0">
+                    <div class="text-2xl font-bold text-slate-900 truncate">{{ number_format($totalRequestsInPeriod) }}</div>
+                    <div class="text-[11px] text-slate-400 mt-0.5 truncate">Dalam Periode</div>
                 </div>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-amber-50/20" style="border: 1px solid #FDE68A;">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-medium text-amber-700">Menunggu GA</span>
-                    <span class="p-2 bg-amber-100 text-amber-600 rounded-xl">
+            <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-amber-50/20 min-w-0" style="border: 1px solid #FDE68A;">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-medium text-amber-700 truncate" title="Menunggu GA">Menunggu GA</span>
+                    <span class="p-2 bg-amber-100 text-amber-600 rounded-xl shrink-0">
                         <span class="material-symbols-outlined text-[18px]">pending_actions</span>
                     </span>
                 </div>
-                <div class="mt-3">
-                    <div class="text-2xl font-bold text-amber-600">{{ number_format($pendingRequestsInPeriod) }}</div>
-                    <div class="text-[11px] text-amber-700/70 mt-0.5">Dalam Periode ({{ $totalPendingBacklog }} Total Antrean)</div>
+                <div class="mt-3 min-w-0">
+                    <div class="text-2xl font-bold text-amber-600 truncate">{{ number_format($pendingRequestsInPeriod) }}</div>
+                    <div class="text-[11px] text-amber-700/70 mt-0.5 truncate" title="Dalam Periode ({{ $totalPendingBacklog }} Total Antrean)">Dalam Periode ({{ $totalPendingBacklog }} Total Antrean)</div>
                 </div>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-blue-50/20" style="border: 1px solid #BFDBFE;">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-medium text-blue-700">Disetujui / Berjalan</span>
-                    <span class="p-2 bg-blue-100 text-blue-600 rounded-xl">
+            <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-blue-50/20 min-w-0" style="border: 1px solid #BFDBFE;">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-medium text-blue-700 truncate" title="Disetujui / Berjalan">Disetujui / Berjalan</span>
+                    <span class="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
                         <span class="material-symbols-outlined text-[18px]">task_alt</span>
                     </span>
                 </div>
-                <div class="mt-3">
-                    <div class="text-2xl font-bold text-[#2563EB]">{{ number_format($approvedInPeriod) }}</div>
-                    <div class="text-[11px] text-blue-700/70 mt-0.5">Jadwal Disetujui Periode Ini</div>
+                <div class="mt-3 min-w-0">
+                    <div class="text-2xl font-bold text-[#2563EB] truncate">{{ number_format($approvedInPeriod) }}</div>
+                    <div class="text-[11px] text-blue-700/70 mt-0.5 truncate">Jadwal Disetujui Periode Ini</div>
                 </div>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-emerald-50/20" style="border: 1px solid #A7F3D0;">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-medium text-emerald-700">Perjalanan Selesai</span>
-                    <span class="p-2 bg-emerald-100 text-emerald-600 rounded-xl">
+            <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-emerald-50/20 min-w-0" style="border: 1px solid #A7F3D0;">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-medium text-emerald-700 truncate" title="Perjalanan Selesai">Perjalanan Selesai</span>
+                    <span class="p-2 bg-emerald-100 text-emerald-600 rounded-xl shrink-0">
                         <span class="material-symbols-outlined text-[18px]">done_all</span>
                     </span>
                 </div>
-                <div class="mt-3">
-                    <div class="text-2xl font-bold text-emerald-600">{{ number_format($completedInPeriod) }}</div>
-                    <div class="text-[11px] text-emerald-700/70 mt-0.5">Completed</div>
+                <div class="mt-3 min-w-0">
+                    <div class="text-2xl font-bold text-emerald-600 truncate">{{ number_format($completedInPeriod) }}</div>
+                    <div class="text-[11px] text-emerald-700/70 mt-0.5 truncate">Completed</div>
                 </div>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-medium text-slate-500">Ditolak / Batal</span>
-                    <span class="p-2 bg-slate-100 text-slate-600 rounded-xl">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between min-w-0 col-span-2 sm:col-span-1 md:col-span-1 xl:col-span-1">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-medium text-slate-500 truncate" title="Ditolak / Batal">Ditolak / Batal</span>
+                    <span class="p-2 bg-slate-100 text-slate-600 rounded-xl shrink-0">
                         <span class="material-symbols-outlined text-[18px]">cancel</span>
                     </span>
                 </div>
-                <div class="mt-3">
-                    <div class="text-2xl font-bold text-slate-700">{{ number_format($rejectedInPeriod + $cancelledInPeriod) }}</div>
-                    <div class="text-[11px] text-slate-400 mt-0.5">{{ $rejectedInPeriod }} Ditolak, {{ $cancelledInPeriod }} Batal</div>
+                <div class="mt-3 min-w-0">
+                    <div class="text-2xl font-bold text-slate-700 truncate">{{ number_format($rejectedInPeriod + $cancelledInPeriod) }}</div>
+                    <div class="text-[11px] text-slate-400 mt-0.5 truncate" title="{{ $rejectedInPeriod }} Ditolak, {{ $cancelledInPeriod }} Batal">{{ $rejectedInPeriod }} Ditolak, {{ $cancelledInPeriod }} Batal</div>
                 </div>
             </div>
         </div>

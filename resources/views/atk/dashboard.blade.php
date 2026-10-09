@@ -96,26 +96,26 @@
     </div>
 
     <!-- Request Status Breakdown -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-4 bg-slate-50 border border-slate-200 rounded-xl p-4">
-        <div class="text-center p-2">
-            <p class="text-xs font-medium text-slate-500">Menunggu</p>
-            <p class="text-lg font-bold text-indigo-700 mt-1">{{ $pendingCount }}</p>
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4">
+        <div class="text-center p-2.5 bg-white rounded-lg border border-slate-100 shadow-2xs min-w-0">
+            <p class="text-xs font-medium text-slate-500 truncate" title="Menunggu">Menunggu</p>
+            <p class="text-lg font-bold text-indigo-700 mt-1 truncate">{{ $pendingCount }}</p>
         </div>
-        <div class="text-center p-2 border-l border-slate-200">
-            <p class="text-xs font-medium text-slate-500">Disetujui</p>
-            <p class="text-lg font-bold text-emerald-700 mt-1">{{ $approvedCount }}</p>
+        <div class="text-center p-2.5 bg-white rounded-lg border border-slate-100 shadow-2xs min-w-0">
+            <p class="text-xs font-medium text-slate-500 truncate" title="Disetujui">Disetujui</p>
+            <p class="text-lg font-bold text-emerald-700 mt-1 truncate">{{ $approvedCount }}</p>
         </div>
-        <div class="text-center p-2 border-l border-slate-200">
-            <p class="text-xs font-medium text-slate-500">Sedang Diproses</p>
-            <p class="text-lg font-bold text-blue-700 mt-1">{{ $processingCount }}</p>
+        <div class="text-center p-2.5 bg-white rounded-lg border border-slate-100 shadow-2xs min-w-0">
+            <p class="text-xs font-medium text-slate-500 truncate" title="Sedang Diproses">Sedang Diproses</p>
+            <p class="text-lg font-bold text-blue-700 mt-1 truncate">{{ $processingCount }}</p>
         </div>
-        <div class="text-center p-2 border-l border-slate-200">
-            <p class="text-xs font-medium text-slate-500">Selesai</p>
-            <p class="text-lg font-bold text-slate-700 mt-1">{{ $completedCount }}</p>
+        <div class="text-center p-2.5 bg-white rounded-lg border border-slate-100 shadow-2xs min-w-0">
+            <p class="text-xs font-medium text-slate-500 truncate" title="Selesai">Selesai</p>
+            <p class="text-lg font-bold text-slate-700 mt-1 truncate">{{ $completedCount }}</p>
         </div>
-        <div class="text-center p-2 border-l border-slate-200">
-            <p class="text-xs font-medium text-slate-500">Ditolak</p>
-            <p class="text-lg font-bold text-rose-600 mt-1">{{ $rejectedCount }}</p>
+        <div class="text-center p-2.5 bg-white rounded-lg border border-slate-100 shadow-2xs min-w-0 col-span-2 sm:col-span-1 md:col-span-1 xl:col-span-1">
+            <p class="text-xs font-medium text-slate-500 truncate" title="Ditolak">Ditolak</p>
+            <p class="text-lg font-bold text-rose-600 mt-1 truncate">{{ $rejectedCount }}</p>
         </div>
     </div>
 

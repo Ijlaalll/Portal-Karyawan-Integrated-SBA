@@ -4,18 +4,18 @@
 
 @section('content')
 <div class="min-h-full">
-    <header class="mb-8">
+    <header class="mb-6 sm:mb-8">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-                <h1 class="text-3xl font-bold leading-tight tracking-tight text-[#0F172A]">
+                <h1 class="text-2xl sm:text-3xl font-bold leading-tight tracking-tight text-[#0F172A]">
                     Dashboard Inspeksi Toilet
                 </h1>
-                <p class="text-sm text-[#475569] mt-1">
+                <p class="text-xs sm:text-sm text-[#475569] mt-1">
                     Selamat datang kembali, {{ auth()->user()->name }} (Role: {{ auth()->user()->role === 'admin' ? 'Admin' : (auth()->user()->role === 'spv' ? 'SPV' : (auth()->user()->role === 'ga' ? 'GA' : 'Petugas Inspeksi')) }})
                 </p>
             </div>
             @if(!auth()->user()->isAdmin() && !auth()->user()->isSpv() && !auth()->user()->isGa())
-                <a href="{{ route('inspections.create') }}" class="rounded bg-[#2563EB] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#1D4ED8] transition-all">
+                <a href="{{ route('inspections.create') }}" class="rounded-xl bg-[#2563EB] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#1D4ED8] transition-all">
                     + Inspeksi Baru
                 </a>
             @endif
@@ -24,20 +24,20 @@
 
     <main>
         @if (session('success'))
-            <div class="mb-6 rounded-md bg-green-50 p-4 border border-green-200 text-sm font-medium text-green-800">
+            <div class="mb-6 rounded-xl bg-green-50 p-4 border border-green-200 text-sm font-medium text-green-800">
                 {{ session('success') }}
             </div>
         @endif
         
         @if (session('error'))
-            <div class="mb-6 rounded-md bg-amber-50 p-4 border border-amber-200 text-sm font-medium text-amber-800">
+            <div class="mb-6 rounded-xl bg-amber-50 p-4 border border-amber-200 text-sm font-medium text-amber-800">
                 {{ session('error') }}
             </div>
         @endif
 
         @if(auth()->user()->isAdmin() || auth()->user()->isSpv() || auth()->user()->isGa())
             <!-- Period Selector Form -->
-            <form method="GET" action="{{ route('toilet_inspection.dashboard') }}" class="flex flex-wrap gap-4 items-center mb-6 bg-white border border-[#E5E7EB] p-4 rounded-lg shadow-sm" onsubmit="sessionStorage.setItem('toilet_inspection_dashboard_scroll', document.querySelector('main')?.scrollTop || 0);">
+            <form method="GET" action="{{ route('toilet_inspection.dashboard') }}" class="flex flex-wrap gap-4 items-center mb-6 bg-white border border-[#E5E7EB] p-4 rounded-xl shadow-sm" onsubmit="sessionStorage.setItem('toilet_inspection_dashboard_scroll', document.querySelector('main')?.scrollTop || 0);">
                 <div>
                     <label for="date_filter" class="block text-xs font-semibold text-[#475569] uppercase tracking-wider mb-1">Periode</label>
                     <select name="date_filter" id="date_filter" onchange="sessionStorage.setItem('toilet_inspection_dashboard_scroll', document.querySelector('main')?.scrollTop || 0); toggleCustomDates(); this.form.submit();"
@@ -71,65 +71,65 @@
         @endif
 
         <!-- Stats Widgets -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">analytics</span>
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 mb-8">
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">analytics</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Total Inspeksi</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $totalInspections }}</p>
-                </div>
-            </div>
-
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-[#FFFBEB] text-[#D97706] flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">pending_actions</span>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Menunggu Ulasan</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $pendingCount }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Total Inspeksi">Total Inspeksi</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 truncate">{{ $totalInspections }}</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-[#F0FDF4] text-[#16A34A] flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">check_circle</span>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-[#FFFBEB] text-[#D97706] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">pending_actions</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Disetujui</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $approvedCount }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Menunggu Ulasan">Menunggu Ulasan</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 truncate">{{ $pendingCount }}</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-lg bg-[#FEF2F2] text-[#DC2626] flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[24px]">cancel</span>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-[#F0FDF4] text-[#16A34A] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">check_circle</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Ditolak</p>
-                    <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $rejectedCount }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Disetujui">Disetujui</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 truncate">{{ $approvedCount }}</p>
+                </div>
+            </div>
+
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-lg bg-[#FEF2F2] text-[#DC2626] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">cancel</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Ditolak">Ditolak</p>
+                    <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 truncate">{{ $rejectedCount }}</p>
                 </div>
             </div>
 
             @if(auth()->user()->isAdmin() || auth()->user()->isSpv() || auth()->user()->isGa())
-                <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                    <div class="p-3 rounded-lg bg-[#FAF5FF] text-[#7C3AED] flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[24px]">percent</span>
+                <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0 col-span-2 sm:col-span-2 md:col-span-1 xl:col-span-1">
+                    <div class="p-2.5 sm:p-3 rounded-lg bg-[#FAF5FF] text-[#7C3AED] flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">percent</span>
                     </div>
-                    <div>
-                        <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Tingkat Persetujuan</p>
-                        <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ isset($approvalRate) ? $approvalRate : 0 }}%</p>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[11px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Tingkat Persetujuan">Tingkat Persetujuan</p>
+                        <p class="text-xl sm:text-2xl font-bold text-[#0F172A] mt-0.5 truncate">{{ isset($approvalRate) ? $approvalRate : 0 }}%</p>
                     </div>
                 </div>
             @else
-                <div class="bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm flex items-center gap-4">
-                    <div class="p-3 rounded-lg bg-[#F8FAFC] text-[#64748B] flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[24px]">person</span>
+                <div class="bg-white border border-[#E5E7EB] rounded-xl p-3.5 sm:p-4 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0 col-span-2 sm:col-span-2 md:col-span-1 xl:col-span-1">
+                    <div class="p-2.5 sm:p-3 rounded-lg bg-[#F8FAFC] text-[#64748B] flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[22px] sm:text-[24px]">person</span>
                     </div>
-                    <div>
-                        <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Role Saya</p>
-                        <p class="text-sm font-bold text-[#0F172A] mt-1">Petugas Inspeksi</p>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[11px] sm:text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Role Saya">Role Saya</p>
+                        <p class="text-sm sm:text-base font-bold text-[#0F172A] mt-0.5 truncate" title="Petugas Inspeksi">Petugas Inspeksi</p>
                     </div>
                 </div>
             @endif
