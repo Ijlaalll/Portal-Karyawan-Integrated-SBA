@@ -5,11 +5,11 @@
 @section('content')
 <div class="min-h-full">
     <header class="mb-8">
-        <div class="flex justify-between items-center">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <h1 class="text-3xl font-bold leading-tight tracking-tight text-[#0F172A]">
                 Manajemen Pengguna
             </h1>
-            <div class="flex items-center gap-2.5">
+            <div class="flex flex-wrap items-center gap-2.5">
                 <button type="button" onclick="openImportModal()" class="rounded bg-white border border-[#CBD5E1] px-3.5 py-2 text-sm font-semibold text-[#334155] shadow-sm hover:bg-slate-50 hover:border-slate-400 transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px] text-[#64748B]">upload_file</span>
                     Import Karyawan
