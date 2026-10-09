@@ -396,6 +396,12 @@
 </div>
 
 <script>
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
     function openStatusModal(userId, userName, actionUrl, actionType) {
         const modal = document.getElementById('status-modal');
         const title = document.getElementById('modal-title');
@@ -405,6 +411,7 @@
         const submitBtn = document.getElementById('modal-submit-btn');
         const iconContainer = document.getElementById('modal-icon-container');
         const icon = document.getElementById('modal-icon');
+        const safeUserName = escapeHtml(userName);
 
         form.action = actionUrl;
 
@@ -413,7 +420,7 @@
             iconContainer.className = 'mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-red-50 sm:mx-0 sm:h-10 sm:w-10';
             icon.className = 'material-symbols-outlined text-red-600 text-[24px]';
             icon.textContent = 'warning';
-            text.innerHTML = 'Apakah Anda yakin ingin menghapus <span class="font-bold text-[#0F172A]">' + userName + '</span> secara permanen? Tindakan ini hanya tersedia karena pengguna ini tidak memiliki riwayat aktivitas. Tindakan ini tidak dapat dibatalkan.';
+            text.innerHTML = 'Apakah Anda yakin ingin menghapus <span class="font-bold text-[#0F172A]">' + safeUserName + '</span> secara permanen? Tindakan ini hanya tersedia karena pengguna ini tidak memiliki riwayat aktivitas. Tindakan ini tidak dapat dibatalkan.';
             methodInput.value = 'DELETE';
             submitBtn.textContent = 'Hapus Pengguna';
             submitBtn.className = 'inline-flex w-full justify-center rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto transition-colors';
@@ -422,7 +429,7 @@
             iconContainer.className = 'mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-amber-50 sm:mx-0 sm:h-10 sm:w-10';
             icon.className = 'material-symbols-outlined text-amber-600 text-[24px]';
             icon.textContent = 'block';
-            text.innerHTML = 'Apakah Anda yakin ingin menonaktifkan <span class="font-bold text-[#0F172A]">' + userName + '</span>? Hal ini akan mencegah pengguna untuk masuk ke sistem, tetapi data riwayat mereka akan tetap disimpan.';
+            text.innerHTML = 'Apakah Anda yakin ingin menonaktifkan <span class="font-bold text-[#0F172A]">' + safeUserName + '</span>? Hal ini akan mencegah pengguna untuk masuk ke sistem, tetapi data riwayat mereka akan tetap disimpan.';
             methodInput.value = 'POST';
             submitBtn.textContent = 'Nonaktifkan';
             submitBtn.className = 'inline-flex w-full justify-center rounded bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#D97706] sm:w-auto transition-colors';
@@ -431,7 +438,7 @@
             iconContainer.className = 'mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-50 sm:mx-0 sm:h-10 sm:w-10';
             icon.className = 'material-symbols-outlined text-green-600 text-[24px]';
             icon.textContent = 'check_circle';
-            text.innerHTML = 'Apakah Anda yakin ingin mengaktifkan <span class="font-bold text-[#0F172A]">' + userName + '</span>? Hal ini akan memulihkan akses pengguna ke aplikasi.';
+            text.innerHTML = 'Apakah Anda yakin ingin mengaktifkan <span class="font-bold text-[#0F172A]">' + safeUserName + '</span>? Hal ini akan memulihkan akses pengguna ke aplikasi.';
             methodInput.value = 'POST';
             submitBtn.textContent = 'Aktifkan';
             submitBtn.className = 'inline-flex w-full justify-center rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:w-auto transition-colors';

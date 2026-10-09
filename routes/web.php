@@ -18,7 +18,7 @@ Route::get('/', function () {
 
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Authenticated User Module Selection & Global Routes
@@ -39,7 +39,7 @@ Route::middleware(['auth', 'check_status'])->group(function () {
         return redirect()->back();
     })->name('notifications.read');
 
-    Route::match(['get', 'post'], '/notifications/read-all', function () {
+    Route::post('/notifications/read-all', function () {
         \App\Models\Notification::where('user_id', auth()->id())
             ->update(['is_read' => true]);
         return redirect()->back()->with('success', 'Semua notifikasi telah ditandai sebagai dibaca.');

@@ -101,7 +101,7 @@ if not exist "%~dp0bootstrap\cache" mkdir "%~dp0bootstrap\cache"
 del /q /f "%~dp0bootstrap\cache\*.php" 2>nul
 "%PHP_EXE%" artisan migrate --force
 "%PHP_EXE%" artisan optimize:clear >nul 2>&1
-start "" /b cmd /c "cd /d "%~dp0" && "%PHP_EXE%" artisan serve --host=0.0.0.0 --port=8080 > "%~dp0storage\logs\serve.log" 2>&1"
+start "" /b cmd /c "cd /d "%~dp0" && "%PHP_EXE%" artisan serve --host=127.0.0.1 --port=8080 > "%~dp0storage\logs\serve.log" 2>&1"
 
 REM 5. Jalankan Caddy HTTPS Reverse Proxy di Port 8443 (Untuk Scanner Kamera QR SIK)
 echo [5/5] Menjalankan HTTPS Gateway (Caddy) di port 8443...

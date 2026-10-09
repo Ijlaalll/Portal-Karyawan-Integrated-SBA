@@ -340,6 +340,12 @@
         localStorage.setItem('atk_cart', JSON.stringify(cart));
     }
 
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
     function updateCartUI() {
         const container = document.getElementById('cart-items-container');
         const badgeHeader = document.getElementById('cart-badge-header');
@@ -375,29 +381,36 @@
         submitBtn.disabled = false;
         let html = '<div class="space-y-4">';
         cart.forEach(item => {
+            const safeName = escapeHtml(item.name || '');
+            const safeVariantName = escapeHtml(item.variant_name || '');
+            const safeUnit = escapeHtml(item.unit || '');
+            const safeStock = escapeHtml(String(item.stock || 0));
+            const safeQty = escapeHtml(String(item.quantity || 0));
+            const safeVariantId = escapeHtml(String(item.variant_id || ''));
+
             html += `
                 <div class="p-4 border border-slate-200 rounded-xl flex items-center justify-between gap-3 text-xs bg-white shadow-sm hover:shadow transition-all">
                     <div class="flex-1 min-w-0">
-                        <p class="font-bold text-[#0F172A] truncate text-sm" title="${item.name}">${item.name}</p>
-                        <p class="text-slate-500 font-semibold mt-0.5">${item.variant_name}</p>
-                        <p class="text-[10px] text-slate-400 mt-1.5 font-bold bg-slate-50 inline-block px-2 py-0.5 rounded border border-slate-100">Stok: ${item.stock} ${item.unit}</p>
+                        <p class="font-bold text-[#0F172A] truncate text-sm" title="${safeName}">${safeName}</p>
+                        <p class="text-slate-500 font-semibold mt-0.5">${safeVariantName}</p>
+                        <p class="text-[10px] text-slate-400 mt-1.5 font-bold bg-slate-50 inline-block px-2 py-0.5 rounded border border-slate-100">Stok: ${safeStock} ${safeUnit}</p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
                             <!-- Decrement button -->
-                            <button type="button" onclick="updateQty('${item.variant_id}', -1)" 
+                            <button type="button" onclick="updateQty('${safeVariantId}', -1)" 
                                 class="h-7 w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
                                 <span class="material-symbols-outlined text-[14px]">remove</span>
                             </button>
-                            <span class="w-7 text-center font-bold text-slate-800 text-xs select-none">${item.quantity}</span>
+                            <span class="w-7 text-center font-bold text-slate-800 text-xs select-none">${safeQty}</span>
                             <!-- Increment button -->
-                            <button type="button" onclick="updateQty('${item.variant_id}', 1)" 
+                            <button type="button" onclick="updateQty('${safeVariantId}', 1)" 
                                 class="h-7 w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
                                 <span class="material-symbols-outlined text-[14px]">add</span>
                             </button>
                         </div>
                         <!-- Remove button -->
-                        <button type="button" onclick="removeFromCart('${item.variant_id}')" 
+                        <button type="button" onclick="removeFromCart('${safeVariantId}')" 
                             class="h-7 w-7 rounded-lg text-red-500 bg-red-50 hover:bg-red-100 flex items-center justify-center transition-colors focus:outline-none">
                             <span class="material-symbols-outlined text-[16px]">delete</span>
                         </button>

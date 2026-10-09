@@ -212,6 +212,12 @@
 </div>
 
 <script>
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
     function openDetailModal(button) {
         const req = JSON.parse(button.getAttribute('data-request'));
         document.getElementById('detail-title').textContent = `Lacak Permintaan ${req.request_number}`;
@@ -229,13 +235,19 @@
         const itemsList = document.getElementById('detail-items-list');
         let itemsHtml = '';
         req.items.forEach(item => {
+            const itemName = escapeHtml(item.variant?.item?.name || '');
+            const variantName = escapeHtml(item.variant?.name || '');
+            const sku = escapeHtml(item.variant?.sku || '');
+            const unit = escapeHtml(item.variant?.unit || '');
+            const qty = escapeHtml(String(item.quantity ?? 0));
+
             itemsHtml += `
                 <div class="p-4 border border-slate-100 rounded-xl flex items-center justify-between bg-white shadow-sm hover:shadow transition-shadow">
                     <div class="min-w-0 flex-1">
-                        <p class="font-bold text-[#0F172A] text-sm truncate" title="${item.variant.item.name}">${item.variant.item.name}</p>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${item.variant.name} <span class="font-mono text-slate-300">|</span> ${item.variant.sku}</p>
+                        <p class="font-bold text-[#0F172A] text-sm truncate" title="${itemName}">${itemName}</p>
+                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">${variantName} <span class="font-mono text-slate-300">|</span> ${sku}</p>
                     </div>
-                    <span class="font-bold text-[#2563EB] bg-blue-50 border border-blue-100/50 px-3 py-1.5 rounded-xl text-xs shrink-0 ml-4">x${item.quantity} ${item.variant.unit}</span>
+                    <span class="font-bold text-[#2563EB] bg-blue-50 border border-blue-100/50 px-3 py-1.5 rounded-xl text-xs shrink-0 ml-4">x${qty} ${unit}</span>
                 </div>
             `;
         });
@@ -302,6 +314,9 @@
 
             const colorClass = statusColors[hist.status] || 'bg-slate-400 text-white';
             const iconName = icons[hist.status] || 'info';
+            const statusUpper = escapeHtml((hist.status || '').toUpperCase());
+            const actorName = escapeHtml(hist.actor?.name || 'Sistem');
+            const notes = escapeHtml(hist.notes || '');
 
             timelineHtml += `
                 <li>
@@ -314,9 +329,9 @@
                                 </span>
                             </div>
                             <div class="flex-1 min-w-0 pt-1">
-                                <p class="text-xs font-bold text-slate-800">${hist.status.toUpperCase()}</p>
-                                <p class="text-[9px] text-slate-400 font-semibold mt-0.5">Oleh ${hist.actor.name} <span class="font-mono text-slate-300">|</span> ${histDate}</p>
-                                <p class="text-[10px] text-slate-600 italic mt-1.5 bg-slate-50/50 border border-slate-100 p-2.5 rounded-lg leading-relaxed">"${hist.notes}"</p>
+                                <p class="text-xs font-bold text-slate-800">${statusUpper}</p>
+                                <p class="text-[9px] text-slate-400 font-semibold mt-0.5">Oleh ${actorName} <span class="font-mono text-slate-300">|</span> ${histDate}</p>
+                                <p class="text-[10px] text-slate-600 italic mt-1.5 bg-slate-50/50 border border-slate-100 p-2.5 rounded-lg leading-relaxed">"${notes}"</p>
                             </div>
                         </div>
                     </div>
