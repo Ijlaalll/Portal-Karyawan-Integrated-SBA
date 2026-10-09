@@ -160,59 +160,59 @@
                         </h3>
                     </div>
                     @if ($user->isGa() || $user->isIt())
-                        <div class="grid grid-cols-2 sm:grid-cols-6 gap-4">
-                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
+                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-[#0F172A]">{{ $meetingRoomStats['total'] }}</p>
-                                <p class="text-[10px] font-bold text-[#64748B] uppercase mt-0.5">Total Tugas</p>
+                                <p class="text-[10px] font-bold text-[#64748B] uppercase mt-0.5 truncate" title="Total Tugas">Total Tugas</p>
                             </div>
-                            <div class="bg-amber-50 border border-amber-100 p-3 rounded-lg text-center">
+                            <div class="bg-amber-50 border border-amber-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-amber-700">{{ $meetingRoomStats['pending'] }}</p>
-                                <p class="text-[10px] font-bold text-amber-600 uppercase mt-0.5">Menunggu</p>
+                                <p class="text-[10px] font-bold text-amber-600 uppercase mt-0.5 truncate" title="Menunggu">Menunggu</p>
                             </div>
-                            <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-lg text-center">
+                            <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-indigo-700">{{ $meetingRoomStats['in_progress'] }}</p>
-                                <p class="text-[10px] font-bold text-indigo-600 uppercase mt-0.5">Dikerjakan</p>
+                                <p class="text-[10px] font-bold text-indigo-600 uppercase mt-0.5 truncate" title="Dikerjakan">Dikerjakan</p>
                             </div>
-                            <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center">
+                            <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-green-700">{{ $meetingRoomStats['ready'] }}</p>
-                                <p class="text-[10px] font-bold text-green-600 uppercase mt-0.5">Siap</p>
+                                <p class="text-[10px] font-bold text-green-600 uppercase mt-0.5 truncate" title="Siap">Siap</p>
                             </div>
-                            <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center">
+                            <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-red-700">{{ $meetingRoomStats['not_ready'] }}</p>
-                                <p class="text-[10px] font-bold text-red-600 uppercase mt-0.5">Tidak Siap</p>
+                                <p class="text-[10px] font-bold text-red-600 uppercase mt-0.5 truncate" title="Tidak Siap">Tidak Siap</p>
                             </div>
-                            <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg text-center">
+                            <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-blue-700">{{ $meetingRoomStats['completed'] }}</p>
-                                <p class="text-[10px] font-bold text-blue-600 uppercase mt-0.5">Selesai</p>
+                                <p class="text-[10px] font-bold text-blue-600 uppercase mt-0.5 truncate" title="Selesai">Selesai</p>
                             </div>
                         </div>
                     @else
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-[#0F172A]">{{ $meetingRoomStats['total'] }}</p>
-                                <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5">Total Pemesanan</p>
+                                <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5 truncate" title="Total Pemesanan">Total Pemesanan</p>
                             </div>
-                            <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center">
+                            <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-green-700">{{ $meetingRoomStats['approved'] }}</p>
-                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5">Disetujui</p>
+                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5 truncate" title="Disetujui">Disetujui</p>
                             </div>
                             @if($user->isAdmin())
-                                <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center">
+                                <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center min-w-0">
                                     <p class="text-2xl font-bold text-red-700">{{ $meetingRoomStats['rejected'] }}</p>
-                                    <p class="text-xs font-semibold text-red-600 uppercase mt-0.5">Ditolak</p>
+                                    <p class="text-xs font-semibold text-red-600 uppercase mt-0.5 truncate" title="Ditolak">Ditolak</p>
                                 </div>
-                                <div class="bg-amber-50 border border-amber-100 p-3 rounded-lg text-center">
+                                <div class="bg-amber-50 border border-amber-100 p-3 rounded-lg text-center min-w-0">
                                     <p class="text-2xl font-bold text-amber-700">{{ $meetingRoomStats['pending'] }}</p>
-                                    <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5">Menunggu</p>
+                                    <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5 truncate" title="Menunggu">Menunggu</p>
                                 </div>
                             @else
-                                <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center">
+                                <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center min-w-0">
                                     <p class="text-2xl font-bold text-red-700">{{ $meetingRoomStats['cancelled'] }}</p>
-                                    <p class="text-xs font-semibold text-red-600 uppercase mt-0.5">Dibatalkan</p>
+                                    <p class="text-xs font-semibold text-red-600 uppercase mt-0.5 truncate" title="Dibatalkan">Dibatalkan</p>
                                 </div>
-                                <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg text-center">
+                                <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg text-center min-w-0">
                                     <p class="text-2xl font-bold text-blue-700">{{ $meetingRoomStats['completed'] }}</p>
-                                    <p class="text-xs font-semibold text-blue-600 uppercase mt-0.5">Selesai</p>
+                                    <p class="text-xs font-semibold text-blue-600 uppercase mt-0.5 truncate" title="Selesai">Selesai</p>
                                 </div>
                             @endif
                         </div>
@@ -233,10 +233,10 @@
                             @endif
                         </h3>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center min-w-0">
                             <p class="text-2xl font-bold text-[#0F172A]">{{ $toiletStats['total'] }}</p>
-                            <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5">
+                            <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5 truncate" title="{{ $user->isAdmin() ? 'Total Inspeksi' : ($user->isSpv() ? 'Total Ulasan' : 'Total Inspeksi') }}">
                                 @if ($user->isAdmin())
                                     Total Inspeksi
                                 @elseif ($user->isSpv())
@@ -246,9 +246,9 @@
                                 @endif
                             </p>
                         </div>
-                        <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center">
+                        <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center min-w-0">
                             <p class="text-2xl font-bold text-green-700">{{ $toiletStats['approved'] }}</p>
-                            <p class="text-xs font-semibold text-green-600 uppercase mt-0.5">
+                            <p class="text-xs font-semibold text-green-600 uppercase mt-0.5 truncate" title="{{ $user->isAdmin() ? 'Disetujui oleh SPV' : 'Disetujui' }}">
                                 @if ($user->isAdmin())
                                     Disetujui oleh SPV
                                 @else
@@ -256,9 +256,9 @@
                                 @endif
                             </p>
                         </div>
-                        <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center">
+                        <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center min-w-0">
                             <p class="text-2xl font-bold text-red-700">{{ $toiletStats['rejected'] }}</p>
-                            <p class="text-xs font-semibold text-red-600 uppercase mt-0.5">
+                            <p class="text-xs font-semibold text-red-600 uppercase mt-0.5 truncate" title="{{ $user->isAdmin() ? 'Ditolak oleh SPV' : 'Ditolak' }}">
                                 @if ($user->isAdmin())
                                     Ditolak oleh SPV
                                 @else
@@ -266,9 +266,9 @@
                                 @endif
                             </p>
                         </div>
-                        <div class="bg-amber-50 border border-amber-100 p-3 rounded-lg text-center">
+                        <div class="bg-amber-50 border border-amber-100 p-3 rounded-lg text-center min-w-0">
                             <p class="text-2xl font-bold text-amber-700">{{ $toiletStats['pending'] }}</p>
-                            <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5">
+                            <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5 truncate" title="{{ $user->isAdmin() ? 'Menunggu Ulasan' : ($user->isSpv() ? 'Menunggu Ulasan' : 'Menunggu') }}">
                                 @if ($user->isAdmin())
                                     Menunggu Ulasan
                                 @elseif ($user->isSpv())
@@ -297,36 +297,36 @@
                             @endif
                         </h3>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center min-w-0">
                             <p class="text-2xl font-bold text-[#0F172A]">{{ $atkStats['total'] }}</p>
-                            <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5">Total Request</p>
+                            <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5 truncate" title="Total Request">Total Request</p>
                         </div>
                         @if ($user->isGa())
-                            <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-lg text-center">
+                            <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-indigo-700">{{ $atkStats['disetujui'] }}</p>
-                                <p class="text-xs font-semibold text-indigo-600 uppercase mt-0.5">Disetujui</p>
+                                <p class="text-xs font-semibold text-indigo-600 uppercase mt-0.5 truncate" title="Disetujui">Disetujui</p>
                             </div>
-                            <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg text-center">
+                            <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-blue-700">{{ $atkStats['diproses'] }}</p>
-                                <p class="text-xs font-semibold text-blue-600 uppercase mt-0.5">Diproses</p>
+                                <p class="text-xs font-semibold text-blue-600 uppercase mt-0.5 truncate" title="Diproses">Diproses</p>
                             </div>
-                            <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center">
+                            <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-green-700">{{ $atkStats['selesai'] }}</p>
-                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5">Selesai</p>
+                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5 truncate" title="Selesai">Selesai</p>
                             </div>
                         @else
-                            <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center">
+                            <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-green-700">{{ $atkStats['disetujui'] + $atkStats['selesai'] + ($atkStats['diproses'] ?? 0) }}</p>
-                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5">Disetujui/Selesai</p>
+                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5 truncate" title="Disetujui/Selesai">Disetujui/Selesai</p>
                             </div>
-                            <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center">
+                            <div class="bg-red-50 border border-red-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-red-700">{{ $atkStats['ditolak'] + $atkStats['dibatalkan'] }}</p>
-                                <p class="text-xs font-semibold text-red-600 uppercase mt-0.5">Ditolak/Batal</p>
+                                <p class="text-xs font-semibold text-red-600 uppercase mt-0.5 truncate" title="Ditolak/Batal">Ditolak/Batal</p>
                             </div>
-                            <div class="bg-amber-50 border border-amber-100 p-3 rounded-lg text-center">
+                            <div class="bg-amber-50 border border-amber-100 p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-amber-700">{{ $atkStats['diajukan'] }}</p>
-                                <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5">Menunggu</p>
+                                <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5 truncate" title="Menunggu">Menunggu</p>
                             </div>
                         @endif
                     </div>
@@ -351,56 +351,56 @@
                         </h3>
                     </div>
                     @if ($user->isSecurity())
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-[#0F172A]">{{ $sikStats['total'] }}</p>
-                                <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5">Total Scan</p>
+                                <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5 truncate" title="Total Scan">Total Scan</p>
                             </div>
-                            <div class="p-3 rounded-lg text-center" style="background-color: #FAF5FF; border: 1px solid #E9D5FF;">
+                            <div class="p-3 rounded-lg text-center min-w-0" style="background-color: #FAF5FF; border: 1px solid #E9D5FF;">
                                 <p class="text-2xl font-bold text-purple-700">{{ $sikStats['exit'] }}</p>
-                                <p class="text-xs font-semibold text-purple-600 uppercase mt-0.5">Scan Keluar</p>
+                                <p class="text-xs font-semibold text-purple-600 uppercase mt-0.5 truncate" title="Scan Keluar">Scan Keluar</p>
                             </div>
-                            <div class="p-3 rounded-lg text-center" style="background-color: #F0FDF4; border: 1px solid #DCFCE7;">
+                            <div class="p-3 rounded-lg text-center min-w-0" style="background-color: #F0FDF4; border: 1px solid #DCFCE7;">
                                 <p class="text-2xl font-bold text-green-700">{{ $sikStats['return'] }}</p>
-                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5">Scan Kembali</p>
+                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5 truncate" title="Scan Kembali">Scan Kembali</p>
                             </div>
                         </div>
                     @elseif ($user->isSikApprover())
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-[#0F172A]">{{ $sikStats['total'] }}</p>
-                                <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5">Total Diajukan</p>
+                                <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5 truncate" title="Total Diajukan">Total Diajukan</p>
                             </div>
-                            <div class="p-3 rounded-lg text-center" style="background-color: #F0FDF4; border: 1px solid #DCFCE7;">
+                            <div class="p-3 rounded-lg text-center min-w-0" style="background-color: #F0FDF4; border: 1px solid #DCFCE7;">
                                 <p class="text-2xl font-bold text-green-700">{{ $sikStats['approved'] }}</p>
-                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5">Disetujui</p>
+                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5 truncate" title="Disetujui">Disetujui</p>
                             </div>
-                            <div class="p-3 rounded-lg text-center" style="background-color: #FFFBEB; border: 1px solid #FEF3C7;">
+                            <div class="p-3 rounded-lg text-center min-w-0" style="background-color: #FFFBEB; border: 1px solid #FEF3C7;">
                                 <p class="text-2xl font-bold text-amber-700">{{ $sikStats['pending'] }}</p>
-                                <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5">Menunggu</p>
+                                <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5 truncate" title="Menunggu">Menunggu</p>
                             </div>
-                            <div class="p-3 rounded-lg text-center" style="background-color: #FEF2F2; border: 1px solid #FEE2E2;">
+                            <div class="p-3 rounded-lg text-center min-w-0" style="background-color: #FEF2F2; border: 1px solid #FEE2E2;">
                                 <p class="text-2xl font-bold text-red-700">{{ $sikStats['rejected'] }}</p>
-                                <p class="text-xs font-semibold text-red-600 uppercase mt-0.5">Ditolak</p>
+                                <p class="text-xs font-semibold text-red-600 uppercase mt-0.5 truncate" title="Ditolak">Ditolak</p>
                             </div>
                         </div>
                     @else
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="bg-[#F8FAFC] border border-[#E5E7EB] p-3 rounded-lg text-center min-w-0">
                                 <p class="text-2xl font-bold text-[#0F172A]">{{ $sikStats['total'] }}</p>
-                                <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5">Total Izin</p>
+                                <p class="text-xs font-semibold text-[#64748B] uppercase mt-0.5 truncate" title="Total Izin">Total Izin</p>
                             </div>
-                            <div class="p-3 rounded-lg text-center" style="background-color: #FAF5FF; border: 1px solid #E9D5FF;">
+                            <div class="p-3 rounded-lg text-center min-w-0" style="background-color: #FAF5FF; border: 1px solid #E9D5FF;">
                                 <p class="text-2xl font-bold text-purple-700">{{ $sikStats['outside'] }}</p>
-                                <p class="text-xs font-semibold text-purple-600 uppercase mt-0.5">Di Luar</p>
+                                <p class="text-xs font-semibold text-purple-600 uppercase mt-0.5 truncate" title="Di Luar">Di Luar</p>
                             </div>
-                            <div class="p-3 rounded-lg text-center" style="background-color: #F0FDF4; border: 1px solid #DCFCE7;">
+                            <div class="p-3 rounded-lg text-center min-w-0" style="background-color: #F0FDF4; border: 1px solid #DCFCE7;">
                                 <p class="text-2xl font-bold text-green-700">{{ $sikStats['returned'] }}</p>
-                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5">Selesai</p>
+                                <p class="text-xs font-semibold text-green-600 uppercase mt-0.5 truncate" title="Selesai">Selesai</p>
                             </div>
-                            <div class="p-3 rounded-lg text-center" style="background-color: #FFFBEB; border: 1px solid #FEF3C7;">
+                            <div class="p-3 rounded-lg text-center min-w-0" style="background-color: #FFFBEB; border: 1px solid #FEF3C7;">
                                 <p class="text-2xl font-bold text-amber-700">{{ $sikStats['pending'] }}</p>
-                                <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5">Menunggu</p>
+                                <p class="text-xs font-semibold text-amber-600 uppercase mt-0.5 truncate" title="Menunggu">Menunggu</p>
                             </div>
                         </div>
                     @endif

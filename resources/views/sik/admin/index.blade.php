@@ -30,9 +30,9 @@
 
     <!-- Filter & Search Bar -->
     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <form action="{{ route('admin.sik.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <form action="{{ route('admin.sik.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
             <!-- Search -->
-            <div class="lg:col-span-2">
+            <div class="sm:col-span-2 lg:col-span-3 xl:col-span-2">
                 <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Cari SIK</label>
                 <div class="relative">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">

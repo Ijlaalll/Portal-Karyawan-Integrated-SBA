@@ -45,51 +45,51 @@
     @endif
 
     <!-- Metric Card Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <!-- Card 1: Available Stock -->
-        <div class="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-all">
-            <div class="space-y-2">
-                <span class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Total Stok Tersedia</span>
-                <p class="text-3xl font-bold text-[#0F172A]">{{ $availableStock }}</p>
-                <p class="text-[11px] text-slate-500 font-medium">Dari {{ $totalVariants }} varian aktif</p>
+        <div class="bg-white border border-[#E5E7EB] rounded-xl p-5 sm:p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-all min-w-0">
+            <div class="space-y-1.5 min-w-0 flex-1">
+                <span class="text-xs font-semibold text-[#64748B] uppercase tracking-wider block truncate" title="Total Stok Tersedia">Total Stok Tersedia</span>
+                <p class="text-2xl sm:text-3xl font-bold text-[#0F172A] truncate">{{ $availableStock }}</p>
+                <p class="text-[11px] text-slate-500 font-medium truncate">Dari {{ $totalVariants }} varian aktif</p>
             </div>
-            <div class="h-12 w-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <div class="h-12 w-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 ml-3">
                 <span class="material-symbols-outlined text-[28px]">inventory</span>
             </div>
         </div>
 
         <!-- Card 2: Low Stock -->
-        <div class="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-all">
-            <div class="space-y-2">
-                <span class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Stok Menipis</span>
-                <p class="text-3xl font-bold text-amber-600">{{ $lowStockCount }}</p>
-                <p class="text-[11px] text-amber-500 font-semibold">Perlu restock segera</p>
+        <div class="bg-white border border-[#E5E7EB] rounded-xl p-5 sm:p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-all min-w-0">
+            <div class="space-y-1.5 min-w-0 flex-1">
+                <span class="text-xs font-semibold text-[#64748B] uppercase tracking-wider block truncate" title="Stok Menipis">Stok Menipis</span>
+                <p class="text-2xl sm:text-3xl font-bold text-amber-600 truncate">{{ $lowStockCount }}</p>
+                <p class="text-[11px] text-amber-500 font-semibold truncate">Perlu restock segera</p>
             </div>
-            <div class="h-12 w-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <div class="h-12 w-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 ml-3">
                 <span class="material-symbols-outlined text-[28px]">warning</span>
             </div>
         </div>
 
         <!-- Card 3: Out of Stock -->
-        <div class="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-all">
-            <div class="space-y-2">
-                <span class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Stok Habis</span>
-                <p class="text-3xl font-bold text-red-600">{{ $outOfStockCount }}</p>
-                <p class="text-[11px] text-red-500 font-semibold">Stok kosong</p>
+        <div class="bg-white border border-[#E5E7EB] rounded-xl p-5 sm:p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-all min-w-0">
+            <div class="space-y-1.5 min-w-0 flex-1">
+                <span class="text-xs font-semibold text-[#64748B] uppercase tracking-wider block truncate" title="Stok Habis">Stok Habis</span>
+                <p class="text-2xl sm:text-3xl font-bold text-red-600 truncate">{{ $outOfStockCount }}</p>
+                <p class="text-[11px] text-red-500 font-semibold truncate">Stok kosong</p>
             </div>
-            <div class="h-12 w-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+            <div class="h-12 w-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0 ml-3">
                 <span class="material-symbols-outlined text-[28px]">production_quantity_limits</span>
             </div>
         </div>
 
         <!-- Card 4: Request in Period -->
-        <div class="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-all">
-            <div class="space-y-2">
-                <span class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Request Periode Ini</span>
-                <p class="text-3xl font-bold text-indigo-600">{{ $totalRequestsInPeriod }}</p>
-                <p class="text-[11px] text-indigo-500 font-semibold">{{ $pendingCount }} Menunggu ({{ $totalPendingBacklog }} Total)</p>
+        <div class="bg-white border border-[#E5E7EB] rounded-xl p-5 sm:p-6 shadow-sm flex items-center justify-between hover:shadow-md transition-all min-w-0">
+            <div class="space-y-1.5 min-w-0 flex-1">
+                <span class="text-xs font-semibold text-[#64748B] uppercase tracking-wider block truncate" title="Request Periode Ini">Request Periode Ini</span>
+                <p class="text-2xl sm:text-3xl font-bold text-indigo-600 truncate">{{ $totalRequestsInPeriod }}</p>
+                <p class="text-[11px] text-indigo-500 font-semibold truncate" title="{{ $pendingCount }} Menunggu ({{ $totalPendingBacklog }} Total)">{{ $pendingCount }} Menunggu ({{ $totalPendingBacklog }} Total)</p>
             </div>
-            <div class="h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <div class="h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 ml-3">
                 <span class="material-symbols-outlined text-[28px]">pending_actions</span>
             </div>
         </div>

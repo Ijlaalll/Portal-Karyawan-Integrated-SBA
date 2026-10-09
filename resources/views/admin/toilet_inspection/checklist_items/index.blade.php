@@ -27,7 +27,7 @@
         </div>
     @endif
 
-    <div class="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden shadow-sm">
+    <div class="bg-white border border-[#E5E7EB] rounded-2xl overflow-x-auto shadow-sm">
         <table class="min-w-full divide-y divide-[#E5E7EB]">
             <thead class="bg-[#F9FAFB]">
                 <tr>

@@ -103,40 +103,42 @@
     @endif
 
     <!-- Checklist Results and Evidence Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div class="grid grid-cols-1 xl:grid-cols-5 gap-6">
         <!-- Checklist Table -->
-        <div class="bg-white border border-[#E5E7EB] rounded-lg shadow-sm col-span-3 overflow-hidden">
+        <div class="bg-white border border-[#E5E7EB] rounded-lg shadow-sm col-span-1 xl:col-span-3 min-w-0 overflow-hidden">
             <div class="px-6 py-4 border-b border-[#E5E7EB]">
                 <h3 class="text-base font-bold text-[#0F172A]">Detail Checklist</h3>
             </div>
-            <table class="min-w-full divide-y divide-[#E5E7EB]">
-                <thead class="bg-[#F9FAFB]">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-[#475569] uppercase">Item</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-[#475569] uppercase">Hasil</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-[#475569] uppercase">Keterangan</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-[#E5E7EB] text-sm text-[#0F172A]">
-                    @foreach ($inspection->results as $res)
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-[#E5E7EB]">
+                    <thead class="bg-[#F9FAFB]">
                         <tr>
-                            <td class="px-6 py-4 font-medium">{{ $res->checklistItem->name }}</td>
-                            <td class="px-6 py-4">
-                                @if ($res->is_ok)
-                                    <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/20">✓ OK</span>
-                                @else
-                                    <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 ring-1 ring-inset ring-red-600/20">✗ Tidak OK</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-[#475569]">{{ $res->remarks ?: '-' }}</td>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-[#475569] uppercase">Item</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-[#475569] uppercase">Hasil</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-[#475569] uppercase">Keterangan</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-[#E5E7EB] text-sm text-[#0F172A]">
+                        @foreach ($inspection->results as $res)
+                            <tr>
+                                <td class="px-6 py-4 font-medium">{{ $res->checklistItem->name }}</td>
+                                <td class="px-6 py-4">
+                                    @if ($res->is_ok)
+                                        <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/20">✓ OK</span>
+                                    @else
+                                        <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 ring-1 ring-inset ring-red-600/20">✗ Tidak OK</span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-[#475569]">{{ $res->remarks ?: '-' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Evidence Photo & Inspector Notes -->
-        <div class="col-span-2 space-y-6">
+        <div class="col-span-1 xl:col-span-2 min-w-0 space-y-6">
             <!-- Photo Evidence Card -->
             <div class="bg-white border border-[#E5E7EB] rounded-lg p-6 shadow-sm space-y-4">
                 <h3 class="text-base font-bold text-[#0F172A]">Foto Bukti</h3>

@@ -241,21 +241,21 @@
 
     <!-- Summary Metrics (Printed and Displayed) -->
     <div class="stats-grid-print grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="stat-card-print bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm">
-            <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Total Inspeksi</p>
-            <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $totalInspections }}</p>
+        <div class="stat-card-print bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm min-w-0">
+            <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Total Inspeksi">Total Inspeksi</p>
+            <p class="text-2xl font-bold text-[#0F172A] mt-0.5 truncate">{{ $totalInspections }}</p>
         </div>
-        <div class="stat-card-print bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm">
-            <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Menunggu Ulasan</p>
-            <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $pendingCount }}</p>
+        <div class="stat-card-print bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm min-w-0">
+            <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Menunggu Ulasan">Menunggu Ulasan</p>
+            <p class="text-2xl font-bold text-[#0F172A] mt-0.5 truncate">{{ $pendingCount }}</p>
         </div>
-        <div class="stat-card-print bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm">
-            <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Disetujui</p>
-            <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $approvedCount }}</p>
+        <div class="stat-card-print bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm min-w-0">
+            <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Disetujui">Disetujui</p>
+            <p class="text-2xl font-bold text-[#0F172A] mt-0.5 truncate">{{ $approvedCount }}</p>
         </div>
-        <div class="stat-card-print bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm">
-            <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Ditolak</p>
-            <p class="text-2xl font-bold text-[#0F172A] mt-0.5">{{ $rejectedCount }}</p>
+        <div class="stat-card-print bg-white border border-[#E5E7EB] rounded-lg p-4 shadow-sm min-w-0">
+            <p class="text-xs font-semibold text-[#64748B] uppercase tracking-wider truncate" title="Ditolak">Ditolak</p>
+            <p class="text-2xl font-bold text-[#0F172A] mt-0.5 truncate">{{ $rejectedCount }}</p>
         </div>
     </div>
 

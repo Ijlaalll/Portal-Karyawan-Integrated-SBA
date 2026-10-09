@@ -41,33 +41,33 @@
 
         <!-- Summary Metric Cards -->
         <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3.5 sm:gap-4 mb-6">
-            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow" style="border-left: 4px solid #2563EB !important;">
-                <p class="text-[11px] font-bold text-[#2563EB] uppercase tracking-wider">Total SIK</p>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow min-w-0" style="border-left: 4px solid #2563EB !important;">
+                <p class="text-[11px] font-bold text-[#2563EB] uppercase tracking-wider truncate" title="Total SIK">Total SIK</p>
                 <p class="text-2xl font-bold text-[#0F172A] mt-1.5">{{ $totalCount }}</p>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow" style="border-left: 4px solid #64748B !important;">
-                <p class="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Draft</p>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow min-w-0" style="border-left: 4px solid #64748B !important;">
+                <p class="text-[11px] font-bold text-slate-600 uppercase tracking-wider truncate" title="Draft">Draft</p>
                 <p class="text-2xl font-bold text-slate-700 mt-1.5">{{ $draftCount }}</p>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow" style="border-left: 4px solid #F59E0B !important;">
-                <p class="text-[11px] font-bold text-amber-700 uppercase tracking-wider">Menunggu</p>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow min-w-0" style="border-left: 4px solid #F59E0B !important;">
+                <p class="text-[11px] font-bold text-amber-700 uppercase tracking-wider truncate" title="Menunggu">Menunggu</p>
                 <p class="text-2xl font-bold text-amber-600 mt-1.5">{{ $pendingCount }}</p>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow" style="border-left: 4px solid #4F46E5 !important;">
-                <p class="text-[11px] font-bold text-indigo-700 uppercase tracking-wider">Disetujui</p>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow min-w-0" style="border-left: 4px solid #4F46E5 !important;">
+                <p class="text-[11px] font-bold text-indigo-700 uppercase tracking-wider truncate" title="Disetujui">Disetujui</p>
                 <p class="text-2xl font-bold text-indigo-600 mt-1.5">{{ $approvedCount }}</p>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow" style="border-left: 4px solid #9333EA !important;">
-                <p class="text-[11px] font-bold text-purple-700 uppercase tracking-wider">Di Luar</p>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow min-w-0" style="border-left: 4px solid #9333EA !important;">
+                <p class="text-[11px] font-bold text-purple-700 uppercase tracking-wider truncate" title="Di Luar">Di Luar</p>
                 <p class="text-2xl font-bold text-purple-600 mt-1.5">{{ $outsideCount }}</p>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow" style="border-left: 4px solid #059669 !important;">
-                <p class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Selesai/Arsip</p>
+            <div class="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-2xs hover:shadow-xs transition-shadow min-w-0" style="border-left: 4px solid #059669 !important;">
+                <p class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider truncate" title="Selesai/Arsip">Selesai/Arsip</p>
                 <p class="text-2xl font-bold text-emerald-600 mt-1.5">{{ $historyCount }}</p>
             </div>
         </div>

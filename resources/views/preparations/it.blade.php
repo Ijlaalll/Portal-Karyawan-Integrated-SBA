@@ -37,41 +37,41 @@
     @endif
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-6 gap-4 lg:gap-5 mb-8">
-        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between" 
-            style="border: 1px solid #E5E7EB; border-left: 4px solid #2563EB; padding: 14px 14px 14px 20px;">
-            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Total Tugas</span>
-            <span class="text-2xl font-extrabold text-slate-900 mt-2 block">{{ $stats['total'] }}</span>
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 mb-8">
+        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between min-w-0" 
+            style="border: 1px solid #E5E7EB; border-left: 4px solid #2563EB; padding: 14px 14px 14px 16px;">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block truncate" title="Total Tugas">Total Tugas</span>
+            <span class="text-2xl font-extrabold text-slate-900 mt-2 block truncate">{{ $stats['total'] }}</span>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between" 
-            style="border: 1px solid #E5E7EB; border-left: 4px solid #D97706; padding: 14px 14px 14px 20px;">
-            <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wider block">Menunggu</span>
-            <span class="text-2xl font-extrabold text-amber-600 mt-2 block">{{ $stats['pending'] }}</span>
+        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between min-w-0" 
+            style="border: 1px solid #E5E7EB; border-left: 4px solid #D97706; padding: 14px 14px 14px 16px;">
+            <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wider block truncate" title="Menunggu">Menunggu</span>
+            <span class="text-2xl font-extrabold text-amber-600 mt-2 block truncate">{{ $stats['pending'] }}</span>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between" 
-            style="border: 1px solid #E5E7EB; border-left: 4px solid #4F46E5; padding: 14px 14px 14px 20px;">
-            <span class="text-[11px] font-bold text-indigo-700 uppercase tracking-wider block">Sedang Dikerjakan</span>
-            <span class="text-2xl font-extrabold text-indigo-600 mt-2 block">{{ $stats['in_progress'] }}</span>
+        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between min-w-0" 
+            style="border: 1px solid #E5E7EB; border-left: 4px solid #4F46E5; padding: 14px 14px 14px 16px;">
+            <span class="text-[11px] font-bold text-indigo-700 uppercase tracking-wider block truncate" title="Sedang Dikerjakan">Sedang Dikerjakan</span>
+            <span class="text-2xl font-extrabold text-indigo-600 mt-2 block truncate">{{ $stats['in_progress'] }}</span>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between" 
-            style="border: 1px solid #E5E7EB; border-left: 4px solid #059669; padding: 14px 14px 14px 20px;">
-            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">Tugas Siap</span>
-            <span class="text-2xl font-extrabold text-emerald-600 mt-2 block">{{ $stats['ready'] }}</span>
+        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between min-w-0" 
+            style="border: 1px solid #E5E7EB; border-left: 4px solid #059669; padding: 14px 14px 14px 16px;">
+            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block truncate" title="Tugas Siap">Tugas Siap</span>
+            <span class="text-2xl font-extrabold text-emerald-600 mt-2 block truncate">{{ $stats['ready'] }}</span>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between" 
-            style="border: 1px solid #E5E7EB; border-left: 4px solid #DC2626; padding: 14px 14px 14px 20px;">
-            <span class="text-[11px] font-bold text-rose-700 uppercase tracking-wider block">Tugas Tidak Siap</span>
-            <span class="text-2xl font-extrabold text-rose-600 mt-2 block">{{ $stats['not_ready'] }}</span>
+        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between min-w-0" 
+            style="border: 1px solid #E5E7EB; border-left: 4px solid #DC2626; padding: 14px 14px 14px 16px;">
+            <span class="text-[11px] font-bold text-rose-700 uppercase tracking-wider block truncate" title="Tugas Tidak Siap">Tugas Tidak Siap</span>
+            <span class="text-2xl font-extrabold text-rose-600 mt-2 block truncate">{{ $stats['not_ready'] }}</span>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between" 
-            style="border: 1px solid #E5E7EB; border-left: 4px solid #475569; padding: 14px 14px 14px 20px;">
-            <span class="text-[11px] font-bold text-slate-700 uppercase tracking-wider block">Tugas Selesai</span>
-            <span class="text-2xl font-extrabold text-slate-800 mt-2 block">{{ $stats['completed'] }}</span>
+        <div class="bg-white rounded-xl shadow-sm transition-all overflow-hidden flex flex-col justify-between min-w-0" 
+            style="border: 1px solid #E5E7EB; border-left: 4px solid #475569; padding: 14px 14px 14px 16px;">
+            <span class="text-[11px] font-bold text-slate-700 uppercase tracking-wider block truncate" title="Tugas Selesai">Tugas Selesai</span>
+            <span class="text-2xl font-extrabold text-slate-800 mt-2 block truncate">{{ $stats['completed'] }}</span>
         </div>
     </div>
 

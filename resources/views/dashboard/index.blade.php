@@ -20,25 +20,25 @@
 
     <main>
         <!-- Stat Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 mb-8">
-            <div class="bg-white p-5 border border-[#E5E7EB] rounded-lg">
-                <span class="text-xs font-semibold text-[#475569] uppercase tracking-wider block">Total Pemesanan</span>
-                <span class="text-3xl font-bold text-[#0F172A] mt-2 block">{{ $stats['total'] }}</span>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+            <div class="bg-white p-4 sm:p-5 border border-[#E5E7EB] rounded-lg min-w-0 shadow-xs">
+                <span class="text-xs font-semibold text-[#475569] uppercase tracking-wider block truncate" title="Total Pemesanan">Total Pemesanan</span>
+                <span class="text-2xl sm:text-3xl font-bold text-[#0F172A] mt-2 block">{{ $stats['total'] }}</span>
             </div>
 
-            <div class="bg-white p-5 border border-[#E5E7EB] rounded-lg border-l-4 border-l-green-500">
-                <span class="text-xs font-semibold text-green-800 uppercase tracking-wider block">Disetujui</span>
-                <span class="text-3xl font-bold text-[#0F172A] mt-2 block">{{ $stats['approved'] }}</span>
+            <div class="bg-white p-4 sm:p-5 border border-[#E5E7EB] rounded-lg border-l-4 border-l-green-500 min-w-0 shadow-xs">
+                <span class="text-xs font-semibold text-green-800 uppercase tracking-wider block truncate" title="Disetujui">Disetujui</span>
+                <span class="text-2xl sm:text-3xl font-bold text-[#0F172A] mt-2 block">{{ $stats['approved'] }}</span>
             </div>
 
-            <div class="bg-white p-5 border border-[#E5E7EB] rounded-lg border-l-4 border-l-red-500">
-                <span class="text-xs font-semibold text-red-800 uppercase tracking-wider block">Dibatalkan</span>
-                <span class="text-3xl font-bold text-[#0F172A] mt-2 block">{{ $stats['cancelled'] }}</span>
+            <div class="bg-white p-4 sm:p-5 border border-[#E5E7EB] rounded-lg border-l-4 border-l-red-500 min-w-0 shadow-xs">
+                <span class="text-xs font-semibold text-red-800 uppercase tracking-wider block truncate" title="Dibatalkan">Dibatalkan</span>
+                <span class="text-2xl sm:text-3xl font-bold text-[#0F172A] mt-2 block">{{ $stats['cancelled'] }}</span>
             </div>
 
-            <div class="bg-white p-5 border border-[#E5E7EB] rounded-lg border-l-4 border-l-blue-500">
-                <span class="text-xs font-semibold text-blue-800 uppercase tracking-wider block">Selesai</span>
-                <span class="text-3xl font-bold text-[#0F172A] mt-2 block">{{ $stats['completed'] }}</span>
+            <div class="bg-white p-4 sm:p-5 border border-[#E5E7EB] rounded-lg border-l-4 border-l-blue-500 min-w-0 shadow-xs">
+                <span class="text-xs font-semibold text-blue-800 uppercase tracking-wider block truncate" title="Selesai">Selesai</span>
+                <span class="text-2xl sm:text-3xl font-bold text-[#0F172A] mt-2 block">{{ $stats['completed'] }}</span>
             </div>
         </div>
 

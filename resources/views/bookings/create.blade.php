@@ -54,29 +54,29 @@
                         </div>
 
                         <!-- 2. Meeting Parameters -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <div class="min-w-0">
                                 <label for="booking_date" class="block text-xs font-semibold text-[#475569] uppercase tracking-wider">Tanggal</label>
                                 <input type="date" name="booking_date" id="booking_date" required value="{{ $date }}" min="{{ date('Y-m-d') }}"
                                        class="mt-1 block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-sm"
                                        onchange="refreshWorkspace()">
                             </div>
 
-                            <div>
+                            <div class="min-w-0">
                                 <label for="participant_count" class="block text-xs font-semibold text-[#475569] uppercase tracking-wider">Jumlah Peserta</label>
                                 <input type="number" name="participant_count" id="participant_count" required min="1" value="{{ $participantCount }}"
                                        class="mt-1 block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-sm"
                                        onchange="refreshWorkspace()">
                             </div>
 
-                            <div>
+                            <div class="min-w-0">
                                 <label for="start_time" class="block text-xs font-semibold text-[#475569] uppercase tracking-wider">Waktu Mulai</label>
                                 <input type="time" name="start_time" id="start_time" required value="{{ $startTime }}"
                                        class="mt-1 block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-sm"
                                        onchange="refreshWorkspace()">
                             </div>
 
-                            <div>
+                            <div class="min-w-0">
                                 <label for="end_time" class="block text-xs font-semibold text-[#475569] uppercase tracking-wider">Waktu Selesai</label>
                                 <input type="time" name="end_time" id="end_time" required value="{{ $endTime }}"
                                        class="mt-1 block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-sm"

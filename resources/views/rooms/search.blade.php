@@ -12,8 +12,8 @@
 
     <!-- Search Form Card -->
     <div class="bg-white border border-[#E5E7EB] rounded-lg p-6 mb-8 shadow-sm">
-        <form action="{{ route('rooms.search') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-            <div class="flex flex-col gap-1">
+        <form action="{{ route('rooms.search') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div class="flex flex-col gap-1 min-w-0">
                 <label for="date" class="text-xs font-semibold text-[#0F172A] uppercase tracking-wider">Tanggal</label>
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#475569] text-[18px]">event</span>
@@ -22,7 +22,7 @@
                 </div>
             </div>
             
-            <div class="flex flex-col gap-1">
+            <div class="flex flex-col gap-1 min-w-0">
                 <label for="start_time" class="text-xs font-semibold text-[#0F172A] uppercase tracking-wider">Waktu Mulai</label>
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#475569] text-[18px]">schedule</span>
@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-1">
+            <div class="flex flex-col gap-1 min-w-0">
                 <label for="end_time" class="text-xs font-semibold text-[#0F172A] uppercase tracking-wider">Waktu Selesai</label>
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#475569] text-[18px]">update</span>
@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-1">
+            <div class="flex flex-col gap-1 min-w-0">
                 <label for="capacity" class="text-xs font-semibold text-[#0F172A] uppercase tracking-wider">Kapasitas Min</label>
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#475569] text-[18px]">groups</span>
@@ -49,7 +49,7 @@
                 </div>
             </div>
 
-            <div class="md:col-span-4 flex justify-between mt-2 pt-4 border-t border-[#E5E7EB]">
+            <div class="col-span-1 sm:col-span-2 lg:col-span-4 flex justify-between mt-2 pt-4 border-t border-[#E5E7EB]">
                 @if ($searched)
                     <a href="{{ route('rooms.search') }}" class="h-9 px-4 rounded border border-[#E5E7EB] text-[#0F172A] hover:bg-[#F9FAFB] text-sm flex items-center justify-center font-semibold">
                         Hapus Pencarian
@@ -88,12 +88,12 @@
         <div class="flex flex-col gap-4">
             @forelse ($rooms as $room)
                 <div class="bg-white border border-[#E5E7EB] rounded-lg p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-[#F9FAFB] transition-colors shadow-sm">
-                    <div class="flex gap-4">
+                    <div class="flex gap-4 min-w-0 flex-1">
                         <div class="w-16 h-16 rounded bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-3xl">meeting_room</span>
                         </div>
-                        <div>
-                            <h4 class="text-base font-bold text-[#0F172A]">{{ $room->name }}</h4>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="text-base font-bold text-[#0F172A] truncate" title="{{ $room->name }}">{{ $room->name }}</h4>
                             <p class="text-xs text-[#475569] mt-0.5">{{ $room->location }} &bull; Maks {{ $room->capacity }} orang</p>
                             <div class="flex flex-wrap gap-1 mt-2">
                                 @forelse ($room->facilities as $fac)

@@ -22,44 +22,44 @@
 
     <main>
         <!-- Metric Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[26px]">directions_walk</span>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+            <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[26px]">directions_walk</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">Sedang di Luar</p>
-                    <p class="text-2xl font-bold text-purple-700 mt-0.5">{{ $totalActiveOutside }}</p>
-                </div>
-            </div>
-
-            <div class="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[26px]">alarm</span>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">Terlambat Kembali</p>
-                    <p class="text-2xl font-bold text-rose-600 mt-0.5">{{ $totalOverdue }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="Sedang di Luar">Sedang di Luar</p>
+                    <p class="text-xl sm:text-2xl font-bold text-purple-700 mt-0.5">{{ $totalActiveOutside }}</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[26px]">hourglass_top</span>
+            <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[26px]">alarm</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">Menunggu Persetujuan</p>
-                    <p class="text-2xl font-bold text-amber-600 mt-0.5">{{ $totalPending }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="Terlambat Kembali">Terlambat Kembali</p>
+                    <p class="text-xl sm:text-2xl font-bold text-rose-600 mt-0.5">{{ $totalOverdue }}</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm flex items-center gap-4">
-                <div class="p-3 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[26px]">task_alt</span>
+            <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[26px]">hourglass_top</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider">Kembali Hari Ini</p>
-                    <p class="text-2xl font-bold text-green-700 mt-0.5">{{ $totalReturnedToday }}</p>
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="Menunggu Persetujuan">Menunggu Persetujuan</p>
+                    <p class="text-xl sm:text-2xl font-bold text-amber-600 mt-0.5">{{ $totalPending }}</p>
+                </div>
+            </div>
+
+            <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-3 sm:gap-4 min-w-0">
+                <div class="p-2.5 sm:p-3 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] sm:text-[26px]">task_alt</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold text-[#475569] uppercase tracking-wider truncate" title="Kembali Hari Ini">Kembali Hari Ini</p>
+                    <p class="text-xl sm:text-2xl font-bold text-green-700 mt-0.5">{{ $totalReturnedToday }}</p>
                 </div>
             </div>
         </div>

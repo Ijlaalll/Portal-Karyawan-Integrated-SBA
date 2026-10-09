@@ -71,14 +71,14 @@
     </div>
 
     <!-- Catalog Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         @forelse($variants as $variant)
             @php
                 $availability = $variant->availability_status;
                 $isOutOfStock = $variant->stock <= 0;
             @endphp
             <!-- Variant Card -->
-            <div class="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between p-5 space-y-4 {{ $isOutOfStock ? 'opacity-75 bg-slate-50' : '' }}">
+            <div class="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between p-5 space-y-4 min-w-0 {{ $isOutOfStock ? 'opacity-75 bg-slate-50' : '' }}">
                 <div class="space-y-2">
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                         {{ $variant->item->category->name }}

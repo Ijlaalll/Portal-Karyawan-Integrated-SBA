@@ -39,7 +39,7 @@ Route::middleware(['auth', 'check_status'])->group(function () {
         return redirect()->back();
     })->name('notifications.read');
 
-    Route::post('/notifications/read-all', function () {
+    Route::match(['get', 'post'], '/notifications/read-all', function () {
         \App\Models\Notification::where('user_id', auth()->id())
             ->update(['is_read' => true]);
         return redirect()->back()->with('success', 'Semua notifikasi telah ditandai sebagai dibaca.');

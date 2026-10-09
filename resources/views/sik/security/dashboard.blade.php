@@ -30,88 +30,88 @@
     </div>
 
     <!-- 6 Metric Cards (Standardized SIK UI) -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3.5 sm:gap-4">
         <!-- 1. Total SIK -->
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-slate-500">Total SIK</span>
-                <span class="p-2 bg-slate-100 text-slate-600 rounded-xl">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between min-w-0">
+            <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-medium text-slate-500 truncate" title="Total SIK">Total SIK</span>
+                <span class="p-2 bg-slate-100 text-slate-600 rounded-xl shrink-0">
                     <span class="material-symbols-outlined text-[18px]">assignment</span>
                 </span>
             </div>
-            <div class="mt-3">
-                <div class="text-2xl font-bold text-slate-900">{{ number_format($totalPermits) }}</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">Semua Pengajuan</div>
+            <div class="mt-3 min-w-0">
+                <div class="text-2xl font-bold text-slate-900 truncate">{{ number_format($totalPermits) }}</div>
+                <div class="text-[11px] text-slate-400 mt-0.5 truncate">Semua Pengajuan</div>
             </div>
         </div>
 
         <!-- 2. Menunggu -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-amber-50/20" style="border: 1px solid #FDE68A;">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-amber-700">Menunggu</span>
-                <span class="p-2 bg-amber-100 text-amber-600 rounded-xl">
+        <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-amber-50/20 min-w-0" style="border: 1px solid #FDE68A;">
+            <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-medium text-amber-700 truncate" title="Menunggu">Menunggu</span>
+                <span class="p-2 bg-amber-100 text-amber-600 rounded-xl shrink-0">
                     <span class="material-symbols-outlined text-[18px]">pending_actions</span>
                 </span>
             </div>
-            <div class="mt-3">
-                <div class="text-2xl font-bold text-amber-600">{{ number_format($pendingPermits) }}</div>
-                <div class="text-[11px] text-amber-700/70 mt-0.5">Menunggu Approval</div>
+            <div class="mt-3 min-w-0">
+                <div class="text-2xl font-bold text-amber-600 truncate">{{ number_format($pendingPermits) }}</div>
+                <div class="text-[11px] text-amber-700/70 mt-0.5 truncate">Menunggu Approval</div>
             </div>
         </div>
 
         <!-- 3. Di Luar Pabrik -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-purple-50/20" style="border: 1px solid #E9D5FF;">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-purple-700">Di Luar Pabrik</span>
-                <span class="p-2 bg-purple-100 text-purple-600 rounded-xl">
+        <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-purple-50/20 min-w-0" style="border: 1px solid #E9D5FF;">
+            <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-medium text-purple-700 truncate" title="Di Luar Pabrik">Di Luar Pabrik</span>
+                <span class="p-2 bg-purple-100 text-purple-600 rounded-xl shrink-0">
                     <span class="material-symbols-outlined text-[18px]">directions_walk</span>
                 </span>
             </div>
-            <div class="mt-3">
-                <div class="text-2xl font-bold text-purple-600">{{ number_format($activeOutside) }}</div>
-                <div class="text-[11px] text-purple-700/70 mt-0.5">Sedang Berada di Luar</div>
+            <div class="mt-3 min-w-0">
+                <div class="text-2xl font-bold text-purple-600 truncate">{{ number_format($activeOutside) }}</div>
+                <div class="text-[11px] text-purple-700/70 mt-0.5 truncate">Sedang Berada di Luar</div>
             </div>
         </div>
 
         <!-- 4. Terlambat -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between" style="border: 1px solid {{ $totalOverdue > 0 ? '#FDA4AF' : '#E2E8F0' }}; {{ $totalOverdue > 0 ? 'background-color: rgba(255,241,242,0.3);' : '' }}">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-medium {{ $totalOverdue > 0 ? 'text-rose-700 font-bold' : 'text-slate-500' }}">Terlambat</span>
-                <span class="p-2 {{ $totalOverdue > 0 ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-600' }} rounded-xl">
+        <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between min-w-0" style="border: 1px solid {{ $totalOverdue > 0 ? '#FDA4AF' : '#E2E8F0' }}; {{ $totalOverdue > 0 ? 'background-color: rgba(255,241,242,0.3);' : '' }}">
+            <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-medium {{ $totalOverdue > 0 ? 'text-rose-700 font-bold' : 'text-slate-500' }} truncate" title="Terlambat">Terlambat</span>
+                <span class="p-2 {{ $totalOverdue > 0 ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-600' }} rounded-xl shrink-0">
                     <span class="material-symbols-outlined text-[18px]">timer_off</span>
                 </span>
             </div>
-            <div class="mt-3">
-                <div class="text-2xl font-bold {{ $totalOverdue > 0 ? 'text-rose-600' : 'text-slate-900' }}">{{ number_format($totalOverdue) }}</div>
-                <div class="text-[11px] {{ $totalOverdue > 0 ? 'text-rose-700/70' : 'text-slate-400' }} mt-0.5">Lewat Waktu Rencana</div>
+            <div class="mt-3 min-w-0">
+                <div class="text-2xl font-bold {{ $totalOverdue > 0 ? 'text-rose-600' : 'text-slate-900' }} truncate">{{ number_format($totalOverdue) }}</div>
+                <div class="text-[11px] {{ $totalOverdue > 0 ? 'text-rose-700/70' : 'text-slate-400' }} mt-0.5 truncate">Lewat Waktu Rencana</div>
             </div>
         </div>
 
         <!-- 5. Kembali Hari Ini -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-emerald-50/20" style="border: 1px solid #A7F3D0;">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-emerald-700">Kembali Hari Ini</span>
-                <span class="p-2 bg-emerald-100 text-emerald-600 rounded-xl">
+        <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col justify-between bg-emerald-50/20 min-w-0" style="border: 1px solid #A7F3D0;">
+            <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-medium text-emerald-700 truncate" title="Kembali Hari Ini">Kembali Hari Ini</span>
+                <span class="p-2 bg-emerald-100 text-emerald-600 rounded-xl shrink-0">
                     <span class="material-symbols-outlined text-[18px]">check_circle</span>
                 </span>
             </div>
-            <div class="mt-3">
-                <div class="text-2xl font-bold text-emerald-600">{{ number_format($returnedToday) }}</div>
-                <div class="text-[11px] text-emerald-700/70 mt-0.5">Tercatat di Gerbang</div>
+            <div class="mt-3 min-w-0">
+                <div class="text-2xl font-bold text-emerald-600 truncate">{{ number_format($returnedToday) }}</div>
+                <div class="text-[11px] text-emerald-700/70 mt-0.5 truncate">Tercatat di Gerbang</div>
             </div>
         </div>
 
         <!-- 6. Ditolak / Arsip -->
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-slate-500">Ditolak / Arsip</span>
-                <span class="p-2 bg-slate-100 text-slate-600 rounded-xl">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between min-w-0">
+            <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-medium text-slate-500 truncate" title="Ditolak / Arsip">Ditolak / Arsip</span>
+                <span class="p-2 bg-slate-100 text-slate-600 rounded-xl shrink-0">
                     <span class="material-symbols-outlined text-[18px]">folder_off</span>
                 </span>
             </div>
-            <div class="mt-3">
-                <div class="text-2xl font-bold text-slate-700">{{ number_format($archivedCount) }}</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">Tidak Terealisasi</div>
+            <div class="mt-3 min-w-0">
+                <div class="text-2xl font-bold text-slate-700 truncate">{{ number_format($archivedCount) }}</div>
+                <div class="text-[11px] text-slate-400 mt-0.5 truncate">Tidak Terealisasi</div>
             </div>
         </div>
     </div>

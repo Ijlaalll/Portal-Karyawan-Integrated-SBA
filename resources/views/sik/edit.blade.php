@@ -47,21 +47,21 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                    <div>
+                    <div class="min-w-0">
                         <span class="text-xs text-[#64748B] block">Nama Pemohon</span>
-                        <span class="text-sm font-bold text-[#0F172A]">{{ $sik->user->name }}</span>
+                        <span class="text-sm font-bold text-[#0F172A] truncate block" title="{{ $sik->user->name }}">{{ $sik->user->name }}</span>
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <span class="text-xs text-[#64748B] block">Nomor Karyawan</span>
-                        <span class="text-sm font-semibold text-[#0F172A]">{{ $sik->employee_id ?: ($sik->user->employee_id ?: '-') }}</span>
+                        <span class="text-sm font-semibold text-[#0F172A] truncate block">{{ $sik->employee_id ?: ($sik->user->employee_id ?: '-') }}</span>
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <span class="text-xs text-[#64748B] block">Departemen</span>
-                        <span class="text-sm font-semibold text-[#0F172A]">{{ $sik->department ?: ($sik->user->department ?: '-') }}</span>
+                        <span class="text-sm font-semibold text-[#0F172A] truncate block" title="{{ $sik->department ?: ($sik->user->department ?: '-') }}">{{ $sik->department ?: ($sik->user->department ?: '-') }}</span>
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <span class="text-xs text-[#64748B] block">Jabatan / Posisi</span>
-                        <span class="text-sm font-semibold text-[#0F172A]">{{ $sik->position ?: ($sik->user->position ?: '-') }}</span>
+                        <span class="text-sm font-semibold text-[#0F172A] truncate block" title="{{ $sik->position ?: ($sik->user->position ?: '-') }}">{{ $sik->position ?: ($sik->user->position ?: '-') }}</span>
                     </div>
                 </div>
             </div>

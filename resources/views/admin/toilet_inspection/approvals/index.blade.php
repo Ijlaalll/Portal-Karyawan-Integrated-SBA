@@ -19,7 +19,7 @@
     <section class="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm mb-6">
         <form action="{{ route('admin.toilet_inspection.approvals.index') }}" method="GET" id="approvalsFilterForm" class="space-y-6" onsubmit="sessionStorage.setItem('approvals_page_scroll', document.querySelector('main')?.scrollTop || 0);">
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 <!-- Search -->
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Cari</label>
@@ -67,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 pt-2 border-t border-slate-100 items-end">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 pt-2 border-t border-slate-100 items-end">
                 <!-- Inspector Filter -->
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Petugas Inspeksi</label>
