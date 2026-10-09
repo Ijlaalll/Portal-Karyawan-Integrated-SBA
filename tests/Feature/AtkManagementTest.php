@@ -642,4 +642,54 @@ class AtkManagementTest extends TestCase
         $this->assertEquals(15000.00, $requestItem->fresh()->unit_price);
         $this->assertEquals(30000.00, $requestItem->fresh()->subtotal);
     }
+
+    /** @test */
+    public function admin_or_ga_can_download_atk_csv_template()
+    {
+        $this->actingAs($this->ga);
+
+        $response = $this->get(route('atk.items.template'));
+        $response->assertOk();
+        $this->assertStringContainsString('template_master_atk_sba.csv', (string) $response->headers->get('Content-Disposition'));
+    }
+
+    /** @test */
+    public function admin_or_ga_can_import_atk_items_via_csv()
+    {
+        $this->actingAs($this->ga);
+
+        $csvContent = "kategori,nama_barang,nama_varian,sku,satuan,stok_awal,harga_beli,stok_minimum,deskripsi\n";
+        $csvContent .= "Kertas,Kertas HVS A4 80gr,Rim 80gr,ATK-KRT-01,Rim,50,48000,10,Kertas A4 PaperOne\n";
+        $csvContent .= "Alat Tulis,Pulpen Gel 0.5mm,Hitam,ATK-PLP-01,Pcs,100,3500,20,Pulpen tinta hitam\n";
+
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('master_atk.csv', $csvContent);
+
+        $response = $this->post(route('atk.items.import'), [
+            'file' => $file,
+            'update_existing' => 1,
+        ]);
+
+        $response->assertRedirect(route('atk.items.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('atk_categories', ['name' => 'Kertas']);
+        $this->assertDatabaseHas('atk_categories', ['name' => 'Alat Tulis']);
+
+        $this->assertDatabaseHas('atk_items', ['name' => 'Kertas HVS A4 80gr']);
+        $this->assertDatabaseHas('atk_items', ['name' => 'Pulpen Gel 0.5mm']);
+
+        $this->assertDatabaseHas('atk_variants', [
+            'name' => 'Rim 80gr',
+            'sku' => 'ATK-KRT-01',
+            'unit' => 'Rim',
+            'stock' => 50,
+            'purchase_price' => 48000,
+        ]);
+
+        $this->assertDatabaseHas('atk_stock_movements', [
+            'quantity' => 50,
+            'type' => 'restock',
+            'reason' => 'Saldo awal impor massal ATK',
+        ]);
+    }
 }

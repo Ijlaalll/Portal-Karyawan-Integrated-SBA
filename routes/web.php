@@ -89,6 +89,8 @@ Route::middleware(['auth', 'check_status', 'module:atk', 'active_module:atk'])->
     Route::get('/dashboard', [\App\Http\Controllers\Atk\AtkDashboardController::class, 'index'])->name('dashboard');
     
     Route::resource('categories', \App\Http\Controllers\Atk\CategoryController::class)->except(['show']);
+    Route::get('items/template', [\App\Http\Controllers\Atk\ItemController::class, 'downloadTemplate'])->name('items.template');
+    Route::post('items/import', [\App\Http\Controllers\Atk\ItemController::class, 'import'])->name('items.import');
     Route::resource('items', \App\Http\Controllers\Atk\ItemController::class);
     Route::resource('variants', \App\Http\Controllers\Atk\VariantController::class)->except(['show']);
     

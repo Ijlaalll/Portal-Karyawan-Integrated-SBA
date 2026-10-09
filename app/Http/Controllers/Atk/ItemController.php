@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AtkItem;
 use App\Models\AtkCategory;
 use App\Services\AtkMasterService;
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -175,6 +176,94 @@ class ItemController extends Controller
             return redirect()
                 ->route('atk.items.index')
                 ->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Download CSV template for bulk ATK item import.
+     */
+    public function downloadTemplate()
+    {
+        $this->authorizeManager();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="template_master_atk_sba.csv"',
+        ];
+
+        $columns = ['kategori', 'nama_barang', 'nama_varian', 'sku', 'satuan', 'stok_awal', 'harga_beli', 'stok_minimum', 'deskripsi'];
+
+        $callback = function () use ($columns) {
+            $file = fopen('php://output', 'w');
+            fputs($file, "\xEF\xBB\xBF");
+            fputcsv($file, $columns);
+
+            // Sample rows
+            fputcsv($file, ['Kertas', 'Kertas HVS A4 80gr', 'Rim 80gr', 'ATK-KRT-A480', 'Rim', '50', '48000', '10', 'Kertas HVS PaperOne A4 80 gram']);
+            fputcsv($file, ['Alat Tulis', 'Pulpen Gel 0.5mm', 'Hitam', 'ATK-PLP-G05B', 'Pcs', '120', '3500', '20', 'Pulpen gel tinta hitam 0.5mm']);
+            fputcsv($file, ['Alat Tulis', 'Pulpen Gel 0.5mm', 'Biru', 'ATK-PLP-G05U', 'Pcs', '80', '3500', '20', 'Pulpen gel tinta biru 0.5mm']);
+            fputcsv($file, ['Buku & Map', 'Ordner Bantex Folio', 'Biru', 'ATK-ORD-FBLU', 'Pcs', '30', '32000', '5', 'Ordner dokumen ukuran folio 7cm']);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Handle bulk CSV ATK item import.
+     */
+    public function import(Request $request)
+    {
+        $this->authorizeManager();
+
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:5120',
+            'update_existing' => 'nullable|boolean',
+        ], [
+            'file.required' => 'Silakan pilih file CSV yang ingin diimpor.',
+            'file.mimes' => 'File harus berformat CSV (.csv).',
+            'file.max' => 'Ukuran file tidak boleh melebihi 5MB.',
+        ]);
+
+        $file = $request->file('file');
+        $updateExisting = $request->boolean('update_existing', true);
+
+        try {
+            $result = $this->masterService->importItemsFromCsv($file->getRealPath(), $updateExisting);
+
+            AuditLogService::log(
+                'atk',
+                'bulk_import_items',
+                "Admin/GA mengimpor massal master ATK: {$result['created_variants']} varian dibuat ({$result['created_items']} barang baru, {$result['created_categories']} kategori baru), {$result['updated_variants']} diperbarui.",
+                [
+                    'created_variants' => $result['created_variants'],
+                    'updated_variants' => $result['updated_variants'],
+                    'created_items' => $result['created_items'],
+                    'created_categories' => $result['created_categories'],
+                    'skipped' => $result['skipped'],
+                ],
+                auth()->user()
+            );
+
+            $msg = "Impor master ATK berhasil: {$result['created_variants']} varian barang ditambahkan ({$result['created_items']} barang baru), {$result['updated_variants']} diperbarui.";
+            if ($result['skipped'] > 0) {
+                $msg .= " ({$result['skipped']} baris dilewati).";
+            }
+
+            if (!empty($result['errors'])) {
+                $warningMsg = implode(' ', array_slice($result['errors'], 0, 3));
+                if (count($result['errors']) > 3) {
+                    $warningMsg .= ' dan ' . (count($result['errors']) - 3) . ' catatan lainnya.';
+                }
+                return redirect()->route('atk.items.index')
+                    ->with('success', $msg)
+                    ->with('error', 'Catatan baris: ' . $warningMsg);
+            }
+
+            return redirect()->route('atk.items.index')->with('success', $msg);
+        } catch (\Throwable $e) {
+            return redirect()->route('atk.items.index')->with('error', 'Gagal memproses file: ' . $e->getMessage());
         }
     }
 }

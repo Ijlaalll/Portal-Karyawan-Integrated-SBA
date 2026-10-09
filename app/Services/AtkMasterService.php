@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\AtkCategory;
 use App\Models\AtkItem;
 use App\Models\AtkVariant;
+use App\Models\AtkStockMovement;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class AtkMasterService
@@ -119,5 +121,219 @@ class AtkMasterService
         $lastId = DB::table('atk_variants')->max('id') ?? 0;
         $nextId = $lastId + 1;
         return 'ATK-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Import ATK items, categories, and variants in bulk from a CSV file.
+     *
+     * @param string $filePath
+     * @param bool $updateExisting
+     * @return array{created_variants: int, updated_variants: int, created_items: int, created_categories: int, skipped: int, errors: array<string>}
+     */
+    public function importItemsFromCsv(string $filePath, bool $updateExisting = true): array
+    {
+        $handle = fopen($filePath, 'r');
+        if (!$handle) {
+            throw new \RuntimeException('Tidak dapat membuka file CSV.');
+        }
+
+        // Auto-detect delimiter (, or ;)
+        $firstLine = fgets($handle);
+        rewind($handle);
+        $delimiter = ',';
+        if (strpos($firstLine, ';') !== false && substr_count($firstLine, ';') > substr_count($firstLine, ',')) {
+            $delimiter = ';';
+        } elseif (strpos($firstLine, "\t") !== false && substr_count($firstLine, "\t") > substr_count($firstLine, ',')) {
+            $delimiter = "\t";
+        }
+
+        $rawHeader = fgetcsv($handle, 0, $delimiter);
+        if (!$rawHeader) {
+            fclose($handle);
+            throw new \RuntimeException('File CSV kosong atau format tidak valid.');
+        }
+
+        // Clean UTF-8 BOM
+        $rawHeader[0] = preg_replace('/[\x{FEFF}\x{EF}\x{BB}\x{BF}]/u', '', $rawHeader[0]);
+
+        $headerMap = [];
+        foreach ($rawHeader as $idx => $col) {
+            $cleanCol = strtolower(trim($col));
+            if (in_array($cleanCol, ['category', 'kategori', 'nama_kategori'])) {
+                $headerMap['category'] = $idx;
+            } elseif (in_array($cleanCol, ['item_name', 'nama_barang', 'barang', 'nama'])) {
+                $headerMap['item_name'] = $idx;
+            } elseif (in_array($cleanCol, ['variant_name', 'nama_varian', 'varian'])) {
+                $headerMap['variant_name'] = $idx;
+            } elseif (in_array($cleanCol, ['sku', 'kode_barang', 'kode', 'barcode'])) {
+                $headerMap['sku'] = $idx;
+            } elseif (in_array($cleanCol, ['unit', 'satuan'])) {
+                $headerMap['unit'] = $idx;
+            } elseif (in_array($cleanCol, ['stock', 'stok', 'stok_awal', 'jumlah', 'qty'])) {
+                $headerMap['stock'] = $idx;
+            } elseif (in_array($cleanCol, ['purchase_price', 'harga_beli', 'harga'])) {
+                $headerMap['purchase_price'] = $idx;
+            } elseif (in_array($cleanCol, ['minimum_stock', 'stok_minimum', 'min_stok', 'stok_min'])) {
+                $headerMap['minimum_stock'] = $idx;
+            } elseif (in_array($cleanCol, ['description', 'deskripsi', 'keterangan'])) {
+                $headerMap['description'] = $idx;
+            }
+        }
+
+        if (!isset($headerMap['item_name'])) {
+            fclose($handle);
+            throw new \RuntimeException('Format CSV tidak valid. Pastikan terdapat kolom nama_barang.');
+        }
+
+        $createdVariants = 0;
+        $updatedVariants = 0;
+        $createdItems = 0;
+        $createdCategories = 0;
+        $skipped = 0;
+        $errors = [];
+        $rowNumber = 1;
+
+        $actorId = auth()->id() ?? User::where('role', 'admin')->value('id') ?? 1;
+
+        DB::beginTransaction();
+        try {
+            while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+                $rowNumber++;
+                if (empty(array_filter($row))) {
+                    continue;
+                }
+
+                $categoryName = isset($headerMap['category']) && isset($row[$headerMap['category']]) ? trim($row[$headerMap['category']]) : 'Umum';
+                if (empty($categoryName)) {
+                    $categoryName = 'Umum';
+                }
+
+                $itemName = isset($headerMap['item_name']) && isset($row[$headerMap['item_name']]) ? trim($row[$headerMap['item_name']]) : null;
+                $variantName = isset($headerMap['variant_name']) && isset($row[$headerMap['variant_name']]) ? trim($row[$headerMap['variant_name']]) : 'Standar';
+                if (empty($variantName)) {
+                    $variantName = 'Standar';
+                }
+
+                $sku = isset($headerMap['sku']) && isset($row[$headerMap['sku']]) ? trim($row[$headerMap['sku']]) : null;
+                $unit = isset($headerMap['unit']) && isset($row[$headerMap['unit']]) ? trim($row[$headerMap['unit']]) : 'Pcs';
+                if (empty($unit)) {
+                    $unit = 'Pcs';
+                }
+
+                $stock = isset($headerMap['stock']) && isset($row[$headerMap['stock']]) ? max(0, (int) trim($row[$headerMap['stock']])) : 0;
+                $purchasePrice = isset($headerMap['purchase_price']) && isset($row[$headerMap['purchase_price']]) ? max(0, (float) str_replace(',', '.', trim($row[$headerMap['purchase_price']]))) : 0;
+                $minimumStock = isset($headerMap['minimum_stock']) && isset($row[$headerMap['minimum_stock']]) ? max(0, (int) trim($row[$headerMap['minimum_stock']])) : 5;
+                $description = isset($headerMap['description']) && isset($row[$headerMap['description']]) ? trim($row[$headerMap['description']]) : null;
+
+                if (!$itemName) {
+                    $errors[] = "Baris {$rowNumber}: Nama barang wajib diisi.";
+                    $skipped++;
+                    continue;
+                }
+
+                // 1. Category find or create
+                $category = AtkCategory::firstOrCreate(
+                    ['name' => $categoryName],
+                    ['description' => 'Kategori hasil impor massal ATK', 'is_active' => true]
+                );
+                if ($category->wasRecentlyCreated) {
+                    $createdCategories++;
+                }
+
+                // 2. Item find or create
+                $item = AtkItem::firstOrCreate(
+                    ['category_id' => $category->id, 'name' => $itemName],
+                    ['description' => $description, 'is_active' => true]
+                );
+                if ($item->wasRecentlyCreated) {
+                    $createdItems++;
+                }
+
+                // 3. Variant find or create
+                $variant = AtkVariant::where('item_id', $item->id)
+                    ->where('name', $variantName)
+                    ->first();
+
+                if (!$variant && !empty($sku)) {
+                    $variant = AtkVariant::where('sku', $sku)->first();
+                }
+
+                if ($variant) {
+                    if ($updateExisting) {
+                        $oldStock = $variant->stock;
+                        $variant->unit = $unit;
+                        $variant->purchase_price = $purchasePrice;
+                        $variant->minimum_stock = $minimumStock;
+                        if (!empty($sku)) {
+                            $variant->sku = $sku;
+                        }
+
+                        if ($stock !== $oldStock) {
+                            $variant->stock = $stock;
+                            AtkStockMovement::create([
+                                'variant_id' => $variant->id,
+                                'type' => 'adjustment',
+                                'previous_stock' => $oldStock,
+                                'quantity' => abs($stock - $oldStock),
+                                'new_stock' => $stock,
+                                'reason' => 'Penyesuaian stok dari impor massal ATK',
+                                'actor_id' => $actorId,
+                            ]);
+                        }
+
+                        $variant->save();
+                        $updatedVariants++;
+                    } else {
+                        $skipped++;
+                    }
+                } else {
+                    if (empty($sku)) {
+                        $sku = $this->generateSku();
+                    }
+
+                    $newVariant = AtkVariant::create([
+                        'item_id' => $item->id,
+                        'name' => $variantName,
+                        'sku' => $sku,
+                        'unit' => $unit,
+                        'purchase_price' => $purchasePrice,
+                        'stock' => $stock,
+                        'minimum_stock' => $minimumStock,
+                        'is_active' => true,
+                    ]);
+
+                    if ($stock > 0) {
+                        AtkStockMovement::create([
+                            'variant_id' => $newVariant->id,
+                            'type' => 'restock',
+                            'previous_stock' => 0,
+                            'quantity' => $stock,
+                            'new_stock' => $stock,
+                            'reason' => 'Saldo awal impor massal ATK',
+                            'actor_id' => $actorId,
+                        ]);
+                    }
+
+                    $createdVariants++;
+                }
+            }
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            fclose($handle);
+            throw $e;
+        }
+
+        fclose($handle);
+
+        return [
+            'created_variants' => $createdVariants,
+            'updated_variants' => $updatedVariants,
+            'created_items' => $createdItems,
+            'created_categories' => $createdCategories,
+            'skipped' => $skipped,
+            'errors' => $errors,
+        ];
     }
 }
