@@ -56,8 +56,18 @@ class AuthController extends Controller
             Auth::login($authenticatedUser, $request->boolean('remember'));
         }
 
+        // Determine if identifier is an Active Directory candidate.
+        // Active Directory LDAP accounts are either:
+        // - Username / NIP without '@' (e.g. '0012345' or 'joko.susilo')
+        // - Corporate domain email matching LDAP domain (e.g. 'user@sig.id')
+        // Non-domain emails (e.g. '@example.com', '@gmail.com') are strictly local database accounts
+        // and must never query the Active Directory LDAP server.
+        $isNonLdapEmail = str_contains($loginIdentifier, '@') && !str_ends_with(strtolower($loginIdentifier), '@' . strtolower($domain));
+        $isLocalOnlyUser = $localUser && str_contains($localUser->email, '@') && !str_ends_with(strtolower($localUser->email), '@' . strtolower($domain));
+
         // 2. If not authenticated locally and LDAP is enabled, attempt Active Directory LDAP
-        if (!$authenticatedUser && config('ldap.enabled', true)) {
+        // ONLY query LDAP if it is an eligible candidate and not a local-only user
+        if (!$authenticatedUser && config('ldap.enabled', true) && !$isNonLdapEmail && !$isLocalOnlyUser) {
             try {
                 $ldapService = app(\App\Services\LdapService::class);
                 $ldapResult = $ldapService->authenticate($loginIdentifier, $password);
@@ -189,7 +199,11 @@ class AuthController extends Controller
             return redirect()->intended($user->getRedirectRoute());
         }
 
-        $errorMessage = $ldapFailureReason ?: trans('auth.failed');
+        if ($ldapFailureReason && str_contains($ldapFailureReason, "Can't contact LDAP server")) {
+            $errorMessage = "Gagal terhubung ke server Active Directory (LDAP). Jika menggunakan akun domain @{$domain}, pastikan terhubung ke jaringan kantor/VPN, atau gunakan akun lokal database.";
+        } else {
+            $errorMessage = $ldapFailureReason ?: trans('auth.failed');
+        }
 
         // Record audit trail for failed login attempt
         AuditLogService::log(

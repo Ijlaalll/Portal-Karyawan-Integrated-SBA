@@ -105,4 +105,62 @@ class LdapAuthenticationTest extends TestCase
         $response->assertSessionHasNoErrors();
         $this->assertAuthenticatedAs($user);
     }
+
+    public function test_non_ldap_email_with_wrong_password_does_not_call_ldap(): void
+    {
+        $user = User::create([
+            'name' => 'Local Admin',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'status' => 'active',
+        ]);
+
+        $mockService = Mockery::mock(LdapService::class);
+        $mockService->shouldNotReceive('authenticate');
+        $this->app->instance(LdapService::class, $mockService);
+
+        $response = $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'wrongpassword',
+        ]);
+
+        $response->assertSessionHasErrors(['email' => trans('auth.failed')]);
+        $this->assertGuest();
+    }
+
+    public function test_unknown_non_ldap_email_does_not_call_ldap(): void
+    {
+        $mockService = Mockery::mock(LdapService::class);
+        $mockService->shouldNotReceive('authenticate');
+        $this->app->instance(LdapService::class, $mockService);
+
+        $response = $this->post('/login', [
+            'email' => 'unknown@gmail.com',
+            'password' => 'somepassword',
+        ]);
+
+        $response->assertSessionHasErrors(['email' => trans('auth.failed')]);
+        $this->assertGuest();
+    }
+
+    public function test_domain_user_receives_informative_error_when_ldap_unreachable(): void
+    {
+        $mockService = Mockery::mock(LdapService::class);
+        $mockService->shouldReceive('authenticate')->once()->with('joko.susilo@sig.id', 'secret123')->andReturn([
+            'success' => false,
+            'error' => "Autentikasi Active Directory gagal (Can't contact LDAP server).",
+        ]);
+        $this->app->instance(LdapService::class, $mockService);
+
+        $response = $this->post('/login', [
+            'email' => 'joko.susilo@sig.id',
+            'password' => 'secret123',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'email' => 'Gagal terhubung ke server Active Directory (LDAP). Jika menggunakan akun domain @sig.id, pastikan terhubung ke jaringan kantor/VPN, atau gunakan akun lokal database.'
+        ]);
+        $this->assertGuest();
+    }
 }
