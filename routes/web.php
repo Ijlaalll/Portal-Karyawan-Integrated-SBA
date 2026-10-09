@@ -114,6 +114,8 @@ Route::middleware(['auth', 'check_status', 'admin'])->prefix('admin')->as('admin
 
     // Reorganized settings routes (User Management, Cost Center, SMTP Settings)
     Route::prefix('settings')->group(function () {
+        Route::get('users/template', [AdminUserController::class, 'downloadTemplate'])->name('users.template');
+        Route::post('users/import', [AdminUserController::class, 'import'])->name('users.import');
         Route::post('users/{user}/activate', [AdminUserController::class, 'activate'])->name('users.activate');
         Route::post('users/{user}/deactivate', [AdminUserController::class, 'deactivate'])->name('users.deactivate');
         Route::resource('users', AdminUserController::class);

@@ -889,5 +889,53 @@ class UserManagementTest extends TestCase
         $resIndex->assertOk();
         $resIndex->assertSee('Kendaraan');
     }
+
+    /**
+     * Test admin can download CSV template for user import.
+     */
+    public function test_admin_can_download_user_csv_template(): void
+    {
+        $response = $this->actingAs($this->admin)->get(route('admin.users.template'));
+        $response->assertOk();
+        $this->assertStringContainsString('template_data_karyawan_sba.csv', (string) $response->headers->get('Content-Disposition'));
+    }
+
+    /**
+     * Test admin can import users in bulk via CSV.
+     */
+    public function test_admin_can_import_users_via_csv(): void
+    {
+        $csvContent = "nama,nip,email,departemen,jabatan,role\n";
+        $csvContent .= "Ahmad Dani,19900101,ahmad.dani@sig.id,General Affairs,Staff GA,user\n";
+        $csvContent .= "Dewi Sartika,19920202,dewi.sartika@sig.id,Finance,Finance Lead,user\n";
+
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('karyawan.csv', $csvContent);
+
+        $response = $this->actingAs($this->admin)->post(route('admin.users.import'), [
+            'file' => $file,
+            'update_existing' => 1,
+        ]);
+
+        $response->assertRedirect(route('admin.users.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'ahmad.dani@sig.id',
+            'employee_id' => '19900101',
+            'department' => 'General Affairs',
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'dewi.sartika@sig.id',
+            'employee_id' => '19920202',
+            'department' => 'Finance',
+        ]);
+
+        $dani = User::where('email', 'ahmad.dani@sig.id')->first();
+        $this->assertTrue($dani->hasModuleAccess('meeting_room'));
+        $this->assertTrue($dani->hasModuleAccess('atk'));
+        $this->assertTrue($dani->hasModuleAccess('sik'));
+        $this->assertTrue($dani->hasModuleAccess('vehicle'));
+    }
 }
 
