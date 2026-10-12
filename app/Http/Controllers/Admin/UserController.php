@@ -646,8 +646,11 @@ class UserController extends Controller
     /**
      * Download CSV template for bulk user import.
      */
-    public function downloadTemplate()
+    public function downloadTemplate(Request $request)
     {
+        $delimiterParam = $request->query('delimiter', 'semicolon');
+        $delimiter = ($delimiterParam === 'comma') ? ',' : ';';
+
         $headers = [
             'Content-Type' => 'text/csv; charset=utf-8',
             'Content-Disposition' => 'attachment; filename="template_data_karyawan_sba.csv"',
@@ -655,15 +658,15 @@ class UserController extends Controller
 
         $columns = ['nama', 'nip', 'email', 'departemen', 'jabatan', 'role'];
 
-        $callback = function () use ($columns) {
+        $callback = function () use ($columns, $delimiter) {
             $file = fopen('php://output', 'w');
-            // Write UTF-8 BOM so Microsoft Excel opens it properly
+            // Write UTF-8 BOM so Microsoft Excel recognizes UTF-8 encoding properly
             fputs($file, "\xEF\xBB\xBF");
-            fputcsv($file, $columns);
+            fputcsv($file, $columns, $delimiter);
 
-            // Sample rows for guidance
-            fputcsv($file, ['Budi Santoso', '199201012020011001', 'budi.santoso@sig.id', 'General Affairs', 'Staff GA', 'user']);
-            fputcsv($file, ['Siti Aminah', '199503152021022002', 'siti.aminah@sig.id', 'Human Capital', 'Senior Specialist', 'user']);
+            // Sample rows with NIP protected from Excel scientific truncation via leading quote
+            fputcsv($file, ['Budi Santoso', "'199201012020011001", 'budi.santoso@sig.id', 'General Affairs', 'Staff GA', 'user'], $delimiter);
+            fputcsv($file, ['Siti Aminah', "'199503152021022002", 'siti.aminah@sig.id', 'Human Capital', 'Senior Specialist', 'user'], $delimiter);
 
             fclose($file);
         };

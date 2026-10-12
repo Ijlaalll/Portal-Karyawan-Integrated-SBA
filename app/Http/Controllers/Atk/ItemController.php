@@ -182,9 +182,12 @@ class ItemController extends Controller
     /**
      * Download CSV template for bulk ATK item import.
      */
-    public function downloadTemplate()
+    public function downloadTemplate(Request $request)
     {
         $this->authorizeManager();
+
+        $delimiterParam = $request->query('delimiter', 'semicolon');
+        $delimiter = ($delimiterParam === 'comma') ? ',' : ';';
 
         $headers = [
             'Content-Type' => 'text/csv; charset=utf-8',
@@ -193,16 +196,16 @@ class ItemController extends Controller
 
         $columns = ['kategori', 'nama_barang', 'nama_varian', 'sku', 'satuan', 'stok_awal', 'harga_beli', 'stok_minimum', 'deskripsi'];
 
-        $callback = function () use ($columns) {
+        $callback = function () use ($columns, $delimiter) {
             $file = fopen('php://output', 'w');
             fputs($file, "\xEF\xBB\xBF");
-            fputcsv($file, $columns);
+            fputcsv($file, $columns, $delimiter);
 
             // Sample rows
-            fputcsv($file, ['Kertas', 'Kertas HVS A4 80gr', 'Rim 80gr', 'ATK-KRT-A480', 'Rim', '50', '48000', '10', 'Kertas HVS PaperOne A4 80 gram']);
-            fputcsv($file, ['Alat Tulis', 'Pulpen Gel 0.5mm', 'Hitam', 'ATK-PLP-G05B', 'Pcs', '120', '3500', '20', 'Pulpen gel tinta hitam 0.5mm']);
-            fputcsv($file, ['Alat Tulis', 'Pulpen Gel 0.5mm', 'Biru', 'ATK-PLP-G05U', 'Pcs', '80', '3500', '20', 'Pulpen gel tinta biru 0.5mm']);
-            fputcsv($file, ['Buku & Map', 'Ordner Bantex Folio', 'Biru', 'ATK-ORD-FBLU', 'Pcs', '30', '32000', '5', 'Ordner dokumen ukuran folio 7cm']);
+            fputcsv($file, ['Kertas', 'Kertas HVS A4 80gr', 'Rim 80gr', 'ATK-KRT-A480', 'Rim', '50', '48000', '10', 'Kertas HVS PaperOne A4 80 gram'], $delimiter);
+            fputcsv($file, ['Alat Tulis', 'Pulpen Gel 0.5mm', 'Hitam', 'ATK-PLP-G05B', 'Pcs', '120', '3500', '20', 'Pulpen gel tinta hitam 0.5mm'], $delimiter);
+            fputcsv($file, ['Alat Tulis', 'Pulpen Gel 0.5mm', 'Biru', 'ATK-PLP-G05U', 'Pcs', '80', '3500', '20', 'Pulpen gel tinta biru 0.5mm'], $delimiter);
+            fputcsv($file, ['Buku & Map', 'Ordner Bantex Folio', 'Biru', 'ATK-ORD-FBLU', 'Pcs', '30', '32000', '5', 'Ordner dokumen ukuran folio 7cm'], $delimiter);
 
             fclose($file);
         };

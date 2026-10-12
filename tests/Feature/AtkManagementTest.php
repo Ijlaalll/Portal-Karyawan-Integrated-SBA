@@ -692,4 +692,48 @@ class AtkManagementTest extends TestCase
             'reason' => 'Saldo awal impor massal ATK',
         ]);
     }
+
+    /** @test */
+    public function admin_or_ga_can_download_atk_csv_template_with_delimiters()
+    {
+        $this->actingAs($this->ga);
+
+        $responseSemicolon = $this->get(route('atk.items.template', ['delimiter' => 'semicolon']));
+        $responseSemicolon->assertOk();
+        $this->assertStringContainsString('template_master_atk_sba.csv', (string) $responseSemicolon->headers->get('Content-Disposition'));
+
+        $responseComma = $this->get(route('atk.items.template', ['delimiter' => 'comma']));
+        $responseComma->assertOk();
+        $this->assertStringContainsString('template_master_atk_sba.csv', (string) $responseComma->headers->get('Content-Disposition'));
+    }
+
+    /** @test */
+    public function admin_or_ga_can_import_atk_items_via_semicolon_csv_and_currency_format()
+    {
+        $this->actingAs($this->ga);
+
+        $csvContent = "kategori;nama_barang;nama_varian;sku;satuan;stok_awal;harga_beli;stok_minimum;deskripsi\n";
+        $csvContent .= "Buku & Map;Ordner Folio;Biru;ATK-ORD-01;Pcs;25;Rp 32.000;5;Ordner tebal\n";
+
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('master_atk_semicolon.csv', $csvContent);
+
+        $response = $this->post(route('atk.items.import'), [
+            'file' => $file,
+            'update_existing' => 1,
+        ]);
+
+        $response->assertRedirect(route('atk.items.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('atk_categories', ['name' => 'Buku & Map']);
+        $this->assertDatabaseHas('atk_items', ['name' => 'Ordner Folio']);
+        $this->assertDatabaseHas('atk_variants', [
+            'name' => 'Biru',
+            'sku' => 'ATK-ORD-01',
+            'unit' => 'Pcs',
+            'stock' => 25,
+            'purchase_price' => 32000,
+            'minimum_stock' => 5,
+        ]);
+    }
 }

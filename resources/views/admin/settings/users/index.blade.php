@@ -425,18 +425,42 @@
             </div>
 
             <!-- Download Template Box -->
-            <div class="mt-4 p-3 bg-blue-50/70 border border-blue-100 rounded-xl flex items-center justify-between gap-3">
-                <div class="flex items-center gap-2.5">
-                    <span class="material-symbols-outlined text-[#2563EB] text-[20px]">description</span>
-                    <div>
-                        <p class="text-xs font-bold text-[#0F172A]">Belum punya formatnya?</p>
-                        <p class="text-[11px] text-slate-500">Unduh template CSV yang sudah sesuai kolom sistem.</p>
+            <div class="mt-4 p-3.5 bg-blue-50/70 border border-blue-100 rounded-xl space-y-2.5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                    <div class="flex items-center gap-2.5">
+                        <span class="material-symbols-outlined text-[#2563EB] text-[22px]">description</span>
+                        <div>
+                            <p class="text-xs font-bold text-[#0F172A]">Format Template Data Karyawan</p>
+                            <p class="text-[11px] text-slate-500">Pilih format unduhan sesuai aplikasi yang Anda gunakan:</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <a href="{{ route('admin.users.template', ['delimiter' => 'semicolon']) }}" 
+                           class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-[11px] font-bold shadow-sm transition-all"
+                           title="Rekomendasi untuk Microsoft Excel di Indonesia agar kolom otomatis terpisah rapi">
+                            <span class="material-symbols-outlined text-[15px]">table_view</span>
+                            Template Excel (Titik Koma)
+                        </a>
+                        <a href="{{ route('admin.users.template', ['delimiter' => 'comma']) }}" 
+                           class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-[11px] font-semibold transition-all"
+                           title="Format CSV standar pemisah koma">
+                            <span class="material-symbols-outlined text-[15px]">download</span>
+                            CSV Standar (Koma)
+                        </a>
                     </div>
                 </div>
-                <a href="{{ route('admin.users.template') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-blue-200 text-[#2563EB] hover:bg-blue-50 rounded-lg text-xs font-bold shadow-sm transition-all shrink-0">
-                    <span class="material-symbols-outlined text-[15px]">download</span>
-                    Unduh Template
-                </a>
+
+                <!-- Guidance tip for Excel and NIP -->
+                <div class="p-2.5 bg-amber-50/90 border border-amber-200/80 rounded-lg text-[11px] text-amber-900 leading-relaxed flex items-start gap-2">
+                    <span class="material-symbols-outlined text-amber-600 text-[17px] shrink-0 mt-0.5">lightbulb</span>
+                    <div>
+                        <strong class="font-semibold text-amber-950">Tips Khusus Microsoft Excel:</strong>
+                        <ul class="list-disc pl-4 mt-0.5 space-y-0.5 text-[10.5px] text-amber-900/90">
+                            <li>Gunakan tombol <strong>Template Excel (Titik Koma)</strong> agar kolom langsung terpisah rapi (Kolom A s/d F) dan tidak menumpuk di Kolom A.</li>
+                            <li>Pada kolom <strong>NIP</strong> (18 digit), beri tanda petik satu di depan angka (contoh: <code>'199201012020011001</code>) atau atur format sel sebagai <em>Text</em> agar angka tidak berubah menjadi notasi ilmiah (<code>1.99E+17</code>).</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- Upload Form -->

@@ -937,5 +937,44 @@ class UserManagementTest extends TestCase
         $this->assertTrue($dani->hasModuleAccess('sik'));
         $this->assertTrue($dani->hasModuleAccess('vehicle'));
     }
+
+    /**
+     * Test admin can download CSV template with semicolon and comma delimiters.
+     */
+    public function test_admin_can_download_user_csv_template_with_delimiters(): void
+    {
+        $responseSemicolon = $this->actingAs($this->admin)->get(route('admin.users.template', ['delimiter' => 'semicolon']));
+        $responseSemicolon->assertOk();
+        $this->assertStringContainsString('template_data_karyawan_sba.csv', (string) $responseSemicolon->headers->get('Content-Disposition'));
+
+        $responseComma = $this->actingAs($this->admin)->get(route('admin.users.template', ['delimiter' => 'comma']));
+        $responseComma->assertOk();
+        $this->assertStringContainsString('template_data_karyawan_sba.csv', (string) $responseComma->headers->get('Content-Disposition'));
+    }
+
+    /**
+     * Test admin can import users with Excel-formatted NIP (single quote prefix) and semicolon delimiter.
+     */
+    public function test_admin_can_import_users_with_excel_nip_and_semicolon(): void
+    {
+        $csvContent = "nama;nip;email;departemen;jabatan;role\n";
+        $csvContent .= "Rian Prakoso;'199301012020011001;rian.prakoso@sig.id;Information Technology;IT Support;user\n";
+
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('karyawan_excel.csv', $csvContent);
+
+        $response = $this->actingAs($this->admin)->post(route('admin.users.import'), [
+            'file' => $file,
+            'update_existing' => 1,
+        ]);
+
+        $response->assertRedirect(route('admin.users.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'rian.prakoso@sig.id',
+            'employee_id' => '199301012020011001', // Ensure leading apostrophe is stripped cleanly
+            'department' => 'Information Technology',
+        ]);
+    }
 }
 

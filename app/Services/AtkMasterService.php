@@ -137,14 +137,19 @@ class AtkMasterService
             throw new \RuntimeException('Tidak dapat membuka file CSV.');
         }
 
-        // Auto-detect delimiter (, or ;)
+        // Auto-detect delimiter (, or ;) and support optional sep= directive
         $firstLine = fgets($handle);
         rewind($handle);
         $delimiter = ',';
-        if (strpos($firstLine, ';') !== false && substr_count($firstLine, ';') > substr_count($firstLine, ',')) {
-            $delimiter = ';';
-        } elseif (strpos($firstLine, "\t") !== false && substr_count($firstLine, "\t") > substr_count($firstLine, ',')) {
-            $delimiter = "\t";
+        if (preg_match('/^sep=([,;\t])/i', trim((string) $firstLine), $matches)) {
+            $delimiter = $matches[1];
+            fgets($handle); // discard the sep= line so next line is the header
+        } else {
+            if (strpos((string) $firstLine, ';') !== false && substr_count((string) $firstLine, ';') > substr_count((string) $firstLine, ',')) {
+                $delimiter = ';';
+            } elseif (strpos((string) $firstLine, "\t") !== false && substr_count((string) $firstLine, "\t") > substr_count((string) $firstLine, ',')) {
+                $delimiter = "\t";
+            }
         }
 
         $rawHeader = fgetcsv($handle, 0, $delimiter);
@@ -214,15 +219,32 @@ class AtkMasterService
                     $variantName = 'Standar';
                 }
 
-                $sku = isset($headerMap['sku']) && isset($row[$headerMap['sku']]) ? trim($row[$headerMap['sku']]) : null;
+                $sku = isset($headerMap['sku']) && isset($row[$headerMap['sku']]) ? trim(ltrim(trim($row[$headerMap['sku']]), "'\"")) : null;
+                if ($sku === '') {
+                    $sku = null;
+                }
                 $unit = isset($headerMap['unit']) && isset($row[$headerMap['unit']]) ? trim($row[$headerMap['unit']]) : 'Pcs';
                 if (empty($unit)) {
                     $unit = 'Pcs';
                 }
 
-                $stock = isset($headerMap['stock']) && isset($row[$headerMap['stock']]) ? max(0, (int) trim($row[$headerMap['stock']])) : 0;
-                $purchasePrice = isset($headerMap['purchase_price']) && isset($row[$headerMap['purchase_price']]) ? max(0, (float) str_replace(',', '.', trim($row[$headerMap['purchase_price']]))) : 0;
-                $minimumStock = isset($headerMap['minimum_stock']) && isset($row[$headerMap['minimum_stock']]) ? max(0, (int) trim($row[$headerMap['minimum_stock']])) : 5;
+                $rawStock = isset($headerMap['stock']) && isset($row[$headerMap['stock']]) ? trim($row[$headerMap['stock']]) : '0';
+                $stock = max(0, (int) preg_replace('/[^\d]/', '', $rawStock));
+
+                $rawPrice = isset($headerMap['purchase_price']) && isset($row[$headerMap['purchase_price']]) ? trim($row[$headerMap['purchase_price']]) : '0';
+                $cleanPrice = preg_replace('/[^\d.,]/', '', $rawPrice);
+                if (strpos($cleanPrice, '.') !== false && strpos($cleanPrice, ',') !== false) {
+                    $cleanPrice = str_replace('.', '', $cleanPrice);
+                    $cleanPrice = str_replace(',', '.', $cleanPrice);
+                } elseif (strpos($cleanPrice, '.') !== false && substr_count($cleanPrice, '.') === 1 && strlen(substr($cleanPrice, strpos($cleanPrice, '.') + 1)) === 3) {
+                    $cleanPrice = str_replace('.', '', $cleanPrice);
+                } else {
+                    $cleanPrice = str_replace(',', '.', $cleanPrice);
+                }
+                $purchasePrice = max(0, (float) $cleanPrice);
+
+                $rawMinStock = isset($headerMap['minimum_stock']) && isset($row[$headerMap['minimum_stock']]) ? trim($row[$headerMap['minimum_stock']]) : '5';
+                $minimumStock = max(0, (int) preg_replace('/[^\d]/', '', $rawMinStock));
                 $description = isset($headerMap['description']) && isset($row[$headerMap['description']]) ? trim($row[$headerMap['description']]) : null;
 
                 if (!$itemName) {

@@ -96,14 +96,19 @@ class UserService
             throw new \RuntimeException('Tidak dapat membuka file CSV.');
         }
 
-        // Auto-detect delimiter (, or ;)
+        // Auto-detect delimiter (, or ;) and support optional sep= directive
         $firstLine = fgets($handle);
         rewind($handle);
         $delimiter = ',';
-        if (strpos($firstLine, ';') !== false && substr_count($firstLine, ';') > substr_count($firstLine, ',')) {
-            $delimiter = ';';
-        } elseif (strpos($firstLine, "\t") !== false && substr_count($firstLine, "\t") > substr_count($firstLine, ',')) {
-            $delimiter = "\t";
+        if (preg_match('/^sep=([,;\t])/i', trim((string) $firstLine), $matches)) {
+            $delimiter = $matches[1];
+            fgets($handle); // discard the sep= line so next line is the header
+        } else {
+            if (strpos((string) $firstLine, ';') !== false && substr_count((string) $firstLine, ';') > substr_count((string) $firstLine, ',')) {
+                $delimiter = ';';
+            } elseif (strpos((string) $firstLine, "\t") !== false && substr_count((string) $firstLine, "\t") > substr_count((string) $firstLine, ',')) {
+                $delimiter = "\t";
+            }
         }
 
         $rawHeader = fgetcsv($handle, 0, $delimiter);
@@ -159,7 +164,29 @@ class UserService
 
                 $name = isset($headerMap['name']) && isset($row[$headerMap['name']]) ? trim($row[$headerMap['name']]) : null;
                 $email = isset($headerMap['email']) && isset($row[$headerMap['email']]) ? strtolower(trim($row[$headerMap['email']])) : null;
-                $employeeId = isset($headerMap['employee_id']) && isset($row[$headerMap['employee_id']]) ? trim($row[$headerMap['employee_id']]) : null;
+                $rawEmployeeId = isset($headerMap['employee_id']) && isset($row[$headerMap['employee_id']]) ? trim($row[$headerMap['employee_id']]) : null;
+
+                // Handle Excel text-format protection and clean quotes/scientific notation on NIP
+                $employeeId = null;
+                if ($rawEmployeeId !== null && $rawEmployeeId !== '') {
+                    // 1. Remove formula text wrapper: ="12345"
+                    if (str_starts_with($rawEmployeeId, '="') && str_ends_with($rawEmployeeId, '"')) {
+                        $rawEmployeeId = substr($rawEmployeeId, 2, -1);
+                    }
+                    // 2. Remove leading apostrophe or surrounding quotes (e.g., '19920101... used to enforce text in Excel)
+                    $rawEmployeeId = trim(ltrim($rawEmployeeId, "'\""));
+
+                    // 3. Handle scientific notation from Excel (e.g. 1.99201E+17)
+                    if (preg_match('/^[0-9]+(\.[0-9]+)?[eE]\+[0-9]+$/', $rawEmployeeId)) {
+                        $convertedNip = sprintf('%.0f', (float) $rawEmployeeId);
+                        $errors[] = "Baris {$rowNumber}: NIP '{$rawEmployeeId}' terdeteksi format eksponensial (E+) dari Excel. Dikonversi menjadi '{$convertedNip}'. Pastikan kolom NIP diformat sebagai Text di Excel.";
+                        $rawEmployeeId = $convertedNip;
+                    }
+
+                    if ($rawEmployeeId !== '') {
+                        $employeeId = $rawEmployeeId;
+                    }
+                }
                 $department = isset($headerMap['department']) && isset($row[$headerMap['department']]) ? trim($row[$headerMap['department']]) : null;
                 $position = isset($headerMap['position']) && isset($row[$headerMap['position']]) ? trim($row[$headerMap['position']]) : null;
                 $role = isset($headerMap['role']) && isset($row[$headerMap['role']]) ? strtolower(trim($row[$headerMap['role']])) : 'user';
