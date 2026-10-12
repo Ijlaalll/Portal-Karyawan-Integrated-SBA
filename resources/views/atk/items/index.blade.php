@@ -127,40 +127,33 @@
             </div>
 
             <!-- Download Template Box -->
-            <div class="mt-4 p-3.5 bg-blue-50/70 border border-blue-100 rounded-xl space-y-2.5">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                    <div class="flex items-center gap-2.5">
-                        <span class="material-symbols-outlined text-[#2563EB] text-[22px]">description</span>
-                        <div>
-                            <p class="text-xs font-bold text-[#0F172A]">Format Template Master ATK</p>
-                            <p class="text-[11px] text-slate-500">Pilih format unduhan sesuai aplikasi yang Anda gunakan:</p>
+            <div class="mt-4 p-3.5 sm:p-4 bg-gradient-to-br from-blue-50/90 to-slate-50 border border-blue-100 rounded-xl space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-start gap-3 min-w-0 flex-1">
+                        <div class="h-9 w-9 rounded-lg bg-blue-100/90 text-[#2563EB] flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="material-symbols-outlined text-[20px]">table_view</span>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="text-xs font-bold text-[#0F172A] leading-tight">Template Master ATK (Excel)</h4>
+                            <p class="text-[11px] text-slate-500 leading-relaxed mt-0.5">Format file sudah dioptimalkan agar langsung terbagi rapi per kolom di Microsoft Excel.</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <a href="{{ route('atk.items.template', ['delimiter' => 'semicolon']) }}" 
-                           class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-[11px] font-bold shadow-sm transition-all"
-                           title="Rekomendasi untuk Microsoft Excel di Indonesia agar kolom otomatis terpisah rapi">
-                            <span class="material-symbols-outlined text-[15px]">table_view</span>
-                            Template Excel (Titik Koma)
-                        </a>
-                        <a href="{{ route('atk.items.template', ['delimiter' => 'comma']) }}" 
-                           class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-[11px] font-semibold transition-all"
-                           title="Format CSV standar pemisah koma">
-                            <span class="material-symbols-outlined text-[15px]">download</span>
-                            CSV Standar (Koma)
-                        </a>
-                    </div>
+                    <a href="{{ route('atk.items.template') }}" 
+                       class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] active:scale-[0.98] text-white rounded-xl text-xs font-bold shadow-sm hover:shadow transition-all shrink-0 w-full sm:w-auto text-center"
+                       title="Unduh file template yang siap diisi langsung di Microsoft Excel">
+                        <span class="material-symbols-outlined text-[17px]">download</span>
+                        <span>Unduh Template Excel</span>
+                    </a>
                 </div>
 
                 <!-- Guidance tip for Excel and numbers -->
-                <div class="p-2.5 bg-amber-50/90 border border-amber-200/80 rounded-lg text-[11px] text-amber-900 leading-relaxed flex items-start gap-2">
-                    <span class="material-symbols-outlined text-amber-600 text-[17px] shrink-0 mt-0.5">lightbulb</span>
-                    <div>
-                        <strong class="font-semibold text-amber-950">Tips Khusus Microsoft Excel:</strong>
-                        <ul class="list-disc pl-4 mt-0.5 space-y-0.5 text-[10.5px] text-amber-900/90">
-                            <li>Gunakan tombol <strong>Template Excel (Titik Koma)</strong> agar tabel terpisah rapi dari Kolom A s/d I dan tidak menumpuk di Kolom A.</li>
-                            <li>Tulis angka pada <code>harga_beli</code>, <code>stok_awal</code>, dan <code>stok_minimum</code> hanya berupa nominal angka murni (contoh: <code>48000</code>, bukan <code>Rp 48.000</code>).</li>
-                        </ul>
+                <div class="p-2.5 sm:p-3 bg-amber-50/90 border border-amber-200/80 rounded-xl text-xs text-amber-900 leading-relaxed flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0 mt-0.5">lightbulb</span>
+                    <div class="min-w-0 flex-1 text-[11px] text-amber-900">
+                        <p class="font-bold text-amber-950">Tips Pengisian Data di Excel:</p>
+                        <p class="text-[10.5px] text-amber-800/90 mt-0.5">
+                            Tulis nominal angka pada <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">harga_beli</code>, <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">stok_awal</code>, dan <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">stok_minimum</code> hanya berupa angka murni tanpa simbol mata uang (contoh: <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono font-bold">48000</code>, bukan <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono line-through">Rp 48.000</code>).
+                        </p>
                     </div>
                 </div>
             </div>
@@ -185,11 +178,11 @@
                     </label>
                 </div>
 
-                <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2.5">
-                    <button type="button" onclick="closeImportAtkModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+                <div class="pt-4 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
+                    <button type="button" onclick="closeImportAtkModal()" class="w-full sm:w-auto px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors text-center">
                         Batal
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5">
+                    <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] active:scale-[0.98] text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5">
                         <span class="material-symbols-outlined text-[16px]">cloud_upload</span>
                         Unggah & Impor
                     </button>
