@@ -46,6 +46,22 @@ class Room extends Model
         return (bool) $this->is_pricing_active;
     }
 
+    /**
+     * Get the public URL for the room's image.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) {
+            return null;
+        }
+
+        if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+            return $this->image;
+        }
+
+        return asset('storage/' . $this->image);
+    }
+
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'room_id');

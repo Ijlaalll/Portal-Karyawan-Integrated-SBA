@@ -75,4 +75,16 @@ class RoomController extends Controller
             ->route('admin.rooms.index')
             ->with('success', 'Ruangan berhasil diperbarui.');
     }
+
+    /**
+     * Remove the specified room from storage.
+     */
+    public function destroy(Room $room)
+    {
+        $this->roomService->deleteRoom($room);
+
+        return redirect()
+            ->route('admin.rooms.index')
+            ->with('success', 'Ruangan berhasil dihapus.');
+    }
 }

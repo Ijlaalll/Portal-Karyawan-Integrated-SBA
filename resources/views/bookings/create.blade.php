@@ -129,7 +129,7 @@
                                                                             'location' => $room->location,
                                                                             'capacity' => $room->capacity,
                                                                             'description' => $room->description ?: 'Tidak ada deskripsi tambahan untuk ruangan ini.',
-                                                                            'image' => $room->image ? asset('storage/' . $room->image) : null,
+                                                                            'image' => $room->image_url,
                                                                             'facilities' => $room->facilities->pluck('name')->toArray()
                                                                         ]) }})"
                                                                         class="w-5 h-5 flex items-center justify-center rounded-full text-slate-400 hover:text-[#2563EB] hover:bg-[#EFF6FF] transition-all"

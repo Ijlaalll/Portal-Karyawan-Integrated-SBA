@@ -46,7 +46,21 @@
                     <tbody class="bg-white divide-y divide-[#E5E7EB] text-[#0F172A] text-sm">
                         @forelse ($rooms as $room)
                             <tr class="hover:bg-slate-50/70 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap font-bold text-[#0F172A]">{{ $room->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-bold text-[#0F172A]">
+                                    <div class="flex items-center gap-3">
+                                        @if($room->image_url)
+                                            <img src="{{ $room->image_url }}" alt="{{ $room->name }}" class="w-10 h-10 rounded-lg object-cover bg-slate-50 border border-slate-200 shrink-0">
+                                        @else
+                                            <div class="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[#2563EB] shrink-0">
+                                                <span class="material-symbols-outlined text-[20px]">meeting_room</span>
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <div class="font-bold text-[#0F172A]">{{ $room->name }}</div>
+                                            <div class="text-[11px] text-slate-400 font-normal">ID: #{{ $room->id }}</div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-[#475569] font-medium">{{ $room->location }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap font-semibold text-slate-700">{{ $room->capacity }} orang</td>
                                 <td class="px-6 py-4 whitespace-nowrap">

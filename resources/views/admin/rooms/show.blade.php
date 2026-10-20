@@ -24,6 +24,11 @@
                     Edit Ruangan
                 </a>
             </div>
+            @if($room->image_url)
+                <div class="w-full h-64 bg-slate-100 overflow-hidden border-b border-[#E5E7EB] flex items-center justify-center">
+                    <img src="{{ $room->image_url }}" alt="{{ $room->name }}" class="w-full h-full object-cover">
+                </div>
+            @endif
             <div class="border-t border-[#E5E7EB] px-6 py-5">
                 <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                     <div class="sm:col-span-1">

@@ -44,6 +44,10 @@ class RoomAndFacilityManagementTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.rooms.index'));
         $response->assertStatus(200);
 
+        // 1b. Admin accessing room create form
+        $response = $this->actingAs($this->admin)->get(route('admin.rooms.create'));
+        $response->assertStatus(200);
+
         // 2. Admin creating facility
         $response = $this->actingAs($this->admin)->post(route('admin.facilities.store'), [
             'name' => 'Projector',
@@ -68,6 +72,10 @@ class RoomAndFacilityManagementTest extends TestCase
         
         $room = Room::first();
         $this->assertTrue($room->facilities->contains($facility));
+
+        // 3b. Admin accessing room show & edit forms
+        $this->actingAs($this->admin)->get(route('admin.rooms.show', $room))->assertStatus(200);
+        $this->actingAs($this->admin)->get(route('admin.rooms.edit', $room))->assertStatus(200);
 
         // 4. Admin editing room
         $response = $this->actingAs($this->admin)->put(route('admin.rooms.update', $room), [
@@ -280,5 +288,121 @@ class RoomAndFacilityManagementTest extends TestCase
             'status' => 'active',
         ]);
         $response->assertStatus(403);
+    }
+
+    protected function createFakeImage(string $filename = 'room.png'): \Illuminate\Http\UploadedFile
+    {
+        $pngContent = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
+        return \Illuminate\Http\UploadedFile::fake()->createWithContent($filename, $pngContent);
+    }
+
+    /**
+     * Test Admin and GA can upload room image.
+     */
+    public function test_admin_and_ga_can_upload_room_image(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $file = $this->createFakeImage('meeting_room_a.png');
+
+        $response = $this->actingAs($this->admin)->post(route('admin.rooms.store'), [
+            'name' => 'Ruang Akasia',
+            'location' => 'Lantai 2',
+            'capacity' => 10,
+            'description' => 'Ruangan ber-AC dan proyektor',
+            'status' => 'active',
+            'image' => $file,
+        ]);
+
+        $response->assertRedirect(route('admin.rooms.index'));
+        $this->assertDatabaseHas('rooms', ['name' => 'Ruang Akasia']);
+
+        $room = Room::where('name', 'Ruang Akasia')->first();
+        $this->assertNotNull($room->image);
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($room->image);
+        $this->assertStringContainsString('storage/', (string) $room->image_url);
+    }
+
+    /**
+     * Test Admin can update room image and old image is deleted.
+     */
+    public function test_admin_can_update_room_image_and_old_image_is_deleted(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $oldFile = $this->createFakeImage('old_room.png');
+        $room = app(\App\Services\RoomService::class)->createRoom([
+            'name' => 'Ruang Cempaka',
+            'location' => 'Lantai 1',
+            'capacity' => 8,
+            'status' => 'active',
+            'image' => $oldFile,
+        ]);
+
+        $oldImagePath = $room->image;
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($oldImagePath);
+
+        $newFile = $this->createFakeImage('new_room.png');
+        $response = $this->actingAs($this->admin)->put(route('admin.rooms.update', $room), [
+            'name' => 'Ruang Cempaka Baru',
+            'location' => 'Lantai 1',
+            'capacity' => 8,
+            'status' => 'active',
+            'image' => $newFile,
+        ]);
+
+        $response->assertRedirect(route('admin.rooms.index'));
+        \Illuminate\Support\Facades\Storage::disk('public')->assertMissing($oldImagePath);
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($room->fresh()->image);
+    }
+
+    /**
+     * Test Admin can remove room image.
+     */
+    public function test_admin_can_remove_room_image(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $file = $this->createFakeImage('room_to_remove.png');
+        $room = app(\App\Services\RoomService::class)->createRoom([
+            'name' => 'Ruang Flamboyan',
+            'location' => 'Lantai 3',
+            'capacity' => 15,
+            'status' => 'active',
+            'image' => $file,
+        ]);
+
+        $imagePath = $room->image;
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($imagePath);
+
+        $response = $this->actingAs($this->admin)->put(route('admin.rooms.update', $room), [
+            'name' => 'Ruang Flamboyan',
+            'location' => 'Lantai 3',
+            'capacity' => 15,
+            'status' => 'active',
+            'remove_image' => 1,
+        ]);
+
+        $response->assertRedirect(route('admin.rooms.index'));
+        \Illuminate\Support\Facades\Storage::disk('public')->assertMissing($imagePath);
+        $this->assertNull($room->fresh()->image);
+    }
+
+    /**
+     * Test room image validation fails for invalid file.
+     */
+    public function test_room_image_validation_fails_for_invalid_file(): void
+    {
+        $invalidFile = \Illuminate\Http\UploadedFile::fake()->create('dokumen.pdf', 500, 'application/pdf');
+
+        $response = $this->actingAs($this->admin)->post(route('admin.rooms.store'), [
+            'name' => 'Ruang Error',
+            'location' => 'Lantai 1',
+            'capacity' => 5,
+            'status' => 'active',
+            'image' => $invalidFile,
+        ]);
+
+        $response->assertSessionHasErrors('image');
     }
 }

@@ -22,7 +22,17 @@ class UpdateRoomRequest extends FormRequest
             'status' => ['required', 'in:active,inactive'],
             'facilities' => ['nullable', 'array'],
             'facilities.*' => ['exists:facilities,id'],
-            'image' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'remove_image' => ['nullable', 'boolean'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar yang didukung adalah JPEG, PNG, JPG, atau WEBP.',
+            'image.max' => 'Ukuran gambar maksimal adalah 2MB.',
         ];
     }
 }
