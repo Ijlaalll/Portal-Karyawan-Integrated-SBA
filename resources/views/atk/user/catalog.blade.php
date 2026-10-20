@@ -100,14 +100,20 @@
                             <span class="text-[11px] font-semibold text-slate-400 text-center line-clamp-1">{{ $variant->item->category->name }}</span>
                         </div>
                     @endif
-                    <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-slate-600 px-2 py-0.5 rounded-md border border-slate-200/80 shadow-xs">
-                        {{ $variant->item->category->name }}
-                    </span>
+
+                    @if($isOutOfStock)
+                        <span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs flex items-center gap-1">
+                            Habis
+                        </span>
+                    @endif
                 </div>
 
                 <!-- Card Content -->
                 <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
                     <div class="space-y-1">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                            {{ $variant->item->category->name }}
+                        </span>
                         <h3 class="font-bold text-[#0F172A] text-sm leading-snug line-clamp-2" title="{{ $variant->item->name }}">
                             {{ $variant->item->name }}
                         </h3>
