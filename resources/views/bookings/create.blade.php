@@ -125,21 +125,21 @@
                                                  class="room-card group border-2 rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 relative flex flex-col justify-between hover:shadow-md {{ $isRoomSelected ? 'border-[#2563EB] ring-2 ring-[#2563EB]/20 bg-blue-50/20 shadow-sm' : 'border-slate-200 bg-white hover:border-blue-300' }}">
                                                 
                                                 <!-- Room Image Banner -->
-                                                <div class="relative w-full h-36 bg-slate-100 overflow-hidden">
+                                                <div class="relative w-full h-28 sm:h-36 bg-slate-100 overflow-hidden">
                                                     @if($room->image_url)
                                                         <img src="{{ $room->image_url }}" alt="{{ $room->name }}" 
                                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                                     @else
                                                         <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 text-slate-400 group-hover:from-blue-50 group-hover:to-slate-100 transition-colors">
-                                                            <span class="material-symbols-outlined text-[38px] text-slate-400 group-hover:text-blue-500 transition-colors">meeting_room</span>
-                                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">Ruang Rapat</span>
+                                                            <span class="material-symbols-outlined text-[32px] sm:text-[38px] text-slate-400 group-hover:text-blue-500 transition-colors">meeting_room</span>
+                                                            <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">Ruang Rapat</span>
                                                         </div>
                                                     @endif
 
                                                     <!-- Dark Gradient Overlay for Readability -->
                                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/15 pointer-events-none"></div>
 
-                                                    <!-- Info (i) Button -->
+                                                    <!-- Info (i) Button: Solid white with crisp blue icon -->
                                                     <button type="button" 
                                                             onclick="showRoomDetail(event, {{ json_encode([
                                                                 'name' => $room->name,
@@ -149,29 +149,29 @@
                                                                 'image' => $room->image_url,
                                                                 'facilities' => $room->facilities->pluck('name')->toArray()
                                                             ]) }})"
-                                                            class="absolute top-2.5 left-2.5 z-10 w-7 h-7 rounded-full bg-white/90 backdrop-blur-xs text-slate-700 hover:text-[#2563EB] hover:bg-white flex items-center justify-center shadow-sm transition-all"
+                                                            class="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10 w-7 h-7 rounded-full bg-white text-[#2563EB] hover:bg-blue-50 flex items-center justify-center shadow-md border border-slate-200/80 transition-all active:scale-90"
                                                             title="Lihat Detail Fasilitas & Ruangan">
-                                                        <span class="material-symbols-outlined text-[16px] font-bold">info</span>
+                                                        <span class="material-symbols-outlined text-[17px] font-bold">info</span>
                                                     </button>
 
                                                     <!-- Selected Checkmark Badge -->
-                                                    <div class="checkmark-icon absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full bg-[#2563EB] text-white flex items-center justify-center shadow-md transition-all duration-200 {{ $isRoomSelected ? '' : 'hidden' }}">
+                                                    <div class="checkmark-icon absolute top-2 right-2 sm:top-2.5 sm:right-2.5 z-10 w-7 h-7 rounded-full bg-[#2563EB] text-white flex items-center justify-center shadow-md transition-all duration-200 {{ $isRoomSelected ? '' : 'hidden' }}">
                                                         <span class="material-symbols-outlined text-[18px] font-bold">check</span>
                                                     </div>
 
                                                     <!-- Bottom Overlay on Image: Capacity & Location -->
-                                                    <div class="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between text-white text-[11px] font-medium pointer-events-none">
-                                                        <span class="inline-flex items-center gap-1 bg-black/45 backdrop-blur-xs px-2 py-0.5 rounded-md text-[10px] font-semibold text-white">
-                                                            <span class="material-symbols-outlined text-[13px]">groups</span> {{ $room->capacity }} orang
+                                                    <div class="absolute bottom-2 left-2 right-2 sm:left-2.5 sm:right-2.5 flex items-center justify-between text-white text-[11px] font-medium pointer-events-none">
+                                                        <span class="inline-flex items-center gap-1 bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-md text-[10px] font-semibold text-white">
+                                                            <span class="material-symbols-outlined text-[12px] sm:text-[13px]">groups</span> {{ $room->capacity }} orang
                                                         </span>
-                                                        <span class="inline-flex items-center gap-1 bg-black/45 backdrop-blur-xs px-2 py-0.5 rounded-md text-[10px] font-semibold text-white truncate max-w-[130px]">
-                                                            <span class="material-symbols-outlined text-[13px]">pin_drop</span> {{ $room->location }}
+                                                        <span class="inline-flex items-center gap-1 bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-md text-[10px] font-semibold text-white truncate max-w-[120px] sm:max-w-[130px]">
+                                                            <span class="material-symbols-outlined text-[12px] sm:text-[13px]">pin_drop</span> {{ $room->location }}
                                                         </span>
                                                     </div>
                                                 </div>
 
                                                 <!-- Card Body Content -->
-                                                <div class="p-3.5 flex-1 flex flex-col justify-between">
+                                                <div class="p-3 sm:p-3.5 flex-1 flex flex-col justify-between">
                                                     <div>
                                                         <h4 class="font-bold text-sm text-slate-900 group-hover:text-[#2563EB] transition-colors truncate" title="{{ $room->name }}">
                                                             {{ $room->name }}
@@ -179,7 +179,7 @@
 
                                                         <!-- Facilities Chips -->
                                                         @if($room->facilities->isNotEmpty())
-                                                            <div class="flex flex-wrap gap-1 mt-2.5">
+                                                            <div class="flex flex-wrap gap-1 mt-2 sm:mt-2.5">
                                                                 @foreach($room->facilities->take(3) as $facility)
                                                                     <span class="inline-flex items-center rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-600 border border-slate-100">
                                                                         {{ $facility->name }}
@@ -197,7 +197,7 @@
                                                     </div>
 
                                                     <!-- Selection Footer Action -->
-                                                    <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                                                    <div class="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
                                                         <span class="select-label font-bold {{ $isRoomSelected ? 'text-[#2563EB]' : 'text-slate-500 group-hover:text-[#2563EB]' }} transition-colors">
                                                             {{ $isRoomSelected ? 'Ruangan Dipilih' : 'Pilih Ruangan Ini' }}
                                                         </span>
