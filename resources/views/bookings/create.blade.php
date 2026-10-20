@@ -96,71 +96,115 @@
 
                         <!-- 4. Room Selection Section -->
                         <div id="room-selection-section">
-                            <label class="block text-sm font-bold text-[#0F172A] mb-3">Pilih Ruangan Tersedia</label>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-3">
+                                <div>
+                                    <label class="block text-sm font-bold text-[#0F172A]">Pilih Ruangan Tersedia</label>
+                                    <p class="text-xs text-slate-500">Pilih ruangan yang sesuai dengan kebutuhan dan kapasitas rapat Anda.</p>
+                                </div>
+                                @if($meetingType === 'offline' || $meetingType === 'hybrid')
+                                    <span class="self-start sm:self-auto text-xs font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">
+                                        {{ $availableRooms->count() }} Ruangan Tersedia
+                                    </span>
+                                @endif
+                            </div>
                             
                             @if($meetingType === 'offline' || $meetingType === 'hybrid')
                                 @if($availableRooms->isEmpty())
-                                    <div class="border border-dashed border-[#E5E7EB] rounded-lg p-6 text-center text-xs text-[#64748B] italic">
-                                        Tidak ada ruangan aktif yang memenuhi kriteria kapasitas & ketersediaan jadwal.
+                                    <div class="border border-dashed border-[#E5E7EB] rounded-xl p-8 text-center text-xs text-[#64748B] italic bg-slate-50">
+                                        <span class="material-symbols-outlined text-[36px] text-slate-400 block mb-2">meeting_room</span>
+                                        Tidak ada ruangan aktif yang memenuhi kriteria kapasitas & ketersediaan jadwal pada jam yang dipilih.
                                     </div>
                                 @else
-                                    <div class="flex gap-4 overflow-x-auto pb-4 pt-1 px-1 scrollbar-thin scrollbar-thumb-slate-200" style="-webkit-overflow-scrolling: touch;">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                         @foreach($availableRooms as $room)
                                             @php
                                                 $isRoomSelected = old('room_id', $selectedRoomId) == $room->id;
                                             @endphp
                                             <div id="card_{{ $room->id }}" 
                                                  onclick="selectRoom({{ $room->id }})"
-                                                 class="room-card border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 relative flex flex-col justify-between shrink-0 hover:shadow-md {{ $isRoomSelected ? 'border-[#2563EB] bg-[#EFF6FF]/40 shadow-sm' : 'border-[#F1F5F9] bg-white hover:border-slate-300' }}"
-                                                 style="width: 220px; min-width: 220px; height: 165px;">
+                                                 class="room-card group border-2 rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 relative flex flex-col justify-between hover:shadow-md {{ $isRoomSelected ? 'border-[#2563EB] ring-2 ring-[#2563EB]/20 bg-blue-50/20 shadow-sm' : 'border-slate-200 bg-white hover:border-blue-300' }}">
                                                 
-                                                <div class="flex-1 flex flex-col justify-between">
-                                                    <div>
-                                                        <!-- Top Row: Room Name, Info Icon, & Checkmark -->
-                                                        <div class="flex items-start justify-between gap-1.5">
-                                                            <h4 class="font-bold text-sm text-slate-900 truncate flex-1" title="{{ $room->name }}">
-                                                                {{ $room->name }}
-                                                            </h4>
-                                                            <div class="flex items-center gap-1 shrink-0">
-                                                                <!-- Info Details Button -->
-                                                                <button type="button" 
-                                                                        onclick="showRoomDetail(event, {{ json_encode([
-                                                                            'name' => $room->name,
-                                                                            'location' => $room->location,
-                                                                            'capacity' => $room->capacity,
-                                                                            'description' => $room->description ?: 'Tidak ada deskripsi tambahan untuk ruangan ini.',
-                                                                            'image' => $room->image_url,
-                                                                            'facilities' => $room->facilities->pluck('name')->toArray()
-                                                                        ]) }})"
-                                                                        class="w-5 h-5 flex items-center justify-center rounded-full text-slate-400 hover:text-[#2563EB] hover:bg-[#EFF6FF] transition-all"
-                                                                        title="Lihat Detail Ruangan">
-                                                                    <span class="material-symbols-outlined text-[15px] font-bold">info</span>
-                                                                </button>
-                                                                
-                                                                <!-- Selected Checkmark -->
-                                                                <div class="checkmark-icon w-5 h-5 flex items-center justify-center transition-all duration-200 {{ $isRoomSelected ? '' : 'hidden' }}">
-                                                                    <span class="material-symbols-outlined text-[20px] text-[#2563EB] font-bold select-none" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Metadata Row -->
-                                                        <div class="flex items-center gap-3 text-[11px] font-medium text-slate-500 mt-1.5">
-                                                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-slate-400">groups</span>{{ $room->capacity }} orang</span>
-                                                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-slate-400">pin_drop</span>{{ $room->location }}</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Facilities Row -->
-                                                    @if($room->facilities->isNotEmpty())
-                                                        <div class="flex flex-wrap gap-1 mt-3 overflow-hidden" style="max-height: 48px;">
-                                                            @foreach($room->facilities as $facility)
-                                                                <span class="inline-flex items-center rounded bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-600 border border-slate-100">
-                                                                    {{ $facility->name }}
-                                                                </span>
-                                                            @endforeach
+                                                <!-- Room Image Banner -->
+                                                <div class="relative w-full h-36 bg-slate-100 overflow-hidden">
+                                                    @if($room->image_url)
+                                                        <img src="{{ $room->image_url }}" alt="{{ $room->name }}" 
+                                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                                    @else
+                                                        <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 text-slate-400 group-hover:from-blue-50 group-hover:to-slate-100 transition-colors">
+                                                            <span class="material-symbols-outlined text-[38px] text-slate-400 group-hover:text-blue-500 transition-colors">meeting_room</span>
+                                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">Ruang Rapat</span>
                                                         </div>
                                                     @endif
+
+                                                    <!-- Dark Gradient Overlay for Readability -->
+                                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/15 pointer-events-none"></div>
+
+                                                    <!-- Info (i) Button -->
+                                                    <button type="button" 
+                                                            onclick="showRoomDetail(event, {{ json_encode([
+                                                                'name' => $room->name,
+                                                                'location' => $room->location,
+                                                                'capacity' => $room->capacity,
+                                                                'description' => $room->description ?: 'Tidak ada deskripsi tambahan untuk ruangan ini.',
+                                                                'image' => $room->image_url,
+                                                                'facilities' => $room->facilities->pluck('name')->toArray()
+                                                            ]) }})"
+                                                            class="absolute top-2.5 left-2.5 z-10 w-7 h-7 rounded-full bg-white/90 backdrop-blur-xs text-slate-700 hover:text-[#2563EB] hover:bg-white flex items-center justify-center shadow-sm transition-all"
+                                                            title="Lihat Detail Fasilitas & Ruangan">
+                                                        <span class="material-symbols-outlined text-[16px] font-bold">info</span>
+                                                    </button>
+
+                                                    <!-- Selected Checkmark Badge -->
+                                                    <div class="checkmark-icon absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full bg-[#2563EB] text-white flex items-center justify-center shadow-md transition-all duration-200 {{ $isRoomSelected ? '' : 'hidden' }}">
+                                                        <span class="material-symbols-outlined text-[18px] font-bold">check</span>
+                                                    </div>
+
+                                                    <!-- Bottom Overlay on Image: Capacity & Location -->
+                                                    <div class="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between text-white text-[11px] font-medium pointer-events-none">
+                                                        <span class="inline-flex items-center gap-1 bg-black/45 backdrop-blur-xs px-2 py-0.5 rounded-md text-[10px] font-semibold text-white">
+                                                            <span class="material-symbols-outlined text-[13px]">groups</span> {{ $room->capacity }} orang
+                                                        </span>
+                                                        <span class="inline-flex items-center gap-1 bg-black/45 backdrop-blur-xs px-2 py-0.5 rounded-md text-[10px] font-semibold text-white truncate max-w-[130px]">
+                                                            <span class="material-symbols-outlined text-[13px]">pin_drop</span> {{ $room->location }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Card Body Content -->
+                                                <div class="p-3.5 flex-1 flex flex-col justify-between">
+                                                    <div>
+                                                        <h4 class="font-bold text-sm text-slate-900 group-hover:text-[#2563EB] transition-colors truncate" title="{{ $room->name }}">
+                                                            {{ $room->name }}
+                                                        </h4>
+
+                                                        <!-- Facilities Chips -->
+                                                        @if($room->facilities->isNotEmpty())
+                                                            <div class="flex flex-wrap gap-1 mt-2.5">
+                                                                @foreach($room->facilities->take(3) as $facility)
+                                                                    <span class="inline-flex items-center rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-600 border border-slate-100">
+                                                                        {{ $facility->name }}
+                                                                    </span>
+                                                                @endforeach
+                                                                @if($room->facilities->count() > 3)
+                                                                    <span class="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-500" title="{{ $room->facilities->slice(3)->pluck('name')->implode(', ') }}">
+                                                                        +{{ $room->facilities->count() - 3 }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                        @else
+                                                            <p class="text-[11px] text-slate-400 italic mt-2">Tidak ada fasilitas khusus</p>
+                                                        @endif
+                                                    </div>
+
+                                                    <!-- Selection Footer Action -->
+                                                    <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                                                        <span class="select-label font-bold {{ $isRoomSelected ? 'text-[#2563EB]' : 'text-slate-500 group-hover:text-[#2563EB]' }} transition-colors">
+                                                            {{ $isRoomSelected ? 'Ruangan Dipilih' : 'Pilih Ruangan Ini' }}
+                                                        </span>
+                                                        <span class="select-icon material-symbols-outlined text-[16px] {{ $isRoomSelected ? 'text-[#2563EB]' : 'text-slate-400 group-hover:text-[#2563EB] group-hover:translate-x-0.5' }} transition-all">
+                                                            {{ $isRoomSelected ? 'check_circle' : 'arrow_forward' }}
+                                                        </span>
+                                                    </div>
                                                 </div>
 
                                                 <input type="radio" name="room_id" value="{{ $room->id }}" id="room_{{ $room->id }}" class="hidden" 
@@ -438,16 +482,38 @@
         }
         
         document.querySelectorAll('.room-card').forEach(card => {
-            card.classList.remove('border-[#2563EB]', 'bg-[#EFF6FF]/40', 'shadow-sm');
-            card.classList.add('border-[#F1F5F9]', 'bg-white', 'hover:border-slate-300');
+            card.classList.remove('border-[#2563EB]', 'ring-2', 'ring-[#2563EB]/20', 'bg-blue-50/20', 'shadow-sm');
+            card.classList.add('border-slate-200', 'bg-white');
             card.querySelector('.checkmark-icon')?.classList.add('hidden');
+            
+            const label = card.querySelector('.select-label');
+            if (label) {
+                label.innerText = 'Pilih Ruangan Ini';
+                label.className = 'select-label font-bold text-slate-500 group-hover:text-[#2563EB] transition-colors';
+            }
+            const icon = card.querySelector('.select-icon');
+            if (icon) {
+                icon.innerText = 'arrow_forward';
+                icon.className = 'select-icon material-symbols-outlined text-[16px] text-slate-400 group-hover:text-[#2563EB] group-hover:translate-x-0.5 transition-all';
+            }
         });
         
         const selectedCard = document.getElementById('card_' + roomId);
         if (selectedCard) {
-            selectedCard.classList.remove('border-[#F1F5F9]', 'bg-white', 'hover:border-slate-300');
-            selectedCard.classList.add('border-[#2563EB]', 'bg-[#EFF6FF]/40', 'shadow-sm');
+            selectedCard.classList.remove('border-slate-200', 'bg-white');
+            selectedCard.classList.add('border-[#2563EB]', 'ring-2', 'ring-[#2563EB]/20', 'bg-blue-50/20', 'shadow-sm');
             selectedCard.querySelector('.checkmark-icon')?.classList.remove('hidden');
+            
+            const label = selectedCard.querySelector('.select-label');
+            if (label) {
+                label.innerText = 'Ruangan Dipilih';
+                label.className = 'select-label font-bold text-[#2563EB] transition-colors';
+            }
+            const icon = selectedCard.querySelector('.select-icon');
+            if (icon) {
+                icon.innerText = 'check_circle';
+                icon.className = 'select-icon material-symbols-outlined text-[16px] text-[#2563EB] transition-all';
+            }
         }
     }
 
