@@ -367,12 +367,26 @@
                 </div>
 
                 <!-- Calendar Legend -->
-                <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-[#475569] bg-white border border-[#E5E7EB] rounded-lg p-3 shadow-xs select-none">
-                    <span class="font-semibold text-[#0F172A]">Legenda Status:</span>
-                    <span class="flex items-center gap-x-1.5"><span class="w-3.5 h-3.5 rounded bg-yellow-50 border border-yellow-300 border-l-4 border-l-yellow-500 block"></span> Menunggu Persetujuan</span>
-                    <span class="flex items-center gap-x-1.5"><span class="w-3.5 h-3.5 rounded bg-green-50 border border-green-300 border-l-4 border-l-green-500 block"></span> Disetujui / Aktif</span>
-                    <span class="flex items-center gap-x-1.5"><span class="w-3.5 h-3.5 rounded bg-blue-50 border border-blue-300 border-l-4 border-l-blue-500 block"></span> Selesai</span>
-                    <span class="flex items-center gap-x-1.5 ml-auto text-[11px]"><span class="material-symbols-outlined text-[15px]">info</span> Arahkan kursor pada pemesanan untuk melihat waktu dan penyelenggara.</span>
+                <div class="mt-4 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs text-slate-600 bg-slate-50/70 border border-slate-200/80 rounded-xl p-3 sm:p-3.5 select-none">
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                        <span class="font-bold text-slate-900 text-xs shrink-0">Legenda Status:</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-sm bg-yellow-50 border border-yellow-300 border-l-4 border-l-yellow-500 shrink-0"></span>
+                            <span class="text-[11px] sm:text-xs text-slate-600">Menunggu Persetujuan</span>
+                        </span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-sm bg-green-50 border border-green-300 border-l-4 border-l-green-500 shrink-0"></span>
+                            <span class="text-[11px] sm:text-xs text-slate-600">Disetujui / Aktif</span>
+                        </span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-sm bg-blue-50 border border-blue-300 border-l-4 border-l-blue-500 shrink-0"></span>
+                            <span class="text-[11px] sm:text-xs text-slate-600">Selesai</span>
+                        </span>
+                    </div>
+                    <div class="flex items-start gap-1.5 text-[11px] text-slate-500 pt-2 border-t border-slate-200/60 md:pt-0 md:border-t-0 shrink-0">
+                        <span class="material-symbols-outlined text-[16px] text-[#2563EB] shrink-0 mt-0.5">info</span>
+                        <span class="leading-snug">Sentuh atau arahkan kursor pada jadwal untuk info lengkap.</span>
+                    </div>
                 </div>
             </div>
 
