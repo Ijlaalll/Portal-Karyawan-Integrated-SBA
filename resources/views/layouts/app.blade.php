@@ -30,6 +30,21 @@
                     document.documentElement.classList.add('sidebar-collapsed');
                 }
             } catch(e) {}
+
+            // Anti-FOUT & Anti-TOFU Font Guard
+            if ('fonts' in document) {
+                Promise.all([
+                    document.fonts.load('24px "Material Symbols Outlined"'),
+                    document.fonts.load('400 16px "Inter"')
+                ]).then(function() {
+                    document.documentElement.classList.add('fonts-ready');
+                });
+                setTimeout(function() {
+                    document.documentElement.classList.add('fonts-ready');
+                }, 1000);
+            } else {
+                document.documentElement.classList.add('fonts-ready');
+            }
         })();
     </script>
     <style>
@@ -52,7 +67,11 @@
                  url('https://fonts.gstatic.com/s/materialsymbolsoutlined/v218/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpYo3REOpAiUM425vgw.woff2') format('woff2');
         }
 
-        /* 3. Zero-FOIC / Zero-TOFU CSS Guard */
+        /* 3. Zero-FOIC / Zero-TOFU CSS Guard: Mencegah teks mentah ligatur (mail, lock, dll) berkedip sebelum font siap */
+        html:not(.fonts-ready) .material-symbols-outlined {
+            visibility: hidden !important;
+        }
+
         .material-symbols-outlined {
             font-family: 'Material Symbols Outlined' !important;
             font-weight: normal;
@@ -69,7 +88,6 @@
             text-rendering: optimizeLegibility;
             -moz-osx-font-smoothing: grayscale;
             font-feature-settings: 'liga';
-            /* ZERO-FOIC / ZERO-TOFU GUARD: Mencegah kebocoran teks mentah ligature sebelum font siap */
             overflow: hidden;
             text-overflow: clip;
             user-select: none;
