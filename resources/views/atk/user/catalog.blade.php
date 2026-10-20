@@ -4,20 +4,20 @@
 
 @section('content')
 <div class="space-y-6 relative">
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[#E5E7EB] pb-5">
+    <header class="flex flex-row justify-between items-center gap-3 border-b border-[#E5E7EB] pb-4 sm:pb-5">
         <div>
-            <h1 class="text-3xl font-bold leading-tight tracking-tight text-[#0F172A]">
+            <h1 class="text-2xl sm:text-3xl font-bold leading-tight tracking-tight text-[#0F172A]">
                 Katalog ATK
             </h1>
-            <p class="text-sm text-[#475569] mt-1">
+            <p class="text-xs sm:text-sm text-[#475569] mt-0.5">
                 Pilih alat tulis kantor yang Anda butuhkan dan ajukan ke General Affairs.
             </p>
         </div>
         <button type="button" onclick="toggleCartDrawer()" 
-            class="flex items-center gap-2.5 px-5 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-sm font-bold shadow-sm transition-all relative shrink-0">
-            <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+            class="flex items-center gap-2 px-3.5 py-2 sm:px-5 sm:py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-all relative shrink-0">
+            <span class="material-symbols-outlined text-[18px] sm:text-[20px]">shopping_cart</span>
             <span>Keranjang</span>
-            <span id="cart-badge-header" class="bg-white text-[#2563EB] text-xs font-black px-2 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+            <span id="cart-badge-header" class="bg-white text-[#2563EB] text-[10px] sm:text-xs font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
         </button>
     </header>
 
@@ -94,10 +94,9 @@
                     @else
                         <!-- Modern Fallback Placeholder -->
                         <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 text-slate-400 p-4 select-none">
-                            <div class="w-12 h-12 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center text-[#2563EB] mb-1.5">
+                            <div class="w-12 h-12 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center text-[#2563EB]">
                                 <span class="material-symbols-outlined text-[26px]">inventory_2</span>
                             </div>
-                            <span class="text-[11px] font-semibold text-slate-400 text-center line-clamp-1">{{ $variant->item->category->name }}</span>
                         </div>
                     @endif
 
@@ -192,6 +191,14 @@
         </div>
     @endif
 </div>
+
+<!-- Mobile Floating Cart Button -->
+<button type="button" onclick="toggleCartDrawer()" 
+    class="sm:hidden fixed bottom-6 right-6 z-40 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-full w-14 h-14 shadow-2xl flex items-center justify-center transition-transform active:scale-95"
+    aria-label="Buka Keranjang ATK">
+    <span class="material-symbols-outlined text-[26px]">shopping_cart</span>
+    <span id="cart-badge-fab" class="absolute -top-1 -right-1 bg-red-500 text-white text-[11px] font-black px-1.5 py-0.5 rounded-full min-w-[20px] border-2 border-white shadow-xs">0</span>
+</button>
 
 <!-- Cart Sliding Drawer Backdrop -->
 <div id="cart-backdrop" onclick="toggleCartDrawer()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden" style="z-index: 90;"></div>
@@ -416,9 +423,13 @@
         // Calculate total count
         const totalItems = cart.reduce((acc, curr) => acc + curr.quantity, 0);
         
-        // Update header button badge
+        // Update header button badge and mobile FAB badge
         if (badgeHeader) {
             badgeHeader.textContent = totalItems;
+        }
+        const badgeFab = document.getElementById('cart-badge-fab');
+        if (badgeFab) {
+            badgeFab.textContent = totalItems;
         }
 
         if (cart.length === 0) {
