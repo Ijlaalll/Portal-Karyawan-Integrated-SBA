@@ -27,14 +27,30 @@
     </header>
 
     @if(session('success'))
-        <div class="rounded-md bg-green-50 p-4 border border-green-200 text-sm text-green-800">
-            {{ session('success') }}
+        <div class="rounded-xl bg-emerald-50 p-4 border border-emerald-200 text-sm text-emerald-800 flex items-start gap-2.5 shadow-xs">
+            <span class="material-symbols-outlined text-emerald-600 text-[20px] shrink-0 mt-0.5">check_circle</span>
+            <div class="flex-1 font-medium">{{ session('success') }}</div>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="rounded-md bg-red-50 p-4 border border-red-200 text-sm text-red-800">
-            {{ session('error') }}
+        <div class="rounded-xl bg-red-50 p-4 border border-red-200 text-sm text-red-800 flex items-start gap-2.5 shadow-xs">
+            <span class="material-symbols-outlined text-red-600 text-[20px] shrink-0 mt-0.5">error</span>
+            <div class="flex-1 font-medium">{{ session('error') }}</div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="rounded-xl bg-red-50 p-4 border border-red-200 text-sm text-red-800 shadow-xs space-y-1.5">
+            <div class="font-bold flex items-center gap-2 text-red-900">
+                <span class="material-symbols-outlined text-red-600 text-[20px]">error</span>
+                <span>Terjadi kendala saat memproses:</span>
+            </div>
+            <ul class="list-disc list-inside text-xs text-red-700 pl-6 space-y-0.5">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
@@ -127,9 +143,9 @@
                     </div>
                     <div>
                         <h3 class="text-base font-bold text-[#0F172A]" id="import-atk-modal-title">
-                            Import Master ATK (CSV)
+                            Import Master ATK (Excel / CSV)
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Unggah file CSV untuk mendaftarkan barang, kategori, dan stok awal secara massal.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Unggah file Microsoft Excel (.xlsx) atau CSV (.csv) untuk mendaftarkan barang, kategori, dan stok awal secara massal.</p>
                     </div>
                 </div>
                 <button type="button" onclick="closeImportAtkModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50">
@@ -163,7 +179,7 @@
                     <div class="min-w-0 flex-1 text-[11px] text-amber-900">
                         <p class="font-bold text-amber-950">Tips Pengisian Data di Excel:</p>
                         <p class="text-[10.5px] text-amber-800/90 mt-0.5">
-                            Tulis nominal angka pada <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">harga_beli</code>, <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">stok_awal</code>, dan <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">stok_minimum</code> hanya berupa angka murni tanpa simbol mata uang (contoh: <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono font-bold">48000</code>, bukan <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono line-through">Rp 48.000</code>).
+                            Tulis nominal angka pada <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">harga_beli</code>, <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">stok_awal</code>, dan <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">stok_minimum</code> hanya berupa angka murni tanpa simbol mata uang (contoh: <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono font-bold">48000</code>, bukan <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono line-through">Rp 48.000</code>). Anda dapat menyimpan dan mengunggah langsung file dalam format <span class="font-bold text-amber-950">.xlsx</span> (Excel biasa).
                         </p>
                     </div>
                 </div>
@@ -174,11 +190,14 @@
                 @csrf
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                        Pilih File CSV <span class="text-red-500">*</span>
+                        Pilih File Excel (.xlsx) atau CSV (.csv) <span class="text-red-500">*</span>
                     </label>
-                    <input type="file" name="file" accept=".csv,.txt" required
+                    <input type="file" name="file" accept=".xlsx,.xls,.csv,.txt" required
                         class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-[#2563EB] hover:file:bg-blue-100 border border-slate-200 rounded-xl cursor-pointer bg-slate-50/50 p-1.5 focus:outline-none focus:border-[#2563EB]">
-                    <p class="text-[10px] text-slate-400 mt-1">Mendukung format .csv (pemisah koma atau titik koma), maksimal 5MB.</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Mendukung format Microsoft Excel (.xlsx) atau CSV (.csv), maksimal 10MB.</p>
+                    @error('file')
+                        <p class="text-xs text-red-600 font-semibold mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="flex items-center gap-2 pt-1">
@@ -211,5 +230,11 @@
     function closeImportAtkModal() {
         document.getElementById('import-atk-modal').classList.add('hidden');
     }
+
+    @if($errors->any())
+        document.addEventListener('DOMContentLoaded', function() {
+            openImportAtkModal();
+        });
+    @endif
 </script>
 @endsection

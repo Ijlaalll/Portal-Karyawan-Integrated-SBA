@@ -251,19 +251,32 @@ class ItemController extends Controller
         $this->authorizeManager();
 
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt|max:5120',
+            'file' => [
+                'required',
+                'file',
+                'max:10240',
+                function ($attribute, $value, $fail) {
+                    $ext = strtolower($value->getClientOriginalExtension());
+                    if (!in_array($ext, ['csv', 'txt', 'xlsx', 'xls'])) {
+                        $fail('File harus berformat Microsoft Excel (.xlsx, .xls) atau CSV (.csv).');
+                    }
+                },
+            ],
             'update_existing' => 'nullable|boolean',
         ], [
-            'file.required' => 'Silakan pilih file CSV yang ingin diimpor.',
-            'file.mimes' => 'File harus berformat CSV (.csv).',
-            'file.max' => 'Ukuran file tidak boleh melebihi 5MB.',
+            'file.required' => 'Silakan pilih file Excel (.xlsx) atau CSV (.csv) yang ingin diimpor.',
+            'file.max' => 'Ukuran file tidak boleh melebihi 10MB.',
         ]);
 
         $file = $request->file('file');
         $updateExisting = $request->boolean('update_existing', true);
 
         try {
-            $result = $this->masterService->importItemsFromCsv($file->getRealPath(), $updateExisting);
+            $result = $this->masterService->importItemsFromFile(
+                $file->getRealPath(),
+                $updateExisting,
+                $file->getClientOriginalExtension()
+            );
 
             AuditLogService::log(
                 'atk',

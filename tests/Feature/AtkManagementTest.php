@@ -929,4 +929,81 @@ class AtkManagementTest extends TestCase
         $response->assertSee($itemWithImage->image_url);
         $response->assertSee('Perbesar');
     }
+
+    protected function createFakeXlsx(string $filename, array $rows): \Illuminate\Http\UploadedFile
+    {
+        $tempPath = tempnam(sys_get_temp_dir(), 'xlsx_');
+        $zip = new \ZipArchive();
+        $zip->open($tempPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        $zip->addFromString('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
+
+        $sheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>';
+        foreach ($rows as $rIdx => $row) {
+            $rowNum = $rIdx + 1;
+            $sheetXml .= '<row r="' . $rowNum . '">';
+            foreach ($row as $cIdx => $val) {
+                $colLetter = chr(65 + $cIdx);
+                $cellRef = $colLetter . $rowNum;
+                $sheetXml .= '<c r="' . $cellRef . '" t="inlineStr"><is><t>' . htmlspecialchars((string) $val, ENT_XML1, 'UTF-8') . '</t></is></c>';
+            }
+            $sheetXml .= '</row>';
+        }
+        $sheetXml .= '</sheetData></worksheet>';
+
+        $zip->addFromString('xl/worksheets/sheet1.xml', $sheetXml);
+        $zip->addFromString('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/></sheets></workbook>');
+        $zip->close();
+
+        return new \Illuminate\Http\UploadedFile($tempPath, $filename, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', null, true);
+    }
+
+    /** @test */
+    public function admin_or_ga_can_import_atk_items_via_xlsx()
+    {
+        $this->actingAs($this->ga);
+
+        $rows = [
+            ['kategori', 'nama_barang', 'nama_varian', 'sku', 'satuan', 'stok_awal', 'harga_beli', 'stok_minimum', 'deskripsi'],
+            ['Elektronik', 'Kalkulator Meja', '12 Digit', 'ATK-ELK-01', 'Pcs', '15', '65000', '3', 'Kalkulator meja kantor'],
+            ['Alat Tulis', 'Tipe-X Kertas', 'Pita 6m', 'ATK-TPX-01', 'Pcs', '40', '12500', '8', 'Correction tape'],
+        ];
+
+        $file = $this->createFakeXlsx('data_atk.xlsx', $rows);
+
+        $response = $this->post(route('atk.items.import'), [
+            'file' => $file,
+            'update_existing' => 1,
+        ]);
+
+        $response->assertRedirect(route('atk.items.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('atk_categories', ['name' => 'Elektronik']);
+        $this->assertDatabaseHas('atk_items', ['name' => 'Kalkulator Meja']);
+        $this->assertDatabaseHas('atk_variants', [
+            'name' => '12 Digit',
+            'sku' => 'ATK-ELK-01',
+            'stock' => 15,
+            'purchase_price' => 65000,
+        ]);
+        $this->assertDatabaseHas('atk_stock_movements', [
+            'quantity' => 15,
+            'type' => 'restock',
+        ]);
+    }
+
+    /** @test */
+    public function import_fails_with_validation_error_for_invalid_file_extension()
+    {
+        $this->actingAs($this->ga);
+
+        $file = \Illuminate\Http\UploadedFile::fake()->create('dokumen.pdf', 100);
+
+        $response = $this->post(route('atk.items.import'), [
+            'file' => $file,
+        ]);
+
+        $response->assertSessionHasErrors('file');
+    }
 }
