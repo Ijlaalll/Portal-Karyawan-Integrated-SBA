@@ -10,10 +10,6 @@
                 Manajemen Pengguna
             </h1>
             <div class="flex flex-wrap items-center gap-2.5">
-                <button type="button" onclick="openImportModal()" class="rounded bg-white border border-[#CBD5E1] px-3.5 py-2 text-sm font-semibold text-[#334155] shadow-sm hover:bg-slate-50 hover:border-slate-400 transition-colors flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px] text-[#64748B]">upload_file</span>
-                    Import Karyawan
-                </button>
                 <a href="{{ route('admin.users.create') }}" class="rounded bg-[#2563EB] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1D4ED8] transition-colors">
                     + Tambah Pengguna
                 </a>
@@ -401,108 +397,11 @@
     </div>
 </div>
 
-<!-- Modal Import CSV Karyawan -->
-<div id="import-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="import-modal-title" role="dialog" aria-modal="true">
-    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="closeImportModal()"></div>
-
-    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-        <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-6 border border-slate-100">
-            <div class="flex items-start justify-between border-b border-slate-100 pb-4">
-                <div class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[22px]">upload_file</span>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-[#0F172A]" id="import-modal-title">
-                            Import Data Karyawan (CSV)
-                        </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Unggah file CSV untuk mendaftarkan karyawan secara massal.</p>
-                    </div>
-                </div>
-                <button type="button" onclick="closeImportModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
-                </button>
-            </div>
-
-            <!-- Download Template Box -->
-            <div class="mt-4 p-3.5 sm:p-4 bg-gradient-to-br from-blue-50/90 to-slate-50 border border-blue-100 rounded-xl space-y-3">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div class="flex items-start gap-3 min-w-0 flex-1">
-                        <div class="h-9 w-9 rounded-lg bg-blue-100/90 text-[#2563EB] flex items-center justify-center shrink-0 mt-0.5">
-                            <span class="material-symbols-outlined text-[20px]">table_view</span>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h4 class="text-xs font-bold text-[#0F172A] leading-tight">Template Data Karyawan (Excel)</h4>
-                            <p class="text-[11px] text-slate-500 leading-relaxed mt-0.5">Format file sudah dioptimalkan agar langsung terbagi rapi per kolom di Microsoft Excel.</p>
-                        </div>
-                    </div>
-                    <a href="{{ route('admin.users.template') }}" 
-                       class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] active:scale-[0.98] text-white rounded-xl text-xs font-bold shadow-sm hover:shadow transition-all shrink-0 w-full sm:w-auto text-center"
-                       title="Unduh file template yang siap diisi langsung di Microsoft Excel">
-                        <span class="material-symbols-outlined text-[17px]">download</span>
-                        <span>Unduh Template Excel</span>
-                    </a>
-                </div>
-
-                <!-- Guidance tip for Excel and NIP -->
-                <div class="p-2.5 sm:p-3 bg-amber-50/90 border border-amber-200/80 rounded-xl text-xs text-amber-900 leading-relaxed flex items-start gap-2.5">
-                    <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0 mt-0.5">lightbulb</span>
-                    <div class="min-w-0 flex-1 text-[11px] text-amber-900">
-                        <p class="font-bold text-amber-950">Tips Pengisian NIP di Excel:</p>
-                        <p class="text-[10.5px] text-amber-800/90 mt-0.5">
-                            Awali angka NIP (18 digit) dengan tanda petik satu (contoh: <code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono font-bold">'199201012020011001</code>) atau atur format sel sebagai <em>Text</em> agar angka tidak berubah menjadi eksponensial (<code class="bg-amber-100/80 text-amber-950 px-1 py-0.5 rounded font-mono">1.99E+17</code>).
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Upload Form -->
-            <form action="{{ route('admin.users.import') }}" method="POST" enctype="multipart/form-data" class="mt-4 space-y-4">
-                @csrf
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                        Pilih File CSV <span class="text-red-500">*</span>
-                    </label>
-                    <input type="file" name="file" accept=".csv,.txt" required
-                        class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-[#2563EB] hover:file:bg-blue-100 border border-slate-200 rounded-xl cursor-pointer bg-slate-50/50 p-1.5 focus:outline-none focus:border-[#2563EB]">
-                    <p class="text-[10px] text-slate-400 mt-1">Mendukung format .csv (pemisah koma atau titik koma), maksimal 5MB.</p>
-                </div>
-
-                <div class="flex items-center gap-2 pt-1">
-                    <input type="checkbox" name="update_existing" id="update_existing" value="1" checked
-                        class="rounded border-slate-300 text-[#2563EB] focus:ring-[#2563EB] h-4 w-4">
-                    <label for="update_existing" class="text-xs text-slate-600 select-none">
-                        Perbarui data jika email atau NIP sudah terdaftar
-                    </label>
-                </div>
-
-                <div class="pt-4 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
-                    <button type="button" onclick="closeImportModal()" class="w-full sm:w-auto px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors text-center">
-                        Batal
-                    </button>
-                    <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] active:scale-[0.98] text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px]">cloud_upload</span>
-                        Unggah & Impor
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <script>
     function escapeHtml(str) {
         const div = document.createElement('div');
         div.textContent = str || '';
         return div.innerHTML;
-    }
-
-    function openImportModal() {
-        document.getElementById('import-modal').classList.remove('hidden');
-    }
-
-    function closeImportModal() {
-        document.getElementById('import-modal').classList.add('hidden');
     }
 
     function openStatusModal(userId, userName, actionUrl, actionType) {

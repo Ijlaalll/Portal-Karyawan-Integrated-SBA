@@ -29,7 +29,7 @@
     @endif
 
     <div class="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-sm">
-        <form action="{{ route('atk.items.update', $item) }}" method="POST" class="space-y-6">
+        <form action="{{ route('atk.items.update', $item) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
 
@@ -58,6 +58,69 @@
                 <label for="description" class="block text-sm font-semibold text-[#0F172A]">Deskripsi Barang</label>
                 <textarea name="description" id="description" rows="4" placeholder="Tulis deskripsi detail tentang barang ini..."
                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#2563EB] focus:ring-[#2563EB] sm:text-sm">{{ old('description', $item->description) }}</textarea>
+            </div>
+
+            <!-- Item Image Management (Non-Mandatory / Opsional) -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="block text-sm font-semibold text-[#0F172A]">
+                        Foto Barang <span class="text-xs font-normal text-slate-500">(Opsional / Tidak Wajib)</span>
+                    </label>
+                    <span class="inline-flex items-center text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                        JPG, PNG, WEBP (Maks. 2MB)
+                    </span>
+                </div>
+
+                @if($item->image_url)
+                    <!-- Current Image Card -->
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-16 h-16 rounded-lg bg-white border border-slate-200 overflow-hidden shrink-0 p-0.5">
+                                <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-full h-full object-contain">
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-xs font-bold text-[#0F172A] truncate">Foto Saat Ini</p>
+                                <p class="text-[11px] text-slate-500 truncate">Foto ini aktif ditampilkan pada katalog user</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <input type="checkbox" name="remove_image" id="remove_image" value="1"
+                                class="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                            <label for="remove_image" class="text-xs font-semibold text-red-600 select-none cursor-pointer">
+                                Hapus Foto Ini
+                            </label>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Upload New Image Dropzone -->
+                <div id="image_upload_container" class="relative border-2 border-dashed border-slate-300 hover:border-[#2563EB] rounded-xl p-5 bg-slate-50/60 hover:bg-blue-50/20 transition-all text-center cursor-pointer group">
+                    <input type="file" name="image" id="image_input" accept="image/jpeg,image/png,image/jpg,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewEditImage(this)">
+                    
+                    <!-- Placeholder State -->
+                    <div id="image_placeholder_state" class="flex flex-col items-center justify-center space-y-2 pointer-events-none">
+                        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-[#2563EB] flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-[24px]">cloud_upload</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-[#0F172A]"><span class="text-[#2563EB]">{{ $item->image_url ? 'Unggah foto baru untuk mengganti' : 'Pilih file foto' }}</span> atau tarik ke sini</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Format JPG, PNG, WEBP maksimal 2MB</p>
+                        </div>
+                    </div>
+
+                    <!-- Preview State (Initially Hidden) -->
+                    <div id="image_preview_state" class="hidden flex flex-col items-center justify-center space-y-3">
+                        <div class="relative w-36 h-36 rounded-xl overflow-hidden border border-slate-200 bg-white shadow-xs p-1">
+                            <img id="image_preview_img" src="#" alt="Preview Foto Barang Baru" class="w-full h-full object-contain rounded-lg">
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span id="image_filename" class="text-xs font-semibold text-slate-600 truncate max-w-xs"></span>
+                            <button type="button" onclick="clearEditImagePreview(event)" class="z-20 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">delete</span> Batal Foto Baru
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Status (is_active) Input -->
@@ -89,4 +152,43 @@
         </form>
     </div>
 </div>
+
+<script>
+    function previewEditImage(input) {
+        const file = input.files[0];
+        if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran gambar melebihi batas 2MB. Silakan pilih gambar yang lebih kecil.');
+                input.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image_preview_img').src = e.target.result;
+                document.getElementById('image_filename').textContent = file.name;
+                document.getElementById('image_placeholder_state').classList.add('hidden');
+                document.getElementById('image_preview_state').classList.remove('hidden');
+
+                // If user selected to remove existing image, uncheck it since they uploaded a replacement
+                const removeCheckbox = document.getElementById('remove_image');
+                if (removeCheckbox) {
+                    removeCheckbox.checked = false;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function clearEditImagePreview(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const input = document.getElementById('image_input');
+        input.value = '';
+        document.getElementById('image_preview_img').src = '#';
+        document.getElementById('image_preview_state').classList.add('hidden');
+        document.getElementById('image_placeholder_state').classList.remove('hidden');
+    }
+</script>
 @endsection

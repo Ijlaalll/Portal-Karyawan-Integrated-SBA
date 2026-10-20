@@ -55,7 +55,18 @@
                     @forelse($items as $item)
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="py-4 px-6 font-semibold text-[#0F172A]">
-                                <a href="{{ route('atk.items.show', $item) }}" class="hover:text-[#2563EB] hover:underline">{{ $item->name }}</a>
+                                <div class="flex items-center gap-3">
+                                    @if($item->image_url)
+                                        <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-10 h-10 rounded-lg object-contain bg-slate-50 border border-slate-200 shrink-0 p-0.5">
+                                    @else
+                                        <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-400 border border-slate-200 flex items-center justify-center shrink-0">
+                                            <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                                        </div>
+                                    @endif
+                                    <div class="min-w-0">
+                                        <a href="{{ route('atk.items.show', $item) }}" class="hover:text-[#2563EB] hover:underline block truncate">{{ $item->name }}</a>
+                                    </div>
+                                </div>
                             </td>
                             <td class="py-4 px-6">
                                 <span class="inline-flex items-center rounded-md bg-[#EFF6FF] px-2 py-0.5 text-xs font-semibold text-[#2563EB] ring-1 ring-inset ring-[#2563EB]/10">

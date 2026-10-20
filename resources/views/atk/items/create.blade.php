@@ -28,7 +28,7 @@
         </div>
     @endif
 
-    <form action="{{ route('atk.items.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('atk.items.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
 
         <!-- Card 1: Main Product & Category Info -->
@@ -88,6 +88,46 @@
                 <label for="description" class="block text-sm font-semibold text-[#0F172A]">Deskripsi Barang</label>
                 <textarea name="description" id="description" rows="3" placeholder="Tulis deskripsi detail tentang barang ini..."
                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#2563EB] focus:ring-[#2563EB] sm:text-sm">{{ old('description') }}</textarea>
+            </div>
+
+            <!-- Item Image (Non-Mandatory / Opsional) -->
+            <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <label for="image_input" class="block text-sm font-semibold text-[#0F172A]">
+                        Foto Barang <span class="text-xs font-normal text-slate-500">(Opsional / Tidak Wajib)</span>
+                    </label>
+                    <span class="inline-flex items-center text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                        JPG, PNG, WEBP (Maks. 2MB)
+                    </span>
+                </div>
+
+                <div id="image_upload_container" class="relative border-2 border-dashed border-slate-300 hover:border-[#2563EB] rounded-xl p-5 bg-slate-50/60 hover:bg-blue-50/20 transition-all text-center cursor-pointer group">
+                    <input type="file" name="image" id="image_input" accept="image/jpeg,image/png,image/jpg,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewImage(this)">
+                    
+                    <!-- Placeholder State -->
+                    <div id="image_placeholder_state" class="flex flex-col items-center justify-center space-y-2 pointer-events-none">
+                        <div class="w-12 h-12 rounded-xl bg-white border border-slate-200 text-[#2563EB] flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-[26px]">add_photo_alternate</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-[#0F172A]"><span class="text-[#2563EB]">Pilih file foto</span> atau tarik ke sini</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Unggah foto fisik barang untuk mempermudah pemilihan di katalog user</p>
+                        </div>
+                    </div>
+
+                    <!-- Preview State (Initially Hidden) -->
+                    <div id="image_preview_state" class="hidden flex flex-col items-center justify-center space-y-3">
+                        <div class="relative w-40 h-40 rounded-xl overflow-hidden border border-slate-200 bg-white shadow-xs p-1">
+                            <img id="image_preview_img" src="#" alt="Preview Foto Barang" class="w-full h-full object-contain rounded-lg">
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span id="image_filename" class="text-xs font-semibold text-slate-600 truncate max-w-xs"></span>
+                            <button type="button" onclick="clearImagePreview(event)" class="z-20 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">delete</span> Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Item Status -->
@@ -276,6 +316,37 @@
                 btn.classList.add('hidden');
             }
         });
+    }
+
+    function previewImage(input) {
+        const file = input.files[0];
+        if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran gambar melebihi batas 2MB. Silakan pilih gambar yang lebih kecil.');
+                input.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image_preview_img').src = e.target.result;
+                document.getElementById('image_filename').textContent = file.name;
+                document.getElementById('image_placeholder_state').classList.add('hidden');
+                document.getElementById('image_preview_state').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function clearImagePreview(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const input = document.getElementById('image_input');
+        input.value = '';
+        document.getElementById('image_preview_img').src = '#';
+        document.getElementById('image_preview_state').classList.add('hidden');
+        document.getElementById('image_placeholder_state').classList.remove('hidden');
     }
 
     // Run toggle on load to restore state if validation fails

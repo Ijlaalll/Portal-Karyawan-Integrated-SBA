@@ -736,4 +736,197 @@ class AtkManagementTest extends TestCase
             'minimum_stock' => 5,
         ]);
     }
+
+    protected function createFakeImage(string $filename = 'test.png'): \Illuminate\Http\UploadedFile
+    {
+        $pngContent = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
+        return \Illuminate\Http\UploadedFile::fake()->createWithContent($filename, $pngContent);
+    }
+
+    /** @test */
+    public function admin_and_ga_can_upload_image_for_atk_item_and_it_is_non_mandatory()
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $this->actingAs($this->ga);
+        $category = AtkCategory::create(['name' => 'Alat Tulis']);
+
+        // 1. Assert image is NON-MANDATORY (item can be created without image)
+        $responseNoImage = $this->post(route('atk.items.store'), [
+            'category_id' => $category->id,
+            'name' => 'Penghapus Pensil',
+            'description' => 'Penghapus karet',
+            'is_active' => 1,
+            'variants' => [
+                [
+                    'name' => 'Standard',
+                    'unit' => 'Pcs',
+                    'purchase_price' => 2000,
+                    'stock' => 10,
+                    'minimum_stock' => 2,
+                    'is_active' => 1,
+                ]
+            ]
+        ]);
+        $responseNoImage->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('atk_items', [
+            'name' => 'Penghapus Pensil',
+            'image' => null,
+        ]);
+
+        // 2. Assert item can be created WITH an image (hash generated, no duplicate overwrite)
+        $file = $this->createFakeImage('spidol_snowman.png');
+        $responseWithImage = $this->post(route('atk.items.store'), [
+            'category_id' => $category->id,
+            'name' => 'Spidol Snowman',
+            'description' => 'Spidol boardmarker hitam',
+            'image' => $file,
+            'is_active' => 1,
+            'variants' => [
+                [
+                    'name' => 'Hitam',
+                    'unit' => 'Pcs',
+                    'purchase_price' => 8500,
+                    'stock' => 20,
+                    'minimum_stock' => 5,
+                    'is_active' => 1,
+                ]
+            ]
+        ]);
+
+        $responseWithImage->assertSessionHasNoErrors();
+        $item = AtkItem::where('name', 'Spidol Snowman')->first();
+        $this->assertNotNull($item->image);
+        $this->assertStringStartsWith('atk_items/', $item->image);
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($item->image);
+    }
+
+    /** @test */
+    public function admin_can_update_item_image_and_old_image_is_automatically_deleted()
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $this->actingAs($this->admin);
+        $category = AtkCategory::create(['name' => 'Kertas']);
+
+        // Create item with initial image
+        $initialFile = $this->createFakeImage('kertas_lama.png');
+        $item = app(\App\Services\AtkMasterService::class)->createItem([
+            'category_id' => $category->id,
+            'name' => 'Kertas HVS',
+            'description' => 'A4 70gr',
+            'image' => $initialFile,
+            'is_active' => true,
+        ]);
+
+        $oldImagePath = $item->image;
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($oldImagePath);
+
+        // Update item with new image
+        $newFile = $this->createFakeImage('kertas_baru.png');
+        $response = $this->put(route('atk.items.update', $item), [
+            'category_id' => $category->id,
+            'name' => 'Kertas HVS A4 PaperOne',
+            'description' => 'A4 80gr',
+            'image' => $newFile,
+            'is_active' => 1,
+        ]);
+
+        $response->assertRedirect(route('atk.items.show', $item));
+        $item->refresh();
+
+        // Old image must be deleted from storage (no duplicate/orphan files)
+        \Illuminate\Support\Facades\Storage::disk('public')->assertMissing($oldImagePath);
+        // New image must exist
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($item->image);
+        $this->assertNotEquals($oldImagePath, $item->image);
+    }
+
+    /** @test */
+    public function admin_can_remove_image_from_atk_item()
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $this->actingAs($this->admin);
+        $category = AtkCategory::create(['name' => 'Peralatan']);
+
+        $file = $this->createFakeImage('stapler.png');
+        $item = app(\App\Services\AtkMasterService::class)->createItem([
+            'category_id' => $category->id,
+            'name' => 'Stapler Max HD-10',
+            'description' => 'Stapler kecil',
+            'image' => $file,
+            'is_active' => true,
+        ]);
+
+        $imagePath = $item->image;
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($imagePath);
+
+        // Request removal of image
+        $response = $this->put(route('atk.items.update', $item), [
+            'category_id' => $category->id,
+            'name' => 'Stapler Max HD-10',
+            'description' => 'Stapler kecil',
+            'remove_image' => 1,
+            'is_active' => 1,
+        ]);
+
+        $response->assertRedirect(route('atk.items.show', $item));
+        $item->refresh();
+
+        $this->assertNull($item->image);
+        \Illuminate\Support\Facades\Storage::disk('public')->assertMissing($imagePath);
+    }
+
+    /** @test */
+    public function user_can_view_atk_catalog_with_item_images_and_placeholders()
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $category = AtkCategory::create(['name' => 'Kertas']);
+        $file = $this->createFakeImage('kertas.png');
+
+        $itemWithImage = app(\App\Services\AtkMasterService::class)->createItem([
+            'category_id' => $category->id,
+            'name' => 'Kertas A4 Berfoto',
+            'image' => $file,
+            'is_active' => true,
+        ]);
+
+        $variant1 = AtkVariant::create([
+            'item_id' => $itemWithImage->id,
+            'name' => 'Rim',
+            'sku' => 'ATK-IMG-01',
+            'unit' => 'Rim',
+            'purchase_price' => 45000,
+            'stock' => 10,
+            'minimum_stock' => 2,
+            'is_active' => true,
+        ]);
+
+        $itemWithoutImage = app(\App\Services\AtkMasterService::class)->createItem([
+            'category_id' => $category->id,
+            'name' => 'Kertas F4 Tanpa Foto',
+            'image' => null,
+            'is_active' => true,
+        ]);
+
+        $variant2 = AtkVariant::create([
+            'item_id' => $itemWithoutImage->id,
+            'name' => 'Rim',
+            'sku' => 'ATK-NOIMG-01',
+            'unit' => 'Rim',
+            'purchase_price' => 50000,
+            'stock' => 15,
+            'minimum_stock' => 3,
+            'is_active' => true,
+        ]);
+
+        $response = $this->actingAs($this->user)->get(route('atk.catalog'));
+        $response->assertOk();
+        $response->assertSee('Kertas A4 Berfoto');
+        $response->assertSee('Kertas F4 Tanpa Foto');
+        $response->assertSee($itemWithImage->image_url);
+        $response->assertSee('Perbesar');
+    }
 }

@@ -43,6 +43,18 @@
                     </a>
                 </div>
                 
+                <!-- Product Image Banner / Card -->
+                <div class="mb-4 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center min-h-[160px] relative">
+                    @if($item->image_url)
+                        <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-full h-48 object-contain p-2 bg-white">
+                    @else
+                        <div class="text-center p-6 text-slate-400">
+                            <span class="material-symbols-outlined text-[36px] text-slate-300">image_not_supported</span>
+                            <p class="text-xs font-medium text-slate-400 mt-1">Belum ada foto barang</p>
+                        </div>
+                    @endif
+                </div>
+
                 <div class="space-y-4">
                     <div>
                         <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nama Barang</span>

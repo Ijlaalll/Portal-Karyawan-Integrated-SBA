@@ -8,6 +8,8 @@ use App\Models\AtkVariant;
 use App\Models\AtkStockMovement;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class AtkMasterService
 {
@@ -44,6 +46,10 @@ class AtkMasterService
      */
     public function createItem(array $data): AtkItem
     {
+        if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+            $data['image'] = $data['image']->store('atk_items', 'public');
+        }
+
         return AtkItem::create($data);
     }
 
@@ -52,6 +58,23 @@ class AtkMasterService
      */
     public function updateItem(AtkItem $item, array $data): AtkItem
     {
+        // Handle image removal request
+        if (!empty($data['remove_image'])) {
+            if ($item->image && Storage::disk('public')->exists($item->image)) {
+                Storage::disk('public')->delete($item->image);
+            }
+            $data['image'] = null;
+        } elseif (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+            // Delete old image if exists
+            if ($item->image && Storage::disk('public')->exists($item->image)) {
+                Storage::disk('public')->delete($item->image);
+            }
+            $data['image'] = $data['image']->store('atk_items', 'public');
+        } else {
+            unset($data['image']);
+        }
+
+        unset($data['remove_image']);
         $item->update($data);
         return $item;
     }
@@ -64,6 +87,12 @@ class AtkMasterService
         if ($item->variants()->exists()) {
             throw new \Exception('Barang tidak dapat dihapus karena masih memiliki varian. Silakan nonaktifkan barang ini.');
         }
+
+        // Clean up image file if exists
+        if ($item->image && Storage::disk('public')->exists($item->image)) {
+            Storage::disk('public')->delete($item->image);
+        }
+
         $item->delete();
     }
 

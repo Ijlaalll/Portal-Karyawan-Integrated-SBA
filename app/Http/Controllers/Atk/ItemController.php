@@ -74,6 +74,7 @@ class ItemController extends Controller
             'new_category_description' => ['nullable', 'string', 'max:1000'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'is_active' => ['required', 'boolean'],
             'variants' => ['required', 'array', 'min:1'],
             'variants.*.name' => ['required', 'string', 'max:255'],
@@ -82,6 +83,10 @@ class ItemController extends Controller
             'variants.*.stock' => ['required', 'integer', 'min:0'],
             'variants.*.minimum_stock' => ['required', 'integer', 'min:0'],
             'variants.*.is_active' => ['required', 'boolean'],
+        ], [
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus berupa jpeg, png, jpg, atau webp.',
+            'image.max' => 'Ukuran gambar tidak boleh melebihi 2MB.',
         ]);
 
         $item = DB::transaction(function() use ($request) {
@@ -97,13 +102,19 @@ class ItemController extends Controller
                 $categoryId = $request->input('category_id');
             }
 
-            // 2. Create the Item
-            $item = $this->masterService->createItem([
+            // 2. Create the Item (with optional image)
+            $itemData = [
                 'category_id' => $categoryId,
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
                 'is_active' => $request->input('is_active'),
-            ]);
+            ];
+
+            if ($request->hasFile('image')) {
+                $itemData['image'] = $request->file('image');
+            }
+
+            $item = $this->masterService->createItem($itemData);
 
             // 3. Create all initial variants
             if ($request->has('variants')) {
@@ -150,10 +161,29 @@ class ItemController extends Controller
             'category_id' => ['required', 'integer', 'exists:atk_categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'remove_image' => ['nullable', 'boolean'],
             'is_active' => ['required', 'boolean'],
+        ], [
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus berupa jpeg, png, jpg, atau webp.',
+            'image.max' => 'Ukuran gambar tidak boleh melebihi 2MB.',
         ]);
 
-        $this->masterService->updateItem($item, $validated);
+        $updateData = [
+            'category_id' => $request->input('category_id'),
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'is_active' => $request->input('is_active'),
+        ];
+
+        if ($request->boolean('remove_image')) {
+            $updateData['remove_image'] = true;
+        } elseif ($request->hasFile('image')) {
+            $updateData['image'] = $request->file('image');
+        }
+
+        $this->masterService->updateItem($item, $updateData);
 
         return redirect()
             ->route('atk.items.show', $item)

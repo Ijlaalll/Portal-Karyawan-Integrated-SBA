@@ -17,8 +17,20 @@ class AtkItem extends Model
         'category_id',
         'name',
         'description',
+        'image',
         'is_active',
     ];
+
+    /**
+     * Accessor: Get public URL of item image if exists.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if ($this->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->image)) {
+            return asset('storage/' . $this->image);
+        }
+        return null;
+    }
 
     protected $casts = [
         'is_active' => 'boolean',

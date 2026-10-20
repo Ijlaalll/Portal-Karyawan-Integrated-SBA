@@ -78,73 +78,99 @@
                 $isOutOfStock = $variant->stock <= 0;
             @endphp
             <!-- Variant Card -->
-            <div class="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between p-5 space-y-4 min-w-0 {{ $isOutOfStock ? 'opacity-75 bg-slate-50' : '' }}">
-                <div class="space-y-2">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <div class="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between min-w-0 {{ $isOutOfStock ? 'opacity-80 bg-slate-50/80' : '' }}">
+                
+                <!-- Product Image Area -->
+                <div class="relative w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center overflow-hidden group cursor-pointer"
+                     onclick="openImageModal('{{ $variant->item->image_url ?? '' }}', '{{ addslashes($variant->item->name) }}', '{{ addslashes($variant->item->category->name) }}')">
+                    @if($variant->item->image_url)
+                        <img src="{{ $variant->item->image_url }}" alt="{{ $variant->item->name }}" loading="lazy" 
+                             class="w-full h-full object-contain p-2.5 group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-slate-900/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-white/95 text-slate-700 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 backdrop-blur-xs">
+                                <span class="material-symbols-outlined text-[15px] text-[#2563EB]">zoom_in</span> Perbesar
+                            </span>
+                        </div>
+                    @else
+                        <!-- Modern Fallback Placeholder -->
+                        <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 text-slate-400 p-4 select-none">
+                            <div class="w-12 h-12 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center text-[#2563EB] mb-1.5">
+                                <span class="material-symbols-outlined text-[26px]">inventory_2</span>
+                            </div>
+                            <span class="text-[11px] font-semibold text-slate-400 text-center line-clamp-1">{{ $variant->item->category->name }}</span>
+                        </div>
+                    @endif
+                    <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-slate-600 px-2 py-0.5 rounded-md border border-slate-200/80 shadow-xs">
                         {{ $variant->item->category->name }}
                     </span>
-                    <h3 class="font-bold text-[#0F172A] text-sm leading-snug line-clamp-1" title="{{ $variant->item->name }}">
-                        {{ $variant->item->name }}
-                    </h3>
-                    <p class="text-xs text-slate-500 font-semibold leading-none">
-                        {{ $variant->name }}
-                    </p>
                 </div>
 
-                <div class="space-y-2">
-                    <div class="flex items-center justify-between text-xs border-b border-slate-100 pb-2">
-                        <span class="text-slate-400 font-medium">SKU: <span class="font-mono font-semibold text-slate-600">{{ $variant->sku }}</span></span>
-                        @if($isOutOfStock)
-                            <span class="inline-flex items-center text-red-600 font-bold gap-1 text-[11px]">
-                                <span class="material-symbols-outlined text-[14px]">cancel</span> Habis
-                            </span>
-                        @elseif($variant->stock <= $variant->minimum_stock)
-                            <span class="inline-flex items-center text-amber-600 font-bold gap-1 text-[11px]">
-                                <span class="material-symbols-outlined text-[14px]">warning</span> Menipis
-                            </span>
-                        @else
-                            <span class="inline-flex items-center text-emerald-600 font-bold gap-1 text-[11px]">
-                                <span class="material-symbols-outlined text-[14px]">check_circle</span> Tersedia
-                            </span>
-                        @endif
+                <!-- Card Content -->
+                <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-[#0F172A] text-sm leading-snug line-clamp-2" title="{{ $variant->item->name }}">
+                            {{ $variant->item->name }}
+                        </h3>
+                        <p class="text-xs text-[#2563EB] font-bold leading-none">
+                            {{ $variant->name }}
+                        </p>
                     </div>
 
-                    <div class="flex items-center justify-between text-xs pt-1">
-                        <span class="text-slate-500 font-medium">Stok:</span>
-                        <span class="font-bold text-[#0F172A]">{{ $variant->stock }} {{ $variant->unit }}</span>
-                    </div>
-                </div>
-
-                <div class="space-y-3 pt-2">
-                    @if($isOutOfStock)
-                        <button type="button" disabled
-                            class="w-full bg-slate-200 text-slate-400 rounded-lg py-2.5 font-bold text-xs cursor-not-allowed">
-                            Stok Habis
-                        </button>
-                    @else
-                        <!-- Quantity Control Inside Card -->
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-slate-500 pl-0.5 select-none">Jumlah</span>
-                            <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
-                                <button type="button" onclick="decrementCardQty('{{ $variant->id }}')" 
-                                    class="h-7 w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
-                                    <span class="material-symbols-outlined text-[14px]">remove</span>
-                                </button>
-                                <input type="number" id="card-qty-{{ $variant->id }}" value="1" min="1" max="{{ $variant->stock }}" readonly
-                                    class="w-8 text-center font-bold text-slate-800 text-xs bg-transparent border-0 p-0 focus:ring-0 pointer-events-none">
-                                <button type="button" onclick="incrementCardQty('{{ $variant->id }}', {{ $variant->stock }}, '{{ $variant->unit }}')" 
-                                    class="h-7 w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
-                                    <span class="material-symbols-outlined text-[14px]">add</span>
-                                </button>
-                            </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-xs border-b border-slate-100 pb-2">
+                            <span class="text-slate-400 font-medium">SKU: <span class="font-mono font-semibold text-slate-600">{{ $variant->sku }}</span></span>
+                            @if($isOutOfStock)
+                                <span class="inline-flex items-center text-red-600 font-bold gap-1 text-[11px]">
+                                    <span class="material-symbols-outlined text-[14px]">cancel</span> Habis
+                                </span>
+                            @elseif($variant->stock <= $variant->minimum_stock)
+                                <span class="inline-flex items-center text-amber-600 font-bold gap-1 text-[11px]">
+                                    <span class="material-symbols-outlined text-[14px]">warning</span> Menipis
+                                </span>
+                            @else
+                                <span class="inline-flex items-center text-emerald-600 font-bold gap-1 text-[11px]">
+                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Tersedia
+                                </span>
+                            @endif
                         </div>
 
-                        <button type="button" 
-                            onclick="addCardItemToCart('{{ $variant->id }}', '{{ addslashes($variant->item->name) }}', '{{ addslashes($variant->name) }}', {{ $variant->stock }}, '{{ $variant->unit }}')"
-                            class="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg py-2.5 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm">
-                            <span class="material-symbols-outlined text-[16px]">add_shopping_cart</span> Tambah ke Keranjang
-                        </button>
-                    @endif
+                        <div class="flex items-center justify-between text-xs pt-1">
+                            <span class="text-slate-500 font-medium">Stok:</span>
+                            <span class="font-bold text-[#0F172A]">{{ $variant->stock }} {{ $variant->unit }}</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-2">
+                        @if($isOutOfStock)
+                            <button type="button" disabled
+                                class="w-full bg-slate-200 text-slate-400 rounded-lg py-2.5 font-bold text-xs cursor-not-allowed">
+                                Stok Habis
+                            </button>
+                        @else
+                            <!-- Quantity Control Inside Card -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-slate-500 pl-0.5 select-none">Jumlah</span>
+                                <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
+                                    <button type="button" onclick="decrementCardQty('{{ $variant->id }}')" 
+                                        class="h-7 w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
+                                        <span class="material-symbols-outlined text-[14px]">remove</span>
+                                    </button>
+                                    <input type="number" id="card-qty-{{ $variant->id }}" value="1" min="1" max="{{ $variant->stock }}" readonly
+                                        class="w-8 text-center font-bold text-slate-800 text-xs bg-transparent border-0 p-0 focus:ring-0 pointer-events-none">
+                                    <button type="button" onclick="incrementCardQty('{{ $variant->id }}', {{ $variant->stock }}, '{{ $variant->unit }}')" 
+                                        class="h-7 w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
+                                        <span class="material-symbols-outlined text-[14px]">add</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="button" 
+                                onclick="addCardItemToCart('{{ $variant->id }}', '{{ addslashes($variant->item->name) }}', '{{ addslashes($variant->name) }}', {{ $variant->stock }}, '{{ $variant->unit }}', '{{ $variant->item->image_url ?? '' }}')"
+                                class="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg py-2.5 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                                <span class="material-symbols-outlined text-[16px]">add_shopping_cart</span> Tambah ke Keranjang
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </div>
         @empty
@@ -210,6 +236,32 @@
 <!-- Hidden Request Submit Form -->
 <form id="request-form" action="{{ route('atk.requests.store') }}" method="POST" class="hidden"></form>
 
+<!-- Modal Zoom Foto Barang -->
+<div id="image-zoom-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="zoom-modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="closeImageModal()"></div>
+    <div class="flex min-h-full items-center justify-center p-4 text-center">
+        <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md p-6 border border-slate-100">
+            <div class="flex items-start justify-between border-b border-slate-100 pb-3 mb-4">
+                <div>
+                    <span id="zoom-modal-category" class="text-[10px] font-bold text-[#2563EB] uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded"></span>
+                    <h3 class="text-base font-bold text-[#0F172A] mt-1" id="zoom-modal-title"></h3>
+                </div>
+                <button type="button" onclick="closeImageModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+            <div class="rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center p-3 min-h-[260px] max-h-[380px]">
+                <img id="zoom-modal-img" src="#" alt="Foto ATK" class="w-full h-full max-h-[360px] object-contain rounded-lg">
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button type="button" onclick="closeImageModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     let cart = [];
 
@@ -272,7 +324,7 @@
         }
     }
 
-    function addCardItemToCart(variantId, name, variantName, stock, unit) {
+    function addCardItemToCart(variantId, name, variantName, stock, unit, image) {
         const qtyInput = document.getElementById(`card-qty-${variantId}`);
         const qtyToAdd = parseInt(qtyInput.value) || 1;
 
@@ -282,6 +334,9 @@
         if (existing) {
             if (existing.quantity + qtyToAdd <= stock) {
                 existing.quantity += qtyToAdd;
+                if (!existing.image && image) {
+                    existing.image = image;
+                }
             } else {
                 alert(`Tidak dapat menambah quantity. Total di keranjang melebihi stok tersedia (${stock} ${unit})`);
                 return;
@@ -293,7 +348,8 @@
                 variant_name: variantName,
                 stock: stock,
                 unit: unit,
-                quantity: qtyToAdd
+                quantity: qtyToAdd,
+                image: image || ''
             });
         }
         
@@ -387,13 +443,21 @@
             const safeStock = escapeHtml(String(item.stock || 0));
             const safeQty = escapeHtml(String(item.quantity || 0));
             const safeVariantId = escapeHtml(String(item.variant_id || ''));
+            const safeImage = item.image ? escapeHtml(item.image) : '';
+
+            const imageHtml = safeImage 
+                ? `<img src="${safeImage}" alt="${safeName}" class="w-11 h-11 rounded-lg object-contain bg-slate-50 border border-slate-200 shrink-0 p-1">`
+                : `<div class="w-11 h-11 rounded-lg bg-slate-100 text-slate-400 border border-slate-200 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[20px]">inventory_2</span></div>`;
 
             html += `
-                <div class="p-4 border border-slate-200 rounded-xl flex items-center justify-between gap-3 text-xs bg-white shadow-sm hover:shadow transition-all">
-                    <div class="flex-1 min-w-0">
-                        <p class="font-bold text-[#0F172A] truncate text-sm" title="${safeName}">${safeName}</p>
-                        <p class="text-slate-500 font-semibold mt-0.5">${safeVariantName}</p>
-                        <p class="text-[10px] text-slate-400 mt-1.5 font-bold bg-slate-50 inline-block px-2 py-0.5 rounded border border-slate-100">Stok: ${safeStock} ${safeUnit}</p>
+                <div class="p-3.5 border border-slate-200 rounded-xl flex items-center justify-between gap-3 text-xs bg-white shadow-sm hover:shadow transition-all">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        ${imageHtml}
+                        <div class="min-w-0 flex-1">
+                            <p class="font-bold text-[#0F172A] truncate text-xs leading-snug" title="${safeName}">${safeName}</p>
+                            <p class="text-slate-500 font-semibold text-[11px] mt-0.5 truncate">${safeVariantName}</p>
+                            <p class="text-[10px] text-slate-400 mt-1 font-bold bg-slate-50 inline-block px-1.5 py-0.5 rounded border border-slate-100">Stok: ${safeStock} ${safeUnit}</p>
+                        </div>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
@@ -465,6 +529,19 @@
         localStorage.removeItem('atk_cart');
         
         form.submit();
+    }
+
+    function openImageModal(imageUrl, itemName, categoryName) {
+        if (!imageUrl) return;
+        document.getElementById('zoom-modal-img').src = imageUrl;
+        document.getElementById('zoom-modal-title').textContent = itemName;
+        document.getElementById('zoom-modal-category').textContent = categoryName;
+        document.getElementById('image-zoom-modal').classList.remove('hidden');
+    }
+
+    function closeImageModal() {
+        document.getElementById('image-zoom-modal').classList.add('hidden');
+        document.getElementById('zoom-modal-img').src = '#';
     }
 </script>
 @endsection
