@@ -214,7 +214,18 @@
 
     <!-- Scrollable Cart Items List Container -->
     <div class="flex-1 overflow-y-auto px-5 py-4 sm:p-6 space-y-4 min-h-0" id="cart-items-container">
-        <!-- Dynamic content injected here -->
+        <div class="flex flex-col items-center justify-center py-8 sm:py-14 text-center space-y-3 sm:space-y-4">
+            <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-blue-50 text-[#2563EB] flex items-center justify-center mb-1">
+                <span class="material-symbols-outlined text-[28px] sm:text-[32px]">shopping_cart</span>
+            </div>
+            <div class="space-y-1">
+                <p class="font-bold text-[#0F172A] text-sm">Keranjang Anda masih kosong</p>
+                <p class="text-xs text-slate-400 max-w-[240px] mx-auto leading-relaxed">Pilih barang dari katalog di sebelah kiri untuk menambahkannya ke pengajuan.</p>
+            </div>
+            <button type="button" onclick="toggleCartDrawer()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+                Mulai Belanja
+            </button>
+        </div>
     </div>
 
     <!-- Fixed Footer Form Submission -->
@@ -274,23 +285,46 @@
 <script>
     let cart = [];
 
-    // Load cart from localStorage to persist
-    if (localStorage.getItem('atk_cart')) {
+    function loadCartFromStorage() {
         try {
-            cart = JSON.parse(localStorage.getItem('atk_cart'));
+            const raw = localStorage.getItem('atk_cart');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) {
+                    cart = parsed.filter(item => item && typeof item === 'object' && item.variant_id);
+                } else {
+                    cart = [];
+                }
+            } else {
+                cart = [];
+            }
         } catch(e) {
+            console.error('Error parsing atk_cart from localStorage:', e);
             cart = [];
         }
     }
 
-    // Refresh UI on load
-    updateCartUI();
+    // Refresh UI on initial load & Turbo page loads
+    loadCartFromStorage();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCartFromStorage();
+            updateCartUI();
+        });
+    } else {
+        updateCartUI();
+    }
+
+    document.addEventListener('turbo:load', function() {
+        loadCartFromStorage();
+        updateCartUI();
+    });
 
     // Escape key listener to close drawer
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
             const drawer = document.getElementById('cart-drawer');
-            if (drawer.style.transform === 'translateX(0px)') {
+            if (drawer && drawer.style.transform === 'translateX(0px)') {
                 toggleCartDrawer();
             }
         }
@@ -299,12 +333,15 @@
     function toggleCartDrawer() {
         const drawer = document.getElementById('cart-drawer');
         const backdrop = document.getElementById('cart-backdrop');
+        if (!drawer || !backdrop) return;
         
         // Check current transform state
         const isClosed = drawer.style.transform === 'translateX(100%)' || drawer.style.transform === '';
         
         if (isClosed) {
-            // Open Drawer
+            // Open Drawer & Refresh UI
+            loadCartFromStorage();
+            updateCartUI();
             drawer.style.transform = 'translateX(0px)';
             backdrop.classList.remove('hidden');
         } else {
@@ -416,8 +453,16 @@
         const badgeHeader = document.getElementById('cart-badge-header');
         const submitBtn = document.getElementById('btn-submit-request');
 
-        // Calculate total count
-        const totalItems = cart.reduce((acc, curr) => acc + curr.quantity, 0);
+        if (!container) return;
+
+        // Ensure cart is an array and valid
+        if (!Array.isArray(cart)) {
+            cart = [];
+        }
+        cart = cart.filter(item => item && typeof item === 'object' && item.variant_id);
+
+        // Calculate total count safely
+        const totalItems = cart.reduce((acc, curr) => acc + (parseInt(curr.quantity) || 0), 0);
         
         // Update header button badge
         if (badgeHeader) {
@@ -439,11 +484,11 @@
                     </button>
                 </div>
             `;
-            submitBtn.disabled = true;
+            if (submitBtn) submitBtn.disabled = true;
             return;
         }
 
-        submitBtn.disabled = false;
+        if (submitBtn) submitBtn.disabled = false;
         let html = '<div class="space-y-4">';
         cart.forEach(item => {
             const safeName = escapeHtml(item.name || '');
