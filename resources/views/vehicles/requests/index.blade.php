@@ -4,9 +4,9 @@
 
 @section('content')
 <div class="min-h-full">
-    <header class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold tracking-tight text-[#0F172A]">
+    <header class="mb-6 flex flex-row items-center justify-between gap-3">
+        <div class="min-w-0">
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#0F172A] truncate sm:whitespace-normal">
                 @if($isAdmin)
                     Monitoring Permohonan Kendaraan
                 @elseif($isGa)
@@ -15,7 +15,7 @@
                     Permohonan Kendaraan Saya
                 @endif
             </h1>
-            <p class="text-sm text-[#64748B] mt-1">
+            <p class="text-xs sm:text-sm text-[#64748B] mt-0.5 sm:mt-1 hidden sm:block">
                 @if($isAdmin)
                     Pantau seluruh data permohonan kendaraan operasional perusahaan secara global.
                 @elseif($isGa)
@@ -26,9 +26,9 @@
             </p>
         </div>
         @if(!$isAdmin && !$isGa)
-            <a href="{{ route('vehicles.requests.create') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-[#2563EB] px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-[#1D4ED8] transition-colors shrink-0">
-                <span class="material-symbols-outlined text-[20px]">add</span>
-                Ajukan Kendaraan
+            <a href="{{ route('vehicles.requests.create') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-[#2563EB] px-3.5 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-[#1D4ED8] transition-colors shrink-0 whitespace-nowrap">
+                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">add</span>
+                <span>Ajukan Kendaraan</span>
             </a>
         @endif
     </header>
@@ -62,30 +62,9 @@
         </form>
     </div>
 
-    @if($requests->isEmpty())
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-8 sm:p-12 text-center shadow-xs">
-            <div class="flex flex-col items-center justify-center max-w-md mx-auto">
-                <div class="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-3.5 text-[#2563EB] shadow-xs">
-                    <span class="material-symbols-outlined" style="font-size: 32px;">commute</span>
-                </div>
-                <h3 class="text-sm sm:text-base font-bold text-[#0F172A] mb-1">
-                    Belum ada permohonan kendaraan yang diajukan.
-                </h3>
-                <p class="text-xs sm:text-sm text-[#64748B] mb-5 max-w-sm">
-                    {{ $isManager ? 'Belum ada permohonan penggunaan armada kendaraan operasional yang masuk.' : 'Anda belum memiliki riwayat permohonan kendaraan operasional.' }}
-                </p>
-                @if(!$isManager)
-                    <a href="{{ route('vehicles.requests.create') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-[#2563EB] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-[#1D4ED8] transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">add</span>
-                        Ajukan Permohonan Kendaraan
-                    </a>
-                @endif
-            </div>
-        </div>
-    @else
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-xs">
-            <div class="overflow-x-auto">
-                <table class="w-full min-w-[750px] divide-y divide-[#E2E8F0]">
+    <div class="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-xs">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-[#E2E8F0]">
                 <thead class="bg-[#F8FAFC]">
                     <tr>
                         <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-[#64748B] uppercase tracking-wider">No. Permohonan</th>
@@ -177,7 +156,29 @@
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="{{ $isManager ? 7 : 6 }}" class="px-6 py-16 text-center">
+                                <div class="flex flex-col items-center justify-center max-w-md mx-auto">
+                                    <div class="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-3.5 text-[#2563EB] shadow-xs">
+                                        <span class="material-symbols-outlined" style="font-size: 32px;">commute</span>
+                                    </div>
+                                    <h3 class="text-sm font-bold text-[#0F172A] mb-1">
+                                        Belum ada permohonan kendaraan yang diajukan.
+                                    </h3>
+                                    <p class="text-xs text-[#64748B] mb-4 max-w-sm">
+                                        {{ $isManager ? 'Belum ada permohonan penggunaan armada kendaraan operasional yang masuk.' : 'Anda belum memiliki riwayat permohonan kendaraan operasional.' }}
+                                    </p>
+                                    @if(!$isManager)
+                                        <a href="{{ route('vehicles.requests.create') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-[#2563EB] px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#1D4ED8] transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">add</span>
+                                            Ajukan Permohonan Kendaraan
+                                        </a>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -187,6 +188,5 @@
             </div>
         @endif
     </div>
-    @endif
 </div>
 @endsection

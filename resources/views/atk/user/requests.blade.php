@@ -4,17 +4,18 @@
 
 @section('content')
 <div class="space-y-6">
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-        <div>
-            <h1 class="text-2xl sm:text-3xl font-bold leading-tight tracking-tight text-[#0F172A]">
+    <header class="flex flex-row justify-between items-center gap-3">
+        <div class="min-w-0">
+            <h1 class="text-xl sm:text-3xl font-bold leading-tight tracking-tight text-[#0F172A] truncate sm:whitespace-normal">
                 Permintaan ATK Saya
             </h1>
-            <p class="text-xs sm:text-sm text-[#475569] mt-0.5">
+            <p class="text-xs sm:text-sm text-[#475569] mt-0.5 sm:mt-1 hidden sm:block">
                 Pantau status pengajuan, persetujuan, dan penyerahan ATK Anda.
             </p>
         </div>
-        <a href="{{ route('atk.catalog') }}" class="w-full sm:w-auto bg-[#2563EB] text-white rounded-xl px-4 py-2.5 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-[#1D4ED8] transition-colors shadow-sm shrink-0">
-            <span class="material-symbols-outlined text-[18px]">shopping_cart</span> Buka Katalog
+        <a href="{{ route('atk.catalog') }}" class="bg-[#2563EB] text-white rounded-xl px-3.5 py-2 sm:px-4 sm:py-2.5 font-semibold text-xs sm:text-sm inline-flex items-center gap-1.5 hover:bg-[#1D4ED8] transition-colors shadow-sm shrink-0 whitespace-nowrap">
+            <span class="material-symbols-outlined text-[18px] shrink-0">shopping_cart</span>
+            <span>Buka Katalog</span>
         </a>
     </header>
 
@@ -30,97 +31,84 @@
         </div>
     @endif
 
-    @if($requests->isEmpty())
-        <div class="bg-white border border-[#E5E7EB] rounded-2xl p-8 sm:p-12 text-center shadow-xs">
-            <div class="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-3 text-[#2563EB]">
-                <span class="material-symbols-outlined text-[30px]">inventory</span>
-            </div>
-            <h3 class="text-sm sm:text-base font-bold text-[#0F172A] mb-1">
-                Belum Ada Permintaan ATK
-            </h3>
-            <p class="text-xs text-slate-500 mb-5 max-w-sm mx-auto">
-                Anda belum pernah mengajukan permintaan alat tulis kantor. Buka katalog untuk memilih barang yang Anda butuhkan.
-            </p>
-            <a href="{{ route('atk.catalog') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-[#2563EB] px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#1D4ED8] transition-colors">
-                <span class="material-symbols-outlined text-[18px]">shopping_cart</span> Buka Katalog ATK
-            </a>
-        </div>
-    @else
-        <!-- Requests List Table -->
-        <div class="bg-white border border-[#E5E7EB] rounded-xl shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full min-w-[650px] text-left text-sm text-[#475569]">
-                    <thead>
-                        <tr class="border-b border-[#E5E7EB] text-xs font-bold text-[#0F172A] uppercase bg-[#F9FAFB]">
-                            <th class="py-3.5 px-6">Tanggal Pengajuan</th>
-                            <th class="py-3.5 px-6">No. Request</th>
-                            <th class="py-3.5 px-6">Item ATK</th>
-                            <th class="py-3.5 px-6">Status</th>
-                            <th class="py-3.5 px-6 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-[#E5E7EB]">
-                        @foreach($requests as $req)
-                            @php
-                                $statuses = [
-                                    'diajukan' => ['class' => 'bg-indigo-50 text-indigo-700 ring-indigo-600/20', 'label' => 'Diajukan'],
-                                    'disetujui' => ['class' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20', 'label' => 'Disetujui'],
-                                    'diproses' => ['class' => 'bg-blue-50 text-blue-700 ring-blue-600/20', 'label' => 'Diproses'],
-                                    'selesai' => ['class' => 'bg-slate-50 text-slate-700 ring-slate-600/10', 'label' => 'Selesai'],
-                                    'ditolak' => ['class' => 'bg-red-50 text-red-700 ring-red-600/20', 'label' => 'Ditolak'],
-                                    'dibatalkan' => ['class' => 'bg-amber-50 text-amber-700 ring-amber-600/20', 'label' => 'Batal'],
-                                ];
-                                $st = $statuses[$req->status] ?? ['class' => 'bg-slate-50 text-slate-600', 'label' => ucfirst($req->status)];
-                            @endphp
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="py-4 px-6">
-                                    <p class="font-semibold text-[#0F172A]">{{ $req->created_at->format('d M Y H:i') }}</p>
-                                    <p class="text-[10px] text-slate-400 font-medium">{{ $req->created_at->diffForHumans() }}</p>
-                                </td>
-                                <td class="py-4 px-6 font-mono text-xs font-semibold text-slate-600">{{ $req->request_number }}</td>
-                                <td class="py-4 px-6">
-                                    <div class="space-y-1">
-                                        @foreach($req->items as $item)
-                                            <p class="text-xs text-slate-700 font-medium">
-                                                {{ $item->variant->item->name }} - {{ $item->variant->name }} 
-                                                <span class="text-slate-400 font-bold">x{{ $item->quantity }}</span>
-                                            </p>
-                                        @endforeach
-                                    </div>
-                                </td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold {{ $st['class'] }} ring-1 ring-inset">
-                                        {{ $st['label'] }}
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right flex items-center justify-end gap-x-2">
+    <!-- Requests List Table -->
+    <div class="bg-white border border-[#E5E7EB] rounded-xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-[#475569]">
+                <thead>
+                    <tr class="border-b border-[#E5E7EB] text-xs font-bold text-[#0F172A] uppercase bg-[#F9FAFB]">
+                        <th class="py-3.5 px-6">Tanggal Pengajuan</th>
+                        <th class="py-3.5 px-6">No. Request</th>
+                        <th class="py-3.5 px-6">Item ATK</th>
+                        <th class="py-3.5 px-6">Status</th>
+                        <th class="py-3.5 px-6 text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#E5E7EB]">
+                    @forelse($requests as $req)
+                        @php
+                            $statuses = [
+                                'diajukan' => ['class' => 'bg-indigo-50 text-indigo-700 ring-indigo-600/20', 'label' => 'Diajukan'],
+                                'disetujui' => ['class' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20', 'label' => 'Disetujui'],
+                                'diproses' => ['class' => 'bg-blue-50 text-blue-700 ring-blue-600/20', 'label' => 'Diproses'],
+                                'selesai' => ['class' => 'bg-slate-50 text-slate-700 ring-slate-600/10', 'label' => 'Selesai'],
+                                'ditolak' => ['class' => 'bg-red-50 text-red-700 ring-red-600/20', 'label' => 'Ditolak'],
+                                'dibatalkan' => ['class' => 'bg-amber-50 text-amber-700 ring-amber-600/20', 'label' => 'Batal'],
+                            ];
+                            $st = $statuses[$req->status] ?? ['class' => 'bg-slate-50 text-slate-600', 'label' => ucfirst($req->status)];
+                        @endphp
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="py-4 px-6">
+                                <p class="font-semibold text-[#0F172A]">{{ $req->created_at->format('d M Y H:i') }}</p>
+                                <p class="text-[10px] text-slate-400 font-medium">{{ $req->created_at->diffForHumans() }}</p>
+                            </td>
+                            <td class="py-4 px-6 font-mono text-xs font-semibold text-slate-600">{{ $req->request_number }}</td>
+                            <td class="py-4 px-6">
+                                <div class="space-y-1">
+                                    @foreach($req->items as $item)
+                                        <p class="text-xs text-slate-700 font-medium">
+                                            {{ $item->variant->item->name }} - {{ $item->variant->name }} 
+                                            <span class="text-slate-400 font-bold">x{{ $item->quantity }}</span>
+                                        </p>
+                                    @endforeach
+                                </div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <span class="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold {{ $st['class'] }} ring-1 ring-inset">
+                                    {{ $st['label'] }}
+                                </span>
+                            </td>
+                            <td class="py-4 px-6 text-right flex items-center justify-end gap-x-2">
+                                <button type="button" 
+                                    data-request="{{ json_encode($req) }}"
+                                    onclick="openDetailModal(this)"
+                                    class="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] bg-[#EFF6FF] px-2.5 py-1.5 rounded transition-colors flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">visibility</span> Lacak & Detail
+                                </button>
+                                
+                                @if($req->status === 'diajukan')
                                     <button type="button" 
-                                        data-request="{{ json_encode($req) }}"
-                                        onclick="openDetailModal(this)"
-                                        class="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] bg-[#EFF6FF] px-2.5 py-1.5 rounded transition-colors flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[14px]">visibility</span> Lacak & Detail
+                                        onclick="openCancelModal('{{ $req->id }}', '{{ $req->request_number }}')"
+                                        class="text-xs font-bold text-red-600 hover:text-red-800 bg-red-50 px-2.5 py-1.5 rounded transition-colors flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">cancel</span> Batalkan
                                     </button>
-                                    
-                                    @if($req->status === 'diajukan')
-                                        <button type="button" 
-                                            onclick="openCancelModal('{{ $req->id }}', '{{ $req->request_number }}')"
-                                            class="text-xs font-bold text-red-600 hover:text-red-800 bg-red-50 px-2.5 py-1.5 rounded transition-colors flex items-center gap-1">
-                                            <span class="material-symbols-outlined text-[14px]">cancel</span> Batalkan
-                                        </button>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @if($requests->hasPages())
-                <div class="px-6 py-4 border-t border-[#E5E7EB] bg-[#F9FAFB]">
-                    {{ $requests->links() }}
-                </div>
-            @endif
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-8 text-center italic text-slate-400">Anda belum pernah mengajukan permintaan ATK.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-    @endif
+        @if($requests->hasPages())
+            <div class="px-6 py-4 border-t border-[#E5E7EB] bg-[#F9FAFB]">
+                {{ $requests->links() }}
+            </div>
+        @endif
+    </div>
 </div>
 
 <!-- Request Detail & Track Timeline Modal -->

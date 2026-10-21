@@ -120,6 +120,7 @@
         }
         .sidebar-arrow-icon {
             display: inline-block !important;
+            margin-left: auto !important;
             transition: transform 200ms ease-in-out !important;
         }
         .sidebar-arrow-icon.rotate-180 {
@@ -279,7 +280,6 @@
                 justify-content: center !important;
             }
             .nav-item-btn {
-                justify-content: flex-start !important;
                 padding-left: 0.75rem !important;
                 padding-right: 0.75rem !important;
             }

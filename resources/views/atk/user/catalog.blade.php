@@ -4,20 +4,20 @@
 
 @section('content')
 <div class="space-y-6 relative">
-    <header class="flex flex-row justify-between items-center gap-3 border-b border-[#E5E7EB] pb-4 sm:pb-5">
-        <div>
-            <h1 class="text-2xl sm:text-3xl font-bold leading-tight tracking-tight text-[#0F172A]">
+    <header class="flex flex-row justify-between items-center gap-3 border-b border-[#E5E7EB] pb-3 sm:pb-5">
+        <div class="min-w-0">
+            <h1 class="text-xl sm:text-3xl font-bold leading-tight tracking-tight text-[#0F172A] truncate">
                 Katalog ATK
             </h1>
-            <p class="text-xs sm:text-sm text-[#475569] mt-0.5">
+            <p class="text-xs sm:text-sm text-[#475569] mt-0.5 hidden sm:block">
                 Pilih alat tulis kantor yang Anda butuhkan dan ajukan ke General Affairs.
             </p>
         </div>
         <button type="button" onclick="toggleCartDrawer()" 
-            class="flex items-center gap-2 px-3.5 py-2 sm:px-5 sm:py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-all relative shrink-0">
+            class="flex items-center gap-1.5 sm:gap-2.5 px-3.5 py-2 sm:px-5 sm:py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-all relative shrink-0">
             <span class="material-symbols-outlined text-[18px] sm:text-[20px]">shopping_cart</span>
             <span>Keranjang</span>
-            <span id="cart-badge-header" class="bg-white text-[#2563EB] text-[10px] sm:text-xs font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
+            <span id="cart-badge-header" class="bg-white text-[#2563EB] text-[11px] sm:text-xs font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
         </button>
     </header>
 
@@ -70,109 +70,113 @@
         </form>
     </div>
 
-    <!-- Catalog Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+    <!-- Catalog Grid (2 columns on mobile, 3-4 on tablet/desktop) -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
         @forelse($variants as $variant)
             @php
                 $availability = $variant->availability_status;
                 $isOutOfStock = $variant->stock <= 0;
             @endphp
             <!-- Variant Card -->
-            <div class="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between min-w-0 {{ $isOutOfStock ? 'opacity-80 bg-slate-50/80' : '' }}">
+            <div class="bg-white border border-[#E5E7EB] rounded-xl sm:rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0 {{ $isOutOfStock ? 'opacity-80 bg-slate-50/80' : '' }}">
                 
                 <!-- Product Image Area -->
-                <div class="relative w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center overflow-hidden group cursor-pointer"
+                <div class="relative w-full h-28 sm:h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center overflow-hidden group cursor-pointer"
                      onclick="openImageModal('{{ $variant->item->image_url ?? '' }}', '{{ addslashes($variant->item->name) }}', '{{ addslashes($variant->item->category->name) }}')">
                     @if($variant->item->image_url)
                         <img src="{{ $variant->item->image_url }}" alt="{{ $variant->item->name }}" loading="lazy" 
-                             class="w-full h-full object-contain p-2.5 group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute inset-0 bg-slate-900/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                             class="w-full h-full object-contain p-2 sm:p-2.5 group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-slate-900/10 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex items-center justify-center">
                             <span class="bg-white/95 text-slate-700 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 backdrop-blur-xs">
                                 <span class="material-symbols-outlined text-[15px] text-[#2563EB]">zoom_in</span> Perbesar
                             </span>
                         </div>
                     @else
                         <!-- Modern Fallback Placeholder -->
-                        <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 text-slate-400 p-4 select-none">
-                            <div class="w-12 h-12 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center text-[#2563EB]">
-                                <span class="material-symbols-outlined text-[26px]">inventory_2</span>
+                        <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 text-slate-400 p-2 sm:p-4 select-none">
+                            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center text-[#2563EB] mb-1 sm:mb-1.5">
+                                <span class="material-symbols-outlined text-[20px] sm:text-[26px]">inventory_2</span>
                             </div>
+                            <span class="text-[9px] sm:text-[11px] font-semibold text-slate-400 text-center line-clamp-1">{{ $variant->item->category->name }}</span>
                         </div>
                     @endif
 
                     @if($isOutOfStock)
-                        <span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs flex items-center gap-1">
+                        <span class="absolute top-2 left-2 bg-rose-600 text-white text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md shadow-xs flex items-center gap-0.5 sm:gap-1">
                             Habis
                         </span>
                     @endif
                 </div>
 
                 <!-- Card Content -->
-                <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                    <div class="space-y-1">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                <div class="p-2.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-4">
+                    <div class="space-y-0.5 sm:space-y-1">
+                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider block truncate">
                             {{ $variant->item->category->name }}
                         </span>
-                        <h3 class="font-bold text-[#0F172A] text-sm leading-snug line-clamp-2" title="{{ $variant->item->name }}">
+                        <h3 class="font-bold text-[#0F172A] text-xs sm:text-sm leading-snug line-clamp-2" title="{{ $variant->item->name }}">
                             {{ $variant->item->name }}
                         </h3>
-                        <p class="text-xs text-[#2563EB] font-bold leading-none">
+                        <p class="text-[11px] sm:text-xs text-[#2563EB] font-bold leading-none truncate" title="{{ $variant->name }}">
                             {{ $variant->name }}
                         </p>
                     </div>
 
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-xs border-b border-slate-100 pb-2">
-                            <span class="text-slate-400 font-medium">SKU: <span class="font-mono font-semibold text-slate-600">{{ $variant->sku }}</span></span>
+                    <div class="space-y-1 sm:space-y-2">
+                        <div class="flex items-center justify-between text-[10px] sm:text-xs border-b border-slate-100 pb-1.5 sm:pb-2">
+                            <span class="text-slate-400 font-medium truncate max-w-[80px] sm:max-w-none">
+                                <span class="hidden sm:inline">SKU: </span><span class="font-mono font-semibold text-slate-600">{{ $variant->sku }}</span>
+                            </span>
                             @if($isOutOfStock)
-                                <span class="inline-flex items-center text-red-600 font-bold gap-1 text-[11px]">
-                                    <span class="material-symbols-outlined text-[14px]">cancel</span> Habis
+                                <span class="inline-flex items-center text-red-600 font-bold gap-0.5 sm:gap-1 text-[10px] sm:text-[11px] shrink-0">
+                                    <span class="material-symbols-outlined text-[13px] sm:text-[14px]">cancel</span> Habis
                                 </span>
                             @elseif($variant->stock <= $variant->minimum_stock)
-                                <span class="inline-flex items-center text-amber-600 font-bold gap-1 text-[11px]">
-                                    <span class="material-symbols-outlined text-[14px]">warning</span> Menipis
+                                <span class="inline-flex items-center text-amber-600 font-bold gap-0.5 sm:gap-1 text-[10px] sm:text-[11px] shrink-0">
+                                    <span class="material-symbols-outlined text-[13px] sm:text-[14px]">warning</span> Menipis
                                 </span>
                             @else
-                                <span class="inline-flex items-center text-emerald-600 font-bold gap-1 text-[11px]">
-                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Tersedia
+                                <span class="inline-flex items-center text-emerald-600 font-bold gap-0.5 sm:gap-1 text-[10px] sm:text-[11px] shrink-0">
+                                    <span class="material-symbols-outlined text-[13px] sm:text-[14px]">check_circle</span> Tersedia
                                 </span>
                             @endif
                         </div>
 
-                        <div class="flex items-center justify-between text-xs pt-1">
+                        <div class="flex items-center justify-between text-[10px] sm:text-xs pt-0.5 sm:pt-1">
                             <span class="text-slate-500 font-medium">Stok:</span>
                             <span class="font-bold text-[#0F172A]">{{ $variant->stock }} {{ $variant->unit }}</span>
                         </div>
                     </div>
 
-                    <div class="space-y-3 pt-2">
+                    <div class="space-y-1.5 sm:space-y-3 pt-1 sm:pt-2">
                         @if($isOutOfStock)
                             <button type="button" disabled
-                                class="w-full bg-slate-200 text-slate-400 rounded-lg py-2.5 font-bold text-xs cursor-not-allowed">
+                                class="w-full bg-slate-200 text-slate-400 rounded-lg py-1.5 sm:py-2.5 font-bold text-[10px] sm:text-xs cursor-not-allowed">
                                 Stok Habis
                             </button>
                         @else
                             <!-- Quantity Control Inside Card -->
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-semibold text-slate-500 pl-0.5 select-none">Jumlah</span>
-                                <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 pl-0.5 select-none hidden sm:inline">Jumlah</span>
+                                <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50 w-full sm:w-auto justify-between sm:justify-start">
                                     <button type="button" onclick="decrementCardQty('{{ $variant->id }}')" 
-                                        class="h-7 w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
-                                        <span class="material-symbols-outlined text-[14px]">remove</span>
+                                        class="h-6 w-6 sm:h-7 sm:w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
+                                        <span class="material-symbols-outlined text-[12px] sm:text-[14px]">remove</span>
                                     </button>
                                     <input type="number" id="card-qty-{{ $variant->id }}" value="1" min="1" max="{{ $variant->stock }}" readonly
-                                        class="w-8 text-center font-bold text-slate-800 text-xs bg-transparent border-0 p-0 focus:ring-0 pointer-events-none">
+                                        class="w-6 sm:w-8 text-center font-bold text-slate-800 text-[11px] sm:text-xs bg-transparent border-0 p-0 focus:ring-0 pointer-events-none">
                                     <button type="button" onclick="incrementCardQty('{{ $variant->id }}', {{ $variant->stock }}, '{{ $variant->unit }}')" 
-                                        class="h-7 w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
-                                        <span class="material-symbols-outlined text-[14px]">add</span>
+                                        class="h-6 w-6 sm:h-7 sm:w-7 hover:bg-slate-200 text-[#0F172A] font-bold flex items-center justify-center transition-colors focus:outline-none">
+                                        <span class="material-symbols-outlined text-[12px] sm:text-[14px]">add</span>
                                     </button>
                                 </div>
                             </div>
 
                             <button type="button" 
                                 onclick="addCardItemToCart('{{ $variant->id }}', '{{ addslashes($variant->item->name) }}', '{{ addslashes($variant->name) }}', {{ $variant->stock }}, '{{ $variant->unit }}', '{{ $variant->item->image_url ?? '' }}')"
-                                class="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg py-2.5 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm">
-                                <span class="material-symbols-outlined text-[16px]">add_shopping_cart</span> Tambah ke Keranjang
+                                class="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg py-1.5 sm:py-2.5 font-bold text-[10px] sm:text-xs transition-colors flex items-center justify-center gap-1 shadow-xs">
+                                <span class="material-symbols-outlined text-[14px] sm:text-[16px]">add_shopping_cart</span>
+                                <span><span class="hidden sm:inline">Tambah ke </span>Keranjang</span>
                             </button>
                         @endif
                     </div>
@@ -191,14 +195,6 @@
         </div>
     @endif
 </div>
-
-<!-- Mobile Floating Cart Button -->
-<button type="button" onclick="toggleCartDrawer()" 
-    class="sm:hidden fixed bottom-6 right-6 z-40 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-full w-14 h-14 shadow-2xl flex items-center justify-center transition-transform active:scale-95"
-    aria-label="Buka Keranjang ATK">
-    <span class="material-symbols-outlined text-[26px]">shopping_cart</span>
-    <span id="cart-badge-fab" class="absolute -top-1 -right-1 bg-red-500 text-white text-[11px] font-black px-1.5 py-0.5 rounded-full min-w-[20px] border-2 border-white shadow-xs">0</span>
-</button>
 
 <!-- Cart Sliding Drawer Backdrop -->
 <div id="cart-backdrop" onclick="toggleCartDrawer()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden" style="z-index: 90;"></div>
@@ -423,13 +419,9 @@
         // Calculate total count
         const totalItems = cart.reduce((acc, curr) => acc + curr.quantity, 0);
         
-        // Update header button badge and mobile FAB badge
+        // Update header button badge
         if (badgeHeader) {
             badgeHeader.textContent = totalItems;
-        }
-        const badgeFab = document.getElementById('cart-badge-fab');
-        if (badgeFab) {
-            badgeFab.textContent = totalItems;
         }
 
         if (cart.length === 0) {
