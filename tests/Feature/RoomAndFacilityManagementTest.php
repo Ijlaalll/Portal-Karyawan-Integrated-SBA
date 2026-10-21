@@ -19,6 +19,7 @@ class RoomAndFacilityManagementTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        \Illuminate\Support\Facades\Storage::fake('public');
 
         $this->admin = User::create([
             'name' => 'Admin User',
@@ -59,6 +60,7 @@ class RoomAndFacilityManagementTest extends TestCase
         $facility = Facility::first();
 
         // 3. Admin creating room with facility
+        $roomImage = $this->createFakeImage('boardroom.png');
         $response = $this->actingAs($this->admin)->post(route('admin.rooms.store'), [
             'name' => 'Boardroom',
             'location' => 'Level 2',
@@ -66,6 +68,7 @@ class RoomAndFacilityManagementTest extends TestCase
             'description' => 'Executive Meeting Room',
             'status' => 'active',
             'facilities' => [$facility->id],
+            'image' => $roomImage,
         ]);
         $response->assertRedirect(route('admin.rooms.index'));
         $this->assertDatabaseHas('rooms', ['name' => 'Boardroom']);
@@ -233,6 +236,7 @@ class RoomAndFacilityManagementTest extends TestCase
         $facility = Facility::where('name', 'Projector GA')->first();
 
         // 3. GA creating room with facility
+        $gaRoomImage = $this->createFakeImage('boardroom_ga.png');
         $response = $this->actingAs($gaUser)->post(route('admin.rooms.store'), [
             'name' => 'Boardroom GA',
             'location' => 'Level 3',
@@ -240,6 +244,7 @@ class RoomAndFacilityManagementTest extends TestCase
             'description' => 'GA Meeting Room',
             'status' => 'active',
             'facilities' => [$facility->id],
+            'image' => $gaRoomImage,
         ]);
         $response->assertRedirect(route('admin.rooms.index'));
         $this->assertDatabaseHas('rooms', ['name' => 'Boardroom GA']);
@@ -404,5 +409,20 @@ class RoomAndFacilityManagementTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('image');
+    }
+
+    /**
+     * Test room creation requires mandatory image.
+     */
+    public function test_room_creation_requires_mandatory_image(): void
+    {
+        $response = $this->actingAs($this->admin)->post(route('admin.rooms.store'), [
+            'name' => 'Ruang Tanpa Foto',
+            'location' => 'Lantai 1',
+            'capacity' => 8,
+            'status' => 'active',
+        ]);
+
+        $response->assertSessionHasErrors(['image']);
     }
 }

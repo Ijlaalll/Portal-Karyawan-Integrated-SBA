@@ -58,10 +58,10 @@
                             class="mt-1 block w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-[#0F172A] shadow-sm focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] sm:text-sm">{{ old('description') }}</textarea>
                     </div>
 
-                    <!-- Foto Ruangan (Opsional) -->
+                    <!-- Foto Ruangan (Wajib) -->
                     <div>
                         <label class="block text-sm font-medium text-[#0F172A] mb-1">
-                            Foto Ruangan <span class="text-xs font-normal text-slate-400">(Opsional)</span>
+                            Foto Ruangan <span class="text-xs font-bold text-red-500">* (Wajib diunggah)</span>
                         </label>
                         <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-200 border-dashed rounded-xl hover:border-[#2563EB] transition-colors bg-slate-50/50">
                             <div class="space-y-2 text-center" id="upload-placeholder">
@@ -71,7 +71,7 @@
                                 <div class="flex text-xs text-slate-600 justify-center">
                                     <label for="image" class="relative cursor-pointer rounded-md font-bold text-[#2563EB] hover:text-[#1D4ED8] focus-within:outline-none">
                                         <span>Unggah foto ruangan</span>
-                                        <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/jpg,image/webp" class="sr-only" onchange="previewImage(this)">
+                                        <input id="image" name="image" type="file" required accept="image/jpeg,image/png,image/jpg,image/webp" class="sr-only" onchange="previewImage(this)">
                                     </label>
                                     <p class="pl-1 text-slate-400">atau tarik ke sini</p>
                                 </div>

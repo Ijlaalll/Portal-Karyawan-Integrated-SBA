@@ -22,13 +22,19 @@ class StoreRoomRequest extends FormRequest
             'status' => ['required', 'in:active,inactive'],
             'facilities' => ['nullable', 'array'],
             'facilities.*' => ['exists:facilities,id'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ];
     }
 
     public function messages(): array
     {
         return [
+            'name.required' => 'Nama ruangan wajib diisi.',
+            'location.required' => 'Lokasi ruangan wajib diisi.',
+            'capacity.required' => 'Kapasitas ruangan wajib diisi.',
+            'capacity.min' => 'Kapasitas minimal 1 orang.',
+            'status.required' => 'Status ruangan wajib dipilih.',
+            'image.required' => 'Foto ruangan wajib diunggah sesuai ketentuan.',
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Format gambar yang didukung adalah JPEG, PNG, JPG, atau WEBP.',
             'image.max' => 'Ukuran gambar maksimal adalah 2MB.',
