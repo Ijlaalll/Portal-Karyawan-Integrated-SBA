@@ -28,16 +28,6 @@
                 <div class="w-full h-64 bg-slate-100 overflow-hidden border-b border-[#E5E7EB] flex items-center justify-center">
                     <img src="{{ $room->image_url }}" alt="{{ $room->name }}" class="w-full h-full object-cover">
                 </div>
-            @else
-                <div class="w-full h-44 bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#1E3A8A] overflow-hidden border-b border-[#E5E7EB] flex flex-col items-center justify-center relative">
-                    <div class="absolute -right-4 -bottom-6 text-white/[0.05] pointer-events-none select-none">
-                        <span class="material-symbols-outlined text-[130px] leading-none">meeting_room</span>
-                    </div>
-                    <div class="relative z-0 w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-400/25 flex items-center justify-center text-blue-300 mb-2 shadow-inner">
-                        <span class="material-symbols-outlined text-[28px]">meeting_room</span>
-                    </div>
-                    <span class="relative z-0 text-xs uppercase font-extrabold tracking-widest text-slate-300">Belum Ada Foto Ruangan</span>
-                </div>
             @endif
             <div class="border-t border-[#E5E7EB] px-6 py-5">
                 <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">

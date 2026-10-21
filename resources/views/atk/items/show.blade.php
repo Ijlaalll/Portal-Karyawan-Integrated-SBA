@@ -63,7 +63,7 @@
 
                     <div>
                         <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kategori</span>
-                        <span class="inline-flex items-center rounded-md bg-[#EFF6FF] px-2 py-0.5 text-xs font-semibold text-[#2563EB] mt-1">
+                        <span class="inline-flex items-center w-fit rounded-lg bg-[#EFF6FF] px-2.5 py-1 text-xs font-semibold text-[#2563EB] ring-1 ring-inset ring-[#2563EB]/15 mt-1 whitespace-nowrap">
                             {{ $item->category->name }}
                         </span>
                     </div>

@@ -62,12 +62,7 @@
                     <!-- Foto Ruangan -->
                     <div>
                         <label class="block text-sm font-medium text-[#0F172A] mb-1">
-                            Foto Ruangan 
-                            @if(!$room->image_url)
-                                <span class="text-xs font-bold text-amber-600">* (Belum ada foto, disarankan segera diunggah)</span>
-                            @else
-                                <span class="text-xs font-normal text-slate-400">(Opsional jika tidak ingin mengganti)</span>
-                            @endif
+                            Foto Ruangan <span class="text-xs font-normal text-slate-400">(Opsional)</span>
                         </label>
 
                         @if($room->image_url)

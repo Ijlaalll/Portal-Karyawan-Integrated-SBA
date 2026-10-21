@@ -125,28 +125,19 @@
                                                  class="room-card group border-2 rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 relative flex flex-col justify-between hover:shadow-md {{ $isRoomSelected ? 'border-[#2563EB] ring-2 ring-[#2563EB]/20 bg-blue-50/20 shadow-sm' : 'border-slate-200 bg-white hover:border-blue-300' }}">
                                                 
                                                 <!-- Room Image Banner -->
-                                                <div class="relative w-full h-28 sm:h-36 overflow-hidden bg-slate-900">
+                                                <div class="relative w-full h-28 sm:h-36 bg-slate-100 overflow-hidden">
                                                     @if($room->image_url)
                                                         <img src="{{ $room->image_url }}" alt="{{ $room->name }}" 
                                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                                        <!-- Dark Gradient Overlay for Readability on Real Photos -->
-                                                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/25 to-black/10 pointer-events-none"></div>
                                                     @else
-                                                        <!-- Premium Corporate Blueprint Fallback (Zero Collision & Max Contrast) -->
-                                                        <div class="w-full h-full bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#1E3A8A] relative overflow-hidden flex flex-col items-center justify-center text-center px-4 pb-5 group-hover:from-[#1E293B] group-hover:to-[#1D4ED8] transition-colors duration-300">
-                                                            <!-- Architectural Watermark Icon -->
-                                                            <div class="absolute -right-3 -bottom-5 text-white/[0.05] pointer-events-none select-none">
-                                                                <span class="material-symbols-outlined text-[96px] sm:text-[110px] leading-none">meeting_room</span>
-                                                            </div>
-                                                            <!-- Ambient Radial Glow -->
-                                                            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.18),transparent_70%)] pointer-events-none"></div>
-                                                            <!-- Center Room Graphic Badge -->
-                                                            <div class="relative z-0 w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-500/20 border border-blue-400/25 flex items-center justify-center text-blue-300 mb-1 group-hover:scale-110 group-hover:bg-blue-500/30 group-hover:text-blue-100 transition-all shadow-inner">
-                                                                <span class="material-symbols-outlined text-[19px] sm:text-[21px]">meeting_room</span>
-                                                            </div>
-                                                            <span class="relative z-0 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-300">Ruang Rapat SBA</span>
+                                                        <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 text-slate-400 group-hover:from-blue-50 group-hover:to-slate-100 transition-colors">
+                                                            <span class="material-symbols-outlined text-[32px] sm:text-[38px] text-slate-400 group-hover:text-blue-500 transition-colors">meeting_room</span>
+                                                            <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">Ruang Rapat</span>
                                                         </div>
                                                     @endif
+
+                                                    <!-- Dark Gradient Overlay for Readability -->
+                                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/15 pointer-events-none"></div>
 
                                                     <!-- Info (i) Button: Solid white with crisp blue icon -->
                                                     <button type="button" 
@@ -158,7 +149,7 @@
                                                                 'image' => $room->image_url,
                                                                 'facilities' => $room->facilities->pluck('name')->toArray()
                                                             ]) }})"
-                                                            class="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10 w-7 h-7 rounded-full bg-white text-[#2563EB] hover:bg-blue-50 flex items-center justify-center shadow-md border border-slate-200/90 transition-all active:scale-90"
+                                                            class="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10 w-7 h-7 rounded-full bg-white text-[#2563EB] hover:bg-blue-50 flex items-center justify-center shadow-md border border-slate-200/80 transition-all active:scale-90"
                                                             title="Lihat Detail Fasilitas & Ruangan">
                                                         <span class="material-symbols-outlined text-[17px] font-bold">info</span>
                                                     </button>
@@ -169,12 +160,12 @@
                                                     </div>
 
                                                     <!-- Bottom Overlay on Image: Capacity & Location -->
-                                                    <div class="absolute bottom-2 left-2 right-2 sm:left-2.5 sm:right-2.5 z-10 flex items-center justify-between text-[11px] font-medium pointer-events-none">
-                                                        <span class="inline-flex items-center gap-1 bg-slate-900/85 backdrop-blur-sm border border-white/15 px-2 py-0.5 rounded-md text-[10px] font-semibold text-white shadow-xs">
-                                                            <span class="material-symbols-outlined text-[12px] sm:text-[13px] text-blue-300">groups</span> {{ $room->capacity }} orang
+                                                    <div class="absolute bottom-2 left-2 right-2 sm:left-2.5 sm:right-2.5 flex items-center justify-between text-white text-[11px] font-medium pointer-events-none">
+                                                        <span class="inline-flex items-center gap-1 bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-md text-[10px] font-semibold text-white">
+                                                            <span class="material-symbols-outlined text-[12px] sm:text-[13px]">groups</span> {{ $room->capacity }} orang
                                                         </span>
-                                                        <span class="inline-flex items-center gap-1 bg-slate-900/85 backdrop-blur-sm border border-white/15 px-2 py-0.5 rounded-md text-[10px] font-semibold text-white truncate max-w-[120px] sm:max-w-[130px] shadow-xs">
-                                                            <span class="material-symbols-outlined text-[12px] sm:text-[13px] text-blue-300">pin_drop</span> {{ $room->location }}
+                                                        <span class="inline-flex items-center gap-1 bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-md text-[10px] font-semibold text-white truncate max-w-[120px] sm:max-w-[130px]">
+                                                            <span class="material-symbols-outlined text-[12px] sm:text-[13px]">pin_drop</span> {{ $room->location }}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -615,17 +606,12 @@
             </button>
 
             <!-- Image Banner -->
-            <div id="modal-room-image-container" class="relative h-48 w-full bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#1E3A8A] overflow-hidden flex items-center justify-center">
+            <div id="modal-room-image-container" class="relative h-48 w-full bg-gradient-to-r from-blue-500 to-indigo-600 overflow-hidden flex items-center justify-center">
                 <img id="modal-room-image" src="" alt="Foto Ruangan" class="h-full w-full object-cover hidden">
-                <!-- Fallback Corporate Blueprint illustration when no image is uploaded -->
+                <!-- Fallback SVG/Vector illustration when no image is uploaded -->
                 <div id="modal-room-image-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-white p-6">
-                    <div class="absolute -right-4 -bottom-6 text-white/[0.05] pointer-events-none select-none">
-                        <span class="material-symbols-outlined text-[130px] leading-none">meeting_room</span>
-                    </div>
-                    <div class="relative z-0 w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-400/25 flex items-center justify-center text-blue-300 mb-2 shadow-inner">
-                        <span class="material-symbols-outlined text-[28px]">meeting_room</span>
-                    </div>
-                    <span class="relative z-0 text-xs uppercase font-extrabold tracking-widest text-slate-300">Ruang Rapat SBA</span>
+                    <span class="material-symbols-outlined text-[48px] opacity-90 mb-2">meeting_room</span>
+                    <span class="text-xs uppercase font-extrabold tracking-widest opacity-75">Detail Ruangan</span>
                 </div>
             </div>
 

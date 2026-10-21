@@ -60,11 +60,11 @@
                 <thead>
                     <tr class="border-b border-[#E5E7EB] text-xs font-bold text-[#0F172A] uppercase bg-[#F9FAFB]">
                         <th class="py-3.5 px-6">Nama Barang</th>
-                        <th class="py-3.5 px-6">Kategori</th>
+                        <th class="py-3.5 px-6 whitespace-nowrap">Kategori</th>
                         <th class="py-3.5 px-6">Deskripsi</th>
-                        <th class="py-3.5 px-6">Jumlah Varian</th>
-                        <th class="py-3.5 px-6">Status</th>
-                        <th class="py-3.5 px-6 text-right">Aksi</th>
+                        <th class="py-3.5 px-6 whitespace-nowrap">Jumlah Varian</th>
+                        <th class="py-3.5 px-6 whitespace-nowrap">Status</th>
+                        <th class="py-3.5 px-6 text-right whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#E5E7EB]">
@@ -84,14 +84,14 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="py-4 px-6">
-                                <span class="inline-flex items-center rounded-md bg-[#EFF6FF] px-2 py-0.5 text-xs font-semibold text-[#2563EB] ring-1 ring-inset ring-[#2563EB]/10">
+                            <td class="py-4 px-6 whitespace-nowrap">
+                                <span class="inline-flex items-center w-fit rounded-lg bg-[#EFF6FF] px-2.5 py-1 text-xs font-semibold text-[#2563EB] ring-1 ring-inset ring-[#2563EB]/15 whitespace-nowrap">
                                     {{ $item->category->name }}
                                 </span>
                             </td>
                             <td class="py-4 px-6 max-w-xs truncate" title="{{ $item->description }}">{{ $item->description ?: '-' }}</td>
-                            <td class="py-4 px-6 font-semibold text-slate-700">{{ $item->variants->count() }} varian</td>
-                            <td class="py-4 px-6">
+                            <td class="py-4 px-6 font-semibold text-slate-700 whitespace-nowrap">{{ $item->variants->count() }} varian</td>
+                            <td class="py-4 px-6 whitespace-nowrap">
                                 @if($item->is_active)
                                     <span class="inline-flex items-center rounded-md bg-green-50 px-2.5 py-0.5 text-xs font-semibold text-green-700 ring-1 ring-inset ring-green-600/20">Aktif</span>
                                 @else
