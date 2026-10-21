@@ -202,7 +202,7 @@
 <!-- Cart Sliding Drawer Container -->
 <div id="cart-drawer" class="fixed inset-y-0 right-0 h-full max-h-[100dvh] bg-white shadow-2xl border-l border-slate-200 flex flex-col justify-between overflow-hidden" style="z-index: 100; transform: translateX(100%); transition: transform 0.3s ease-in-out; width: 450px; max-width: 100%; height: 100dvh; max-height: 100dvh;">
     <!-- Header -->
-    <div class="px-5 py-4 sm:p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
+    <div class="px-5 py-3.5 sm:px-6 sm:py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2 text-[#2563EB]">
             <span class="material-symbols-outlined text-[22px] sm:text-[24px]">shopping_basket</span>
             <h3 class="text-base sm:text-lg font-bold text-[#0F172A]">Keranjang Permintaan</h3>
@@ -213,40 +213,40 @@
     </div>
 
     <!-- Scrollable Cart Items List Container -->
-    <div class="flex-1 overflow-y-auto px-5 py-4 sm:p-6 space-y-4 min-h-0" id="cart-items-container">
-        <div class="flex flex-col items-center justify-center py-8 sm:py-14 text-center space-y-3 sm:space-y-4">
-            <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-blue-50 text-[#2563EB] flex items-center justify-center mb-1">
-                <span class="material-symbols-outlined text-[28px] sm:text-[32px]">shopping_cart</span>
+    <div class="flex-1 overflow-y-auto px-5 py-2 sm:px-6 sm:py-3 space-y-3 min-h-0 flex flex-col" id="cart-items-container">
+        <div class="my-auto flex flex-col items-center justify-center py-2 text-center space-y-2.5">
+            <div class="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-blue-50 text-[#2563EB] flex items-center justify-center mb-0.5">
+                <span class="material-symbols-outlined text-[24px] sm:text-[28px]">shopping_cart</span>
             </div>
             <div class="space-y-1">
                 <p class="font-bold text-[#0F172A] text-sm">Keranjang Anda masih kosong</p>
                 <p class="text-xs text-slate-400 max-w-[240px] mx-auto leading-relaxed">Pilih barang dari katalog di sebelah kiri untuk menambahkannya ke pengajuan.</p>
             </div>
-            <button type="button" onclick="toggleCartDrawer()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+            <button type="button" onclick="toggleCartDrawer()" class="px-4 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-xs">
                 Mulai Belanja
             </button>
         </div>
     </div>
 
     <!-- Fixed Footer Form Submission -->
-    <div class="px-5 pt-3 pb-6 sm:p-6 border-t border-slate-100 bg-slate-50 space-y-3 sm:space-y-4 shrink-0 shadow-lg" style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));">
+    <div class="px-5 py-3.5 sm:px-6 sm:py-4 border-t border-slate-100 bg-slate-50 space-y-2.5 sm:space-y-3 shrink-0 shadow-lg" style="padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 1.25rem));">
         <div class="space-y-1">
             <label for="cart-note" class="block text-[11px] sm:text-xs font-bold text-slate-600 uppercase">Catatan / Keperluan <span class="text-slate-400 font-normal">(Opsional)</span></label>
             <textarea id="cart-note" rows="2" placeholder="Tulis catatan keperluan pemakaian ATK untuk GA..."
-                class="block w-full rounded-xl border-slate-200 shadow-xs focus:border-[#2563EB] focus:ring-[#2563EB] text-xs transition-colors p-2.5 sm:p-3 resize-none"></textarea>
+                class="block w-full rounded-xl border-slate-200 shadow-xs focus:border-[#2563EB] focus:ring-[#2563EB] text-xs transition-colors p-2 sm:p-2.5 resize-none"></textarea>
         </div>
 
-        <div class="text-[10px] sm:text-[11px] text-slate-600 font-medium bg-blue-50/60 p-2.5 sm:p-3 rounded-xl border border-blue-100 leading-relaxed flex items-start gap-2">
+        <div class="text-[10px] sm:text-[11px] text-slate-600 font-medium bg-blue-50/60 p-2 sm:p-2.5 rounded-xl border border-blue-100 leading-relaxed flex items-start gap-2">
             <span class="material-symbols-outlined text-[15px] text-[#2563EB] shrink-0 mt-0.5">info</span>
             <span>Stok akan divalidasi ulang secara real-time terhadap database saat pengajuan dikirim.</span>
         </div>
 
         <div class="flex gap-2.5 sm:gap-3">
-            <button type="button" onclick="toggleCartDrawer()" class="flex-1 py-2.5 sm:py-3 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 bg-white hover:bg-slate-100 hover:border-slate-300 hover:text-slate-800 transition-all shadow-xs">
+            <button type="button" onclick="toggleCartDrawer()" class="flex-1 py-2 sm:py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 bg-white hover:bg-slate-100 hover:border-slate-300 hover:text-slate-800 transition-all shadow-xs">
                 Kembali Belanja
             </button>
             <button type="button" id="btn-submit-request" onclick="submitRequest()" disabled
-                class="flex-1 py-2.5 sm:py-3 bg-[#2563EB] text-white hover:bg-[#1D4ED8] disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5">
+                class="flex-1 py-2 sm:py-2.5 bg-[#2563EB] text-white hover:bg-[#1D4ED8] disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5">
                 Kirim Permintaan
             </button>
         </div>
@@ -471,15 +471,15 @@
 
         if (cart.length === 0) {
             container.innerHTML = `
-                <div class="flex flex-col items-center justify-center py-8 sm:py-14 text-center space-y-3 sm:space-y-4">
-                    <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-blue-50 text-[#2563EB] flex items-center justify-center mb-1">
-                        <span class="material-symbols-outlined text-[28px] sm:text-[32px]">shopping_cart</span>
+                <div class="my-auto flex flex-col items-center justify-center py-2 text-center space-y-2.5">
+                    <div class="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-blue-50 text-[#2563EB] flex items-center justify-center mb-0.5">
+                        <span class="material-symbols-outlined text-[24px] sm:text-[28px]">shopping_cart</span>
                     </div>
                     <div class="space-y-1">
                         <p class="font-bold text-[#0F172A] text-sm">Keranjang Anda masih kosong</p>
                         <p class="text-xs text-slate-400 max-w-[240px] mx-auto leading-relaxed">Pilih barang dari katalog di sebelah kiri untuk menambahkannya ke pengajuan.</p>
                     </div>
-                    <button type="button" onclick="toggleCartDrawer()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+                    <button type="button" onclick="toggleCartDrawer()" class="px-4 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-xs">
                         Mulai Belanja
                     </button>
                 </div>
