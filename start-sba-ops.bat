@@ -9,12 +9,39 @@ echo       (Ruang Rapat, Kendaraan, SIK, Toilet, Global)
 echo ============================================================
 echo.
 
-REM 0. Deteksi otomatis lokasi PHP 8.2+ (Prioritas PHP Server / XAMPP / Laragon 8.2+)
+REM 0. Deteksi otomatis lokasi PHP 8.2+ (Prioritas Drive E, Laragon, XAMPP, Drive C)
 set "PHP_EXE="
 
-if exist "C:\Users\Administrator\Downloads\php-8.5.10-nts-Win32-vs17-x64\php.exe" (
-    "C:\Users\Administrator\Downloads\php-8.5.10-nts-Win32-vs17-x64\php.exe" -r "exit(version_compare(PHP_VERSION, '8.2.0', '>=') ? 0 : 1);" >nul 2>&1
-    if not errorlevel 1 set "PHP_EXE=C:\Users\Administrator\Downloads\php-8.5.10-nts-Win32-vs17-x64\php.exe"
+REM 0.1 Cek Drive E: (Lokasi Server Baru)
+if exist "E:\php-8.5.10-nts-Win32-vs17-x64\php.exe" (
+    "E:\php-8.5.10-nts-Win32-vs17-x64\php.exe" -r "exit(version_compare(PHP_VERSION, '8.2.0', '>=') ? 0 : 1);" >nul 2>&1
+    if not errorlevel 1 set "PHP_EXE=E:\php-8.5.10-nts-Win32-vs17-x64\php.exe"
+)
+
+if not defined PHP_EXE (
+    for /d %%D in ("E:\laragon\bin\php\php-8.*") do (
+        if exist "%%D\php.exe" (
+            "%%D\php.exe" -r "exit(version_compare(PHP_VERSION, '8.2.0', '>=') ? 0 : 1);" >nul 2>&1
+            if not errorlevel 1 (
+                if not defined PHP_EXE set "PHP_EXE=%%D\php.exe"
+            )
+        )
+    )
+)
+
+if not defined PHP_EXE (
+    if exist "E:\xampp\php\php.exe" (
+        "E:\xampp\php\php.exe" -r "exit(version_compare(PHP_VERSION, '8.2.0', '>=') ? 0 : 1);" >nul 2>&1
+        if not errorlevel 1 set "PHP_EXE=E:\xampp\php\php.exe"
+    )
+)
+
+REM 0.2 Cek Drive C: (Fallback)
+if not defined PHP_EXE (
+    if exist "C:\Users\Administrator\Downloads\php-8.5.10-nts-Win32-vs17-x64\php.exe" (
+        "C:\Users\Administrator\Downloads\php-8.5.10-nts-Win32-vs17-x64\php.exe" -r "exit(version_compare(PHP_VERSION, '8.2.0', '>=') ? 0 : 1);" >nul 2>&1
+        if not errorlevel 1 set "PHP_EXE=C:\Users\Administrator\Downloads\php-8.5.10-nts-Win32-vs17-x64\php.exe"
+    )
 )
 
 if not defined PHP_EXE (
@@ -44,7 +71,7 @@ if not defined PHP_EXE (
 )
 
 if not defined PHP_EXE (
-    echo [ERROR] PHP 8.2+ tidak ditemukan! Pastikan PHP 8.2 atau lebih baru terinstall.
+    echo [ERROR] PHP 8.2+ tidak ditemukan! Pastikan PHP 8.2 atau lebih baru terinstall di Drive E/C atau terdaftar di PATH.
     pause
     exit /b 1
 )
@@ -60,7 +87,7 @@ if not errorlevel 1 (
 
 REM 1. Bersihkan instance lama HANYA untuk SBA Operations [port 8080 dan 8443]
 echo [1/5] Membersihkan instance lama SBA Operations jika ada...
-powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 8080,8443 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { ($_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*')) -or ($_.ProcessName -eq 'caddy.exe' -and ($_.CommandLine -like '*8443*' -or $_.CommandLine -like '*Caddyfile*')) } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
+powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 8080,8443 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { ($_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*GA-one*' -or $_.CommandLine -like '*GA_one*' -or $_.CommandLine -like '*GA one*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*')) -or ($_.ProcessName -eq 'caddy.exe' -and ($_.CommandLine -like '*8443*' -or $_.CommandLine -like '*Caddyfile*')) } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
 echo       [OK] Pembersihan proses lama selesai.
 
 REM 2. Cek apakah MySQL berjalan dan nyalakan diam-diam di background jika belum aktif
@@ -71,6 +98,16 @@ if "%ERRORLEVEL%"=="0" (
 ) else (
     echo       [INFO] MySQL belum aktif. Menyalakan di background...
     net start mysql >nul 2>&1
+    if exist "E:\laragon\bin\mysql" (
+        for /d %%M in ("E:\laragon\bin\mysql\mysql-*") do (
+            if exist "%%M\bin\mysqld.exe" (
+                start "" /b "%%M\bin\mysqld.exe" >nul 2>&1
+            )
+        )
+    )
+    if exist "E:\xampp\mysql\bin\mysqld.exe" (
+        start "" /b "E:\xampp\mysql\bin\mysqld.exe" >nul 2>&1
+    )
     if exist "C:\laragon\bin\mysql" (
         for /d %%M in ("C:\laragon\bin\mysql\mysql-*") do (
             if exist "%%M\bin\mysqld.exe" (
@@ -207,7 +244,7 @@ echo.
 echo ============================================================
 echo   MEMATIKAN SERVER SBA OPERATIONS...
 echo ============================================================
-powershell -NoProfile -Command "Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { ($_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*')) -or ($_.ProcessName -eq 'caddy.exe' -and ($_.CommandLine -like '*8443*' -or $_.CommandLine -like '*Caddyfile*')) } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
+powershell -NoProfile -Command "Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { ($_.ProcessName -eq 'php.exe' -and ($_.CommandLine -like '*Project Magang*' -or $_.CommandLine -like '*8080*' -or $_.CommandLine -like '*GA-one*' -or $_.CommandLine -like '*GA_one*' -or $_.CommandLine -like '*GA one*' -or $_.CommandLine -like '*sba_portal*' -or $_.CommandLine -like '*sba_ops*' -or $_.CommandLine -like '*sba-ops*')) -or ($_.ProcessName -eq 'caddy.exe' -and ($_.CommandLine -like '*8443*' -or $_.CommandLine -like '*Caddyfile*')) } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }" 2>NUL
 echo [OK] Server SBA Operations berhasil dimatikan dengan aman!
 ping 127.0.0.1 -n 2 >nul
 exit
