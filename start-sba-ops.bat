@@ -9,15 +9,22 @@ echo       (Ruang Rapat, Kendaraan, SIK, Toilet, Global)
 echo ============================================================
 echo.
 
-REM 0. Deteksi otomatis lokasi PHP 8.2+ (Prioritas Drive E, Laragon, XAMPP, Drive C)
+REM 0. Deteksi otomatis lokasi PHP 8.2+ (Prioritas E:\Applications\laragon, E:\laragon, Drive C)
 set "PHP_EXE="
 
-REM 0.1 Cek Drive E: (Lokasi Server Baru)
-if exist "E:\php-8.5.10-nts-Win32-vs17-x64\php.exe" (
-    "E:\php-8.5.10-nts-Win32-vs17-x64\php.exe" -r "exit(version_compare(PHP_VERSION, '8.2.0', '>=') ? 0 : 1);" >nul 2>&1
-    if not errorlevel 1 set "PHP_EXE=E:\php-8.5.10-nts-Win32-vs17-x64\php.exe"
+REM 0.1 Cek E:\Applications\laragon (Lokasi Server Terkini)
+if not defined PHP_EXE (
+    for /d %%D in ("E:\Applications\laragon\bin\php\php-8.*") do (
+        if exist "%%D\php.exe" (
+            "%%D\php.exe" -r "exit(version_compare(PHP_VERSION, '8.2.0', '>=') ? 0 : 1);" >nul 2>&1
+            if not errorlevel 1 (
+                if not defined PHP_EXE set "PHP_EXE=%%D\php.exe"
+            )
+        )
+    )
 )
 
+REM 0.2 Cek Drive E: (Lokasi Server Lainnya)
 if not defined PHP_EXE (
     for /d %%D in ("E:\laragon\bin\php\php-8.*") do (
         if exist "%%D\php.exe" (
@@ -26,6 +33,13 @@ if not defined PHP_EXE (
                 if not defined PHP_EXE set "PHP_EXE=%%D\php.exe"
             )
         )
+    )
+)
+
+if not defined PHP_EXE (
+    if exist "E:\php-8.5.10-nts-Win32-vs17-x64\php.exe" (
+        "E:\php-8.5.10-nts-Win32-vs17-x64\php.exe" -r "exit(version_compare(PHP_VERSION, '8.2.0', '>=') ? 0 : 1);" >nul 2>&1
+        if not errorlevel 1 set "PHP_EXE=E:\php-8.5.10-nts-Win32-vs17-x64\php.exe"
     )
 )
 
@@ -98,6 +112,13 @@ if "%ERRORLEVEL%"=="0" (
 ) else (
     echo       [INFO] MySQL belum aktif. Menyalakan di background...
     net start mysql >nul 2>&1
+    if exist "E:\Applications\laragon\bin\mysql" (
+        for /d %%M in ("E:\Applications\laragon\bin\mysql\mysql-*") do (
+            if exist "%%M\bin\mysqld.exe" (
+                start "" /b "%%M\bin\mysqld.exe" >nul 2>&1
+            )
+        )
+    )
     if exist "E:\laragon\bin\mysql" (
         for /d %%M in ("E:\laragon\bin\mysql\mysql-*") do (
             if exist "%%M\bin\mysqld.exe" (

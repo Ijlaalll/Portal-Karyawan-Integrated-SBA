@@ -8,14 +8,19 @@ echo   UJI KONEKSI DAN AUTENTIKASI LDAP ACTIVE DIRECTORY (SIG)
 echo ============================================================
 echo.
 
-REM Deteksi otomatis PHP 8.2+ (Prioritas Drive E, Laragon, XAMPP, Drive C)
+REM Deteksi otomatis PHP 8.2+ (Prioritas E:\Applications\laragon, E:\laragon, Drive C)
 set "PHP_EXE="
 
-REM 0.1 Cek Drive E: (Lokasi Server Baru)
-if exist "E:\php-8.5.10-nts-Win32-vs17-x64\php.exe" (
-    set "PHP_EXE=E:\php-8.5.10-nts-Win32-vs17-x64\php.exe"
+REM 0.1 Cek E:\Applications\laragon (Lokasi Server Terkini)
+if not defined PHP_EXE (
+    for /d %%D in ("E:\Applications\laragon\bin\php\php-8.*") do (
+        if exist "%%D\php.exe" (
+            if not defined PHP_EXE set "PHP_EXE=%%D\php.exe"
+        )
+    )
 )
 
+REM 0.2 Cek Drive E: (Lokasi Server Lainnya)
 if not defined PHP_EXE (
     for /d %%D in ("E:\laragon\bin\php\php-8.*") do (
         if exist "%%D\php.exe" (
